@@ -165,7 +165,12 @@ export default function VideoRoomPage() {
   const initSocket = (pc: RTCPeerConnection) => {
     console.log(`[Socket] initSocket called`);
     console.log(`[Socket] Before io()`);
-    const socket = io(API_BASE_URL, { transports: ["websocket"] });
+    const socket = io(API_BASE_URL, {
+      transports: ["polling", "websocket"], // try polling first, upgrade to websocket - survives Render cold starts/proxies
+      withCredentials: true,
+      reconnectionAttempts: 5,
+      timeout: 20000,
+    });
     socketRef.current = socket;
     console.log(`[Socket] After io()`);
 

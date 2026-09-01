@@ -9,8 +9,16 @@ sio = socketio.AsyncServer(
     async_mode='asgi',
     cors_allowed_origins=settings.cors_origins_list,
     logger=True,
-    engineio_logger=True
+    engineio_logger=True,
+    ping_timeout=20,
+    ping_interval=25,
 )
+
+print(f"[Socket.IO] cors_allowed_origins resolved to: {settings.cors_origins_list}")
+if not any("vercel.app" in o or o.startswith("https://") for o in settings.cors_origins_list):
+    print("[Socket.IO] WARNING: CORS_ORIGINS does not appear to include your deployed frontend URL. "
+          "Set the CORS_ORIGINS env var on Render to your exact Vercel origin(s), e.g. "
+          "https://seva-setu-gamma.vercel.app")
 
 # Keep track of participants per room to enforce 2-user limit
 # Map room_id -> list of sids
