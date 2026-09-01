@@ -1,0 +1,46 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: sevasetu
+      POSTGRES_PASSWORD: sevasetu
+      POSTGRES_DB: sevasetu
+    ports:
+      - "5432:5432"
+    volumes:
+      - sevasetu_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sevasetu"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    environment:
+      DATABASE_URL: postgresql+psycopg2://sevasetu:sevasetu@db:5432/sevasetu
+      SECRET_KEY: sevasetu-dev-secret-change-me
+      ENVIRONMENT: development
+      CORS_ORIGINS: http://localhost:3000
+      UPLOAD_DIR: uploads
+      SEED_ON_STARTUP: "true"
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    volumes:
+      - sevasetu_uploads:/app/uploads
+
+  frontend:
+    build: ./frontend
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+
+volumes:
+  sevasetu_pgdata:
+  sevasetu_uploads:
