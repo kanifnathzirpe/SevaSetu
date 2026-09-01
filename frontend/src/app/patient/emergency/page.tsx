@@ -33,11 +33,12 @@ export default function EmergencyPage() {
   const lat = coords?.lat ?? patient?.latitude ?? 18.5204;
   const lng = coords?.lng ?? patient?.longitude ?? 73.8567;
 
-  const { data: active } = useQuery({
+  const { data: activeList = [] } = useQuery({
     queryKey: ["sos", "active"],
-    queryFn: () => api.get<Sos | null>("/api/v1/emergency/sos/active"),
+    queryFn: () => api.get<Sos[]>("/api/v1/emergency/sos/active"),
     refetchInterval: 15_000,
   });
+  const active = activeList[0];
 
   const { data: history = [] } = useQuery({
     queryKey: ["sos", "history"],
@@ -123,9 +124,9 @@ export default function EmergencyPage() {
                 <p className="mt-1 text-xs text-[var(--muted-foreground)]">Raised {formatDate(active.created_at, true)}</p>
               </div>
               <div className="grid gap-1 text-sm">
-                <p><span className="text-[var(--muted-foreground)]">Ambulance:</span> {active.ambulance_number}</p>
-                <p><span className="text-[var(--muted-foreground)]">Driver:</span> {active.ambulance_driver} · {active.ambulance_phone}</p>
-                <p><span className="text-[var(--muted-foreground)]">Destination:</span> {active.hospital_name}</p>
+                <p><span className="text-[var(--muted-foreground)]">Ambulance:</span> {active.ambulance_number ?? "Being assigned"}</p>
+                <p><span className="text-[var(--muted-foreground)]">Driver:</span> {active.ambulance_driver ?? "—"} · {active.ambulance_phone ?? "—"}</p>
+                <p><span className="text-[var(--muted-foreground)]">Destination:</span> {active.hospital_name ?? "Nearest government facility"}</p>
                 <Badge tone="danger">ETA {active.eta_minutes} minutes · {titleCase(active.status)}</Badge>
               </div>
             </CardContent>

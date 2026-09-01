@@ -943,7 +943,7 @@ def seed_demo_accounts(
         )
     )
 
-    doctor_user = make_user(db, "Dr. Anjali Deshpande", "doctor@sevasetu.gov.in", UserRole.DOCTOR, "Pune City")
+    doctor_user = make_user(db, "Anjali Deshpande", "doctor@sevasetu.gov.in", UserRole.DOCTOR, "Pune City")
     db.flush()
     demo_doctor = Doctor(
         user_id=doctor_user.id,

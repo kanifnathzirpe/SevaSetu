@@ -20,6 +20,11 @@ import { api } from "@/lib/api";
 import type { Appointment, Doctor } from "@/lib/types";
 import { cn, formatDate, STATUS_STYLES } from "@/lib/utils";
 
+interface SpecializationOption {
+  specialization: string;
+  doctor_count: number;
+}
+
 interface Slots {
   date: string;
   doctor_id: number;
@@ -38,7 +43,7 @@ function BookingDialog() {
 
   const { data: specializations = [] } = useQuery({
     queryKey: ["doctors", "specializations"],
-    queryFn: () => api.get<string[]>("/api/v1/doctors/specializations"),
+    queryFn: () => api.get<SpecializationOption[]>("/api/v1/doctors/specializations"),
   });
 
   const { data: doctors = [] } = useQuery({
@@ -97,8 +102,8 @@ function BookingDialog() {
             >
               <option value="">All departments</option>
               {specializations.map((item) => (
-                <option key={item} value={item}>
-                  {item}
+                <option key={item.specialization} value={item.specialization}>
+                  {item.specialization} ({item.doctor_count})
                 </option>
               ))}
             </Select>

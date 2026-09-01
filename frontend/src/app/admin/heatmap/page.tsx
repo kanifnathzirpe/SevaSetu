@@ -26,7 +26,17 @@ interface HeatmapPayload {
   }[];
   totals_by_disease: { disease: string; cases: number }[];
   totals_by_locality: { locality: string; cases: number }[];
-  forecast: { disease: string; trend: string; risk_level: string; message: string; projected_cases: number }[];
+  forecast: {
+    locality: string;
+    generated_on: string;
+    forecasts: {
+      disease: string;
+      current_cases: number;
+      projected_next_week: number;
+      growth_percent: number;
+      risk: string;
+    }[];
+  };
 }
 
 export default function DiseaseHeatmapPage() {
@@ -98,31 +108,39 @@ export default function DiseaseHeatmapPage() {
             <CardTitle className="flex items-center gap-2">
               <TrendingUp className="h-4 w-4 text-[var(--primary)]" /> AI outbreak forecast
             </CardTitle>
-            <CardDescription>Trend projection based on weekly case velocity</CardDescription>
+            <CardDescription>
+              {data.forecast.locality} · generated {formatDate(data.forecast.generated_on)}
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
-            {data.forecast.length === 0 ? (
+            {data.forecast.forecasts.length === 0 ? (
               <p className="text-sm text-[var(--muted-foreground)]">Not enough surveillance data for a forecast.</p>
             ) : (
-              data.forecast.map((item) => (
-                <div key={item.disease} className="rounded-xl border border-[var(--border)] p-4">
-                  <div className="flex flex-wrap items-center justify-between gap-2">
-                    <p className="font-semibold">{item.disease}</p>
-                    <div className="flex items-center gap-2">
-                      <Badge tone={item.trend === "rising" ? "danger" : item.trend === "falling" ? "success" : "default"}>
-                        {item.trend}
-                      </Badge>
-                      <span className={cn("rounded-full border px-2.5 py-1 text-xs font-semibold capitalize", RISK_STYLES[item.risk_level])}>
-                        {item.risk_level}
-                      </span>
+              data.forecast.forecasts.map((item) => {
+                const trend = item.growth_percent > 5 ? "rising" : item.growth_percent < -5 ? "falling" : "stable";
+                return (
+                  <div key={item.disease} className="rounded-xl border border-[var(--border)] p-4">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <p className="font-semibold">{item.disease}</p>
+                      <div className="flex items-center gap-2">
+                        <Badge tone={trend === "rising" ? "danger" : trend === "falling" ? "success" : "default"}>
+                          {trend} {item.growth_percent > 0 ? "+" : ""}
+                          {item.growth_percent}%
+                        </Badge>
+                        <span className={cn("rounded-full border px-2.5 py-1 text-xs font-semibold capitalize", RISK_STYLES[item.risk])}>
+                          {item.risk}
+                        </span>
+                      </div>
                     </div>
+                    <p className="mt-1 text-sm">
+                      {item.current_cases} cases reported in the selected window across {data.forecast.locality}.
+                    </p>
+                    <p className="mt-1 text-xs text-[var(--muted-foreground)]">
+                      Projected next week: {item.projected_next_week} cases
+                    </p>
                   </div>
-                  <p className="mt-1 text-sm">{item.message}</p>
-                  <p className="mt-1 text-xs text-[var(--muted-foreground)]">
-                    Projected next week: {item.projected_cases} cases
-                  </p>
-                </div>
-              ))
+                );
+              })
             )}
           </CardContent>
         </Card>
