@@ -6,6 +6,7 @@ import * as React from "react";
 import { Toaster } from "sonner";
 
 import { AuthProvider } from "@/lib/auth";
+import { I18nProvider } from "@/lib/i18n";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = React.useState(
@@ -25,10 +26,13 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
-          {children}
+          <I18nProvider>
+            {children}
+          </I18nProvider>
           <Toaster position="top-right" richColors closeButton />
         </AuthProvider>
       </QueryClientProvider>
     </ThemeProvider>
   );
 }
+

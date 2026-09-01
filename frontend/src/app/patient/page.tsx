@@ -26,6 +26,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { Progress } from "@/components/ui/progress";
 import { LoadingBlock } from "@/components/ui/skeleton";
 import { api } from "@/lib/api";
+import { useI18n } from "@/lib/i18n";
 import type { PatientDashboard } from "@/lib/types";
 import { cn, formatDate, STATUS_STYLES } from "@/lib/utils";
 
@@ -36,13 +37,14 @@ interface Insight {
 }
 
 const QUICK_ACTIONS = [
-  { label: "Book appointment", href: "/patient/appointments", icon: CalendarDays },
-  { label: "Check symptoms", href: "/patient/symptom-checker", icon: Activity },
-  { label: "Find hospital", href: "/patient/hospitals", icon: Stethoscope },
-  { label: "Emergency SOS", href: "/patient/emergency", icon: Siren },
+  { labelKey: "dashboard.bookAppt", href: "/patient/appointments", icon: CalendarDays },
+  { labelKey: "dashboard.checkSymptoms", href: "/patient/symptom-checker", icon: Activity },
+  { labelKey: "dashboard.findHospital", href: "/patient/hospitals", icon: Stethoscope },
+  { labelKey: "nav.emergencySOS", href: "/patient/emergency", icon: Siren },
 ];
 
 export default function PatientDashboardPage() {
+  const { t } = useI18n();
   const { data, isLoading } = useQuery({
     queryKey: ["patient", "dashboard"],
     queryFn: () => api.get<PatientDashboard>("/api/v1/patient/dashboard"),
@@ -60,16 +62,16 @@ export default function PatientDashboardPage() {
   return (
     <>
       <PageHeader
-        title={`Namaskar, ${patient.full_name.split(" ")[0]}`}
-        description={`Health ID ${patient.health_id} · ${patient.locality} · ABHA ${patient.abha_number ?? "not linked"}`}
+        title={`${t("dashboard.greeting")}, ${patient.full_name.split(" ")[0]}`}
+        description={`Health ID ${patient.health_id} · ${patient.locality} · ABHA ${patient.abha_number ?? t("dashboard.notLinked")}`}
         actions={
           <>
             <Button asChild variant="outline">
-              <Link href="/patient/health-card">Digital health card</Link>
+              <Link href="/patient/health-card">{t("dashboard.digitalCard")}</Link>
             </Button>
             <Button asChild>
               <Link href="/patient/appointments">
-                <CalendarDays className="h-4 w-4" /> Book appointment
+                <CalendarDays className="h-4 w-4" /> {t("dashboard.bookAppointment")}
               </Link>
             </Button>
           </>
@@ -77,26 +79,26 @@ export default function PatientDashboardPage() {
       />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard label="Health score" value={stats.health_score} hint="Composite wellness index" icon={HeartPulse} tone="primary" index={0} />
-        <StatCard label="BMI" value={stats.bmi} hint={`${patient.height_cm} cm · ${patient.weight_kg} kg`} icon={Activity} tone="info" index={1} />
-        <StatCard label="Upcoming visits" value={stats.upcoming_appointments} hint="Next 30 days" icon={CalendarDays} tone="success" index={2} />
-        <StatCard label="Active reminders" value={stats.active_reminders} hint={`${stats.pending_vaccinations} vaccinations due`} icon={Bell} tone="warning" index={3} />
+        <StatCard label={t("dashboard.healthScore")} value={stats.health_score} hint={t("dashboard.compositeIdx")} icon={HeartPulse} tone="primary" index={0} />
+        <StatCard label={t("dashboard.bmi")} value={stats.bmi} hint={`${patient.height_cm} cm · ${patient.weight_kg} kg`} icon={Activity} tone="info" index={1} />
+        <StatCard label={t("dashboard.upcomingVisits")} value={stats.upcoming_appointments} hint={t("dashboard.next30")} icon={CalendarDays} tone="success" index={2} />
+        <StatCard label={t("dashboard.activeRemind")} value={stats.active_reminders} hint={`${stats.pending_vaccinations} ${t("dashboard.vaccDue")}`} icon={Bell} tone="warning" index={3} />
       </div>
 
       <div className="mt-4 grid gap-4 lg:grid-cols-3">
         <Card className="lg:col-span-2">
           <CardHeader>
-            <CardTitle>Vitals trend</CardTitle>
-            <CardDescription>Blood pressure, pulse and blood sugar recorded during recent visits</CardDescription>
+            <CardTitle>{t("dashboard.vitalsTrend")}</CardTitle>
+            <CardDescription>{t("dashboard.vitalsDesc")}</CardDescription>
           </CardHeader>
           <CardContent>
             <TrendAreaChart
               data={data.vitals_trend}
               xKey="date"
               series={[
-                { key: "systolic", label: "Systolic" },
-                { key: "diastolic", label: "Diastolic" },
-                { key: "sugar", label: "Blood sugar" },
+                { key: "systolic", label: t("dashboard.systolic") },
+                { key: "diastolic", label: t("dashboard.diastolic") },
+                { key: "sugar", label: t("dashboard.bloodSugar") },
               ]}
             />
           </CardContent>
@@ -105,9 +107,9 @@ export default function PatientDashboardPage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-[var(--primary)]" /> AI health insights
+              <Sparkles className="h-4 w-4 text-[var(--primary)]" /> {t("dashboard.aiInsights")}
             </CardTitle>
-            <CardDescription>Generated from your records</CardDescription>
+            <CardDescription>{t("dashboard.aiInsightsDesc")}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
             {(insights?.insights ?? []).map((insight) => (
@@ -122,7 +124,7 @@ export default function PatientDashboardPage() {
               </div>
             ))}
             {insights && insights.insights.length === 0 ? (
-              <p className="text-sm text-[var(--muted-foreground)]">No alerts. Keep up the healthy habits!</p>
+              <p className="text-sm text-[var(--muted-foreground)]">{t("dashboard.noAlerts")}</p>
             ) : null}
           </CardContent>
         </Card>
@@ -131,18 +133,18 @@ export default function PatientDashboardPage() {
       <div className="mt-4 grid gap-4 lg:grid-cols-3">
         <Card className="lg:col-span-2">
           <CardHeader>
-            <CardTitle>Upcoming appointments</CardTitle>
-            <CardDescription>Confirmed consultations at government facilities</CardDescription>
+            <CardTitle>{t("dashboard.upcomingAppts")}</CardTitle>
+            <CardDescription>{t("dashboard.upcomingDesc")}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
             {data.upcoming_appointments.length === 0 ? (
               <EmptyState
                 icon={CalendarDays}
-                title="No upcoming appointments"
-                description="Book a consultation with a medical officer near you."
+                title={t("dashboard.noUpcoming")}
+                description={t("dashboard.bookConsult")}
                 action={
                   <Button asChild size="sm">
-                    <Link href="/patient/appointments">Book now</Link>
+                    <Link href="/patient/appointments">{t("dashboard.bookNow")}</Link>
                   </Button>
                 }
               />
@@ -166,7 +168,7 @@ export default function PatientDashboardPage() {
                     {appointment.appointment_type === "video" ? (
                       <Button asChild size="sm" variant="secondary">
                         <Link href={`/video/${appointment.video_room_id ?? `appt-${appointment.id}`}?appointment=${appointment.id}`}>
-                          <Video className="h-3.5 w-3.5" /> Join
+                          <Video className="h-3.5 w-3.5" /> {t("dashboard.join")}
                         </Link>
                       </Button>
                     ) : null}
@@ -180,7 +182,7 @@ export default function PatientDashboardPage() {
         <div className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Quick actions</CardTitle>
+              <CardTitle>{t("dashboard.quickActions")}</CardTitle>
             </CardHeader>
             <CardContent className="grid grid-cols-2 gap-2">
               {QUICK_ACTIONS.map((action) => (
@@ -190,7 +192,7 @@ export default function PatientDashboardPage() {
                   className="flex flex-col gap-2 rounded-xl border border-[var(--border)] p-3 transition-colors hover:border-[var(--primary)] hover:bg-[color-mix(in_srgb,var(--primary)_8%,transparent)]"
                 >
                   <action.icon className="h-4 w-4 text-[var(--primary)]" />
-                  <span className="text-xs font-medium">{action.label}</span>
+                  <span className="text-xs font-medium">{t(action.labelKey)}</span>
                 </Link>
               ))}
             </CardContent>
@@ -198,12 +200,12 @@ export default function PatientDashboardPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Today&apos;s medicines</CardTitle>
-              <CardDescription>Adherence tracked automatically</CardDescription>
+              <CardTitle>{t("dashboard.medicinesTitle")}</CardTitle>
+              <CardDescription>{t("dashboard.medicinesDesc")}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
               {data.medicine_reminders.length === 0 ? (
-                <p className="text-sm text-[var(--muted-foreground)]">No active reminders.</p>
+                <p className="text-sm text-[var(--muted-foreground)]">{t("dashboard.noReminders")}</p>
               ) : (
                 data.medicine_reminders.slice(0, 4).map((reminder) => (
                   <div key={reminder.id}>
@@ -218,7 +220,7 @@ export default function PatientDashboardPage() {
                 ))
               )}
               <Button asChild variant="outline" size="sm" className="w-full">
-                <Link href="/patient/reminders">Manage reminders</Link>
+                <Link href="/patient/reminders">{t("dashboard.manageReminders")}</Link>
               </Button>
             </CardContent>
           </Card>
@@ -228,12 +230,12 @@ export default function PatientDashboardPage() {
       <div className="mt-4 grid gap-4 lg:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>Recent reports</CardTitle>
-            <CardDescription>Lab and radiology results</CardDescription>
+            <CardTitle>{t("dashboard.recentReports")}</CardTitle>
+            <CardDescription>{t("dashboard.reportsDesc")}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
             {data.recent_reports.length === 0 ? (
-              <EmptyState icon={FileText} title="No reports yet" description="Reports appear here once a lab request is completed." />
+              <EmptyState icon={FileText} title={t("dashboard.noReports")} description={t("dashboard.reportsHint")} />
             ) : (
               data.recent_reports.map((report) => (
                 <Link
@@ -246,7 +248,7 @@ export default function PatientDashboardPage() {
                     <p className="text-xs text-[var(--muted-foreground)]">{formatDate(report.report_date)}</p>
                   </div>
                   <Badge tone={report.is_abnormal ? "danger" : "success"}>
-                    {report.is_abnormal ? "Abnormal" : "Normal"}
+                    {report.is_abnormal ? t("dashboard.abnormal") : t("dashboard.normal")}
                   </Badge>
                 </Link>
               ))
@@ -256,12 +258,12 @@ export default function PatientDashboardPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Vaccinations due</CardTitle>
-            <CardDescription>Universal Immunisation Programme schedule</CardDescription>
+            <CardTitle>{t("dashboard.vaccinationsTitle")}</CardTitle>
+            <CardDescription>{t("dashboard.vaccinationsDesc")}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
             {data.vaccinations_due.length === 0 ? (
-              <EmptyState icon={Syringe} title="All caught up" description="No pending vaccinations in your record." />
+              <EmptyState icon={Syringe} title={t("dashboard.allCaughtUp")} description={t("dashboard.noPendingVacc")} />
             ) : (
               data.vaccinations_due.map((vaccination) => (
                 <div key={vaccination.id} className="flex items-center justify-between gap-3 rounded-xl border border-[var(--border)] p-3">

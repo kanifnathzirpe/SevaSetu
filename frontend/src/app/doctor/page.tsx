@@ -13,17 +13,19 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { EmptyState } from "@/components/ui/empty-state";
 import { LoadingBlock } from "@/components/ui/skeleton";
 import { api } from "@/lib/api";
+import { useI18n } from "@/lib/i18n";
 import type { DoctorDashboard } from "@/lib/types";
 import { formatDate, titleCase } from "@/lib/utils";
 
 const QUICK_ACTIONS = [
-  { label: "Patient queue", href: "/doctor/queue", icon: ListOrdered },
-  { label: "Write prescription", href: "/doctor/prescriptions", icon: ClipboardList },
-  { label: "Request lab test", href: "/doctor/lab-requests", icon: Stethoscope },
-  { label: "My patients", href: "/doctor/patients", icon: Users },
+  { labelKey: "doctor.patientQueue", href: "/doctor/queue", icon: ListOrdered },
+  { labelKey: "doctor.writePrescription", href: "/doctor/prescriptions", icon: ClipboardList },
+  { labelKey: "doctor.requestLabTest", href: "/doctor/lab-requests", icon: Stethoscope },
+  { labelKey: "doctor.myPatients", href: "/doctor/patients", icon: Users },
 ];
 
 export default function DoctorDashboardPage() {
+  const { t } = useI18n();
   const { data, isLoading } = useQuery({
     queryKey: ["doctor", "dashboard"],
     queryFn: () => api.get<DoctorDashboard>("/api/v1/doctor/dashboard"),
@@ -37,36 +39,36 @@ export default function DoctorDashboardPage() {
     <>
       <PageHeader
         title={`Dr. ${doctor.full_name.replace(/^Dr\.?\s*/i, "")}`}
-        description={`${doctor.specialization} · ${doctor.qualification} · ${doctor.hospital_name} · ${doctor.experience_years} years experience`}
+        description={`${doctor.specialization} · ${doctor.qualification} · ${doctor.hospital_name} · ${doctor.experience_years} ${t("doctor.yearsExperience")}`}
         actions={
           <Button asChild>
             <Link href="/doctor/queue">
-              <ListOrdered className="h-4 w-4" /> Open queue
+              <ListOrdered className="h-4 w-4" /> {t("doctor.openQueue")}
             </Link>
           </Button>
         }
       />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard label="Appointments today" value={stats.today_appointments} hint={`${stats.pending_today} pending`} icon={CalendarDays} tone="primary" index={0} />
-        <StatCard label="Completed today" value={stats.completed_today} hint="Consultations closed" icon={Stethoscope} tone="success" index={1} />
-        <StatCard label="Patients treated" value={stats.total_patients} hint={`${stats.prescriptions_issued} prescriptions issued`} icon={Users} tone="info" index={2} />
-        <StatCard label="Teleconsultations" value={stats.video_consultations} hint="Video appointments" icon={Video} tone="warning" index={3} />
+        <StatCard label={t("doctor.appointmentsToday")} value={stats.today_appointments} hint={`${stats.pending_today} ${t("doctor.pending")}`} icon={CalendarDays} tone="primary" index={0} />
+        <StatCard label={t("doctor.completedToday")} value={stats.completed_today} hint={t("doctor.consultationsClosed")} icon={Stethoscope} tone="success" index={1} />
+        <StatCard label={t("doctor.patientsTreated")} value={stats.total_patients} hint={`${stats.prescriptions_issued} ${t("doctor.prescriptionsIssued")}`} icon={Users} tone="info" index={2} />
+        <StatCard label={t("doctor.teleconsultations")} value={stats.video_consultations} hint={t("doctor.videoAppointments")} icon={Video} tone="warning" index={3} />
       </div>
 
       <div className="mt-4 grid gap-4 lg:grid-cols-3">
         <Card className="lg:col-span-2">
           <CardHeader>
-            <CardTitle>This week</CardTitle>
-            <CardDescription>Scheduled versus completed consultations</CardDescription>
+            <CardTitle>{t("doctor.thisWeek")}</CardTitle>
+            <CardDescription>{t("doctor.scheduledVsCompleted")}</CardDescription>
           </CardHeader>
           <CardContent>
             <SimpleBarChart
               data={data.weekly_trend}
               xKey="day"
               series={[
-                { key: "appointments", label: "Scheduled" },
-                { key: "completed", label: "Completed" },
+                { key: "appointments", label: t("doctor.scheduled") },
+                { key: "completed", label: t("doctor.completed") },
               ]}
             />
           </CardContent>
@@ -74,7 +76,7 @@ export default function DoctorDashboardPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Quick actions</CardTitle>
+            <CardTitle>{t("doctor.quickActions")}</CardTitle>
           </CardHeader>
           <CardContent className="grid grid-cols-2 gap-3">
             {QUICK_ACTIONS.map((action) => (
@@ -84,7 +86,7 @@ export default function DoctorDashboardPage() {
                 className="flex flex-col items-center gap-2 rounded-xl border border-[var(--border)] p-4 text-center text-xs font-medium transition-colors hover:border-[var(--primary)] hover:text-[var(--primary)]"
               >
                 <action.icon className="h-5 w-5" />
-                {action.label}
+                {t(action.labelKey)}
               </Link>
             ))}
           </CardContent>
@@ -93,19 +95,19 @@ export default function DoctorDashboardPage() {
 
       <Card className="mt-4">
         <CardHeader>
-          <CardTitle>Upcoming consultations</CardTitle>
-          <CardDescription>Next six appointments across all facilities</CardDescription>
+          <CardTitle>{t("doctor.upcomingConsultations")}</CardTitle>
+          <CardDescription>{t("doctor.nextSixAppointments")}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
           {data.upcoming.length === 0 ? (
-            <EmptyState icon={CalendarDays} title="No upcoming appointments" description="Newly booked appointments appear here." />
+            <EmptyState icon={CalendarDays} title={t("dashboard.noUpcoming")} description={t("doctor.newlyBookedAppts")} />
           ) : (
             data.upcoming.map((appointment) => (
               <div key={appointment.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-[var(--border)] p-4">
                 <div>
                   <p className="font-semibold">{appointment.patient_name}</p>
                   <p className="text-xs text-[var(--muted-foreground)]">
-                    Token {appointment.token_number} · {appointment.reason}
+                    {t("doctor.token")} {appointment.token_number} · {appointment.reason}
                   </p>
                   <p className="text-xs">{formatDate(appointment.scheduled_at, true)}</p>
                 </div>
@@ -115,7 +117,7 @@ export default function DoctorDashboardPage() {
                   </Badge>
                   <Badge tone={appointment.status === "completed" ? "success" : "primary"}>{titleCase(appointment.status)}</Badge>
                   <Button asChild size="sm" variant="outline">
-                    <Link href={`/doctor/patients/${appointment.patient_id}`}>Open chart</Link>
+                    <Link href={`/doctor/patients/${appointment.patient_id}`}>{t("doctor.openChart")}</Link>
                   </Button>
                 </div>
               </div>

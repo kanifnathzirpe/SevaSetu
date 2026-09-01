@@ -12,10 +12,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Progress } from "@/components/ui/progress";
 import { LoadingBlock } from "@/components/ui/skeleton";
 import { api } from "@/lib/api";
+import { useI18n } from "@/lib/i18n";
 import type { AdminDashboard } from "@/lib/types";
 import { titleCase } from "@/lib/utils";
 
 export default function AdminDashboardPage() {
+  const { t } = useI18n();
   const { data, isLoading } = useQuery({
     queryKey: ["admin", "dashboard"],
     queryFn: () => api.get<AdminDashboard>("/api/v1/admin/dashboard"),
@@ -28,42 +30,42 @@ export default function AdminDashboardPage() {
   return (
     <>
       <PageHeader
-        title="District health analytics"
-        description="Live operational picture of rural healthcare delivery"
+        title={t("admin.districtAnalytics")}
+        description={t("admin.livePicture")}
         actions={
           <Button asChild>
-            <Link href="/admin/reports">Generate district report</Link>
+            <Link href="/admin/reports">{t("admin.generateReport")}</Link>
           </Button>
         }
       />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard label="Registered patients" value={stats.total_patients} hint={`${stats.appointments_today} appointments today`} icon={Users} tone="primary" index={0} />
-        <StatCard label="Doctors" value={stats.total_doctors} hint={`${stats.total_asha_workers} ASHA workers`} icon={Stethoscope} tone="info" index={1} />
-        <StatCard label="Facilities" value={stats.total_hospitals} hint={`${stats.total_beds} beds · ${stats.available_beds} free`} icon={Building2} tone="success" index={2} />
-        <StatCard label="Active SOS" value={stats.active_sos} hint={`${stats.total_ambulances} ambulances in fleet`} icon={Ambulance} tone="danger" index={3} />
+        <StatCard label={t("admin.registeredPatients")} value={stats.total_patients} hint={`${stats.appointments_today} ${t("admin.appointmentsToday")}`} icon={Users} tone="primary" index={0} />
+        <StatCard label={t("admin.doctors")} value={stats.total_doctors} hint={`${stats.total_asha_workers} ${t("admin.ashaWorkers")}`} icon={Stethoscope} tone="info" index={1} />
+        <StatCard label={t("admin.facilities")} value={stats.total_hospitals} hint={`${stats.total_beds} ${t("admin.beds")} · ${stats.available_beds} ${t("admin.free")}`} icon={Building2} tone="success" index={2} />
+        <StatCard label={t("admin.activeSos")} value={stats.active_sos} hint={`${stats.total_ambulances} ${t("admin.ambulancesInFleet")}`} icon={Ambulance} tone="danger" index={3} />
       </div>
 
       <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard label="Immunisation coverage" value={`${stats.immunisation_coverage_percent}%`} hint="All antigens" icon={Syringe} tone="success" index={4} />
-        <StatCard label="High-risk pregnancies" value={stats.high_risk_pregnancies} hint="Requires escalation" icon={Baby} tone="warning" index={5} />
-        <StatCard label="Bed occupancy" value={`${stats.bed_occupancy_percent}%`} hint="District wide" icon={HeartPulse} tone="info" index={6} />
-        <StatCard label="ASHA visits this month" value={stats.visits_this_month} hint={`${stats.open_referrals} open referrals`} icon={Users} tone="primary" index={7} />
+        <StatCard label={t("admin.immunisationCoverage")} value={`${stats.immunisation_coverage_percent}%`} hint={t("admin.allAntigens")} icon={Syringe} tone="success" index={4} />
+        <StatCard label={t("admin.highRiskPregnancies")} value={stats.high_risk_pregnancies} hint={t("admin.requiresEscalation")} icon={Baby} tone="warning" index={5} />
+        <StatCard label={t("admin.bedOccupancy")} value={`${stats.bed_occupancy_percent}%`} hint={t("admin.districtWide")} icon={HeartPulse} tone="info" index={6} />
+        <StatCard label={t("admin.ashaVisitsMonth")} value={stats.visits_this_month} hint={`${stats.open_referrals} ${t("admin.openReferrals")}`} icon={Users} tone="primary" index={7} />
       </div>
 
       <div className="mt-4 grid gap-4 lg:grid-cols-3">
         <Card className="lg:col-span-2">
           <CardHeader>
-            <CardTitle>Appointment volume</CardTitle>
-            <CardDescription>Last 14 days across all facilities</CardDescription>
+            <CardTitle>{t("admin.appointmentVolume")}</CardTitle>
+            <CardDescription>{t("admin.last14Days")}</CardDescription>
           </CardHeader>
           <CardContent>
             <TrendAreaChart
               data={data.appointment_trend}
               xKey="date"
               series={[
-                { key: "appointments", label: "Booked" },
-                { key: "completed", label: "Completed" },
+                { key: "appointments", label: t("admin.booked") },
+                { key: "completed", label: t("dashboard.completed") ?? "Completed" }, // Use dashboard complete or fallback
               ]}
             />
           </CardContent>
@@ -71,8 +73,8 @@ export default function AdminDashboardPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Facility mix</CardTitle>
-            <CardDescription>Public health infrastructure</CardDescription>
+            <CardTitle>{t("admin.facilityMix")}</CardTitle>
+            <CardDescription>{t("admin.publicHealthInfra")}</CardDescription>
           </CardHeader>
           <CardContent>
             <DonutChart
@@ -88,18 +90,18 @@ export default function AdminDashboardPage() {
       <div className="mt-4 grid gap-4 lg:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>Patients by locality</CardTitle>
-            <CardDescription>Top 12 localities by registration</CardDescription>
+            <CardTitle>{t("admin.patientsByLocality")}</CardTitle>
+            <CardDescription>{t("admin.topLocalities")}</CardDescription>
           </CardHeader>
           <CardContent>
-            <SimpleBarChart data={data.patients_by_locality} xKey="locality" series={[{ key: "patients", label: "Patients" }]} height={300} />
+            <SimpleBarChart data={data.patients_by_locality} xKey="locality" series={[{ key: "patients", label: t("nav.patients") }]} height={300} />
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>Specialisation strength</CardTitle>
-            <CardDescription>Doctors available per specialisation</CardDescription>
+            <CardTitle>{t("admin.specialisationStrength")}</CardTitle>
+            <CardDescription>{t("admin.doctorsAvailable")}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
             {data.top_specializations.map((item) => {

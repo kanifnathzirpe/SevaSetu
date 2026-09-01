@@ -5,28 +5,30 @@ import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 
 import { Logo } from "@/components/logo";
-import { NAV_BY_ROLE, ROLE_LABEL } from "@/lib/nav";
+import { NAV_BY_ROLE } from "@/lib/nav";
 import type { AuthUser } from "@/lib/api";
 import { cn } from "@/lib/utils";
+import { useI18n, NAV_LABEL_KEY, NAV_SECTION_KEY } from "@/lib/i18n";
 
 export function Sidebar({ user, onNavigate }: { user: AuthUser; onNavigate?: () => void }) {
   const pathname = usePathname();
   const sections = NAV_BY_ROLE[user.role];
+  const { t } = useI18n();
 
   return (
     <aside className="flex h-full w-72 flex-col gap-6 overflow-y-auto border-r border-[var(--border)] bg-[color-mix(in_srgb,var(--card)_86%,transparent)] px-4 py-5 backdrop-blur-xl">
       <Logo />
       <div className="rounded-2xl bg-[color-mix(in_srgb,var(--primary)_10%,transparent)] px-3 py-2.5">
-        <p className="text-xs uppercase tracking-wide text-[var(--muted-foreground)]">Signed in as</p>
+        <p className="text-xs uppercase tracking-wide text-[var(--muted-foreground)]">{t("sidebar.signedInAs")}</p>
         <p className="truncate text-sm font-semibold">{user.full_name}</p>
-        <p className="text-xs text-[var(--primary)]">{ROLE_LABEL[user.role]}</p>
+        <p className="text-xs text-[var(--primary)]">{t(`role.${user.role}`)}</p>
       </div>
 
       <nav className="flex flex-1 flex-col gap-5">
         {sections.map((section) => (
           <div key={section.title}>
             <p className="mb-2 px-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--muted-foreground)]">
-              {section.title}
+              {t(NAV_SECTION_KEY[section.title] ?? section.title)}
             </p>
             <ul className="space-y-1">
               {section.items.map((item) => {
@@ -52,7 +54,7 @@ export function Sidebar({ user, onNavigate }: { user: AuthUser; onNavigate?: () 
                         />
                       )}
                       <item.icon className="h-4 w-4 shrink-0" />
-                      <span className="truncate">{item.label}</span>
+                      <span className="truncate">{t(NAV_LABEL_KEY[item.label] ?? item.label)}</span>
                     </Link>
                   </li>
                 );
@@ -63,7 +65,7 @@ export function Sidebar({ user, onNavigate }: { user: AuthUser; onNavigate?: () 
       </nav>
 
       <p className="px-2 text-[10px] leading-relaxed text-[var(--muted-foreground)]">
-        Government of Maharashtra · Public Health Department
+        {t("sidebar.footer")}
       </p>
     </aside>
   );

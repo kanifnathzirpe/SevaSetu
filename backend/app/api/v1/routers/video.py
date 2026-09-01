@@ -104,15 +104,22 @@ def join_session(
     return _serialize(db, session)
 
 
+from pydantic import BaseModel
+
+class VideoSessionEnd(BaseModel):
+    duration: int | None = None
+
 @router.post("/sessions/{room_id}/end", response_model=MessageResponse)
 def end_session(
-    room_id: str, db: Session = Depends(get_db), _: User = Depends(get_current_user)
+    room_id: str, payload: VideoSessionEnd, db: Session = Depends(get_db), _: User = Depends(get_current_user)
 ) -> MessageResponse:
     session = db.query(VideoSession).filter(VideoSession.room_id == room_id).first()
     if not session:
         raise HTTPException(404, "Video room not found")
     session.status = "ended"
     session.ended_at = datetime.now(timezone.utc)
+    if payload.duration is not None:
+        session.duration = payload.duration
     db.commit()
     return MessageResponse(message="Consultation ended")
 

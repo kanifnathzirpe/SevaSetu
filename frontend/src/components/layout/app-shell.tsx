@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import * as React from "react";
 
 import { Sidebar } from "@/components/layout/sidebar";
+import { SymptomChatbot } from "@/components/layout/symptom-chatbot";
 import { Topbar } from "@/components/layout/topbar";
 import type { Role } from "@/lib/api";
 import { ROLE_HOME, useAuth } from "@/lib/auth";
@@ -78,6 +79,9 @@ export function AppShell({ children, allow }: { children: React.ReactNode; allow
           </motion.div>
         </main>
       </div>
+
+      {/* Floating symptom-checker chatbot */}
+      <SymptomChatbot />
     </div>
   );
 }
