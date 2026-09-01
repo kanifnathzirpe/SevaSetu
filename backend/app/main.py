@@ -68,4 +68,24 @@ def root() -> dict:
 def health() -> dict:
     return {"status": "ok", "environment": settings.ENVIRONMENT}
 
-app = socketio.ASGIApp(sio, other_asgi_app=fastapi_app)
+class WebsocketLoggingMiddleware:
+    def __init__(self, app):
+        self.app = app
+
+    async def __call__(self, scope, receive, send):
+        if scope["type"] == "websocket":
+            print(f"\n========== [ASGI Middleware] ==========")
+            print(f"-> WebSocket Connection Attempt")
+            print(f"-> Path: {scope.get('path')}")
+            print(f"-> Client: {scope.get('client')}")
+            print(f"-> Headers: {[(k.decode('utf-8'), v.decode('utf-8')) for k, v in scope.get('headers', [])]}")
+            print(f"=======================================\n")
+        await self.app(scope, receive, send)
+
+base_app = socketio.ASGIApp(sio, other_asgi_app=fastapi_app, socketio_path='socket.io')
+app = WebsocketLoggingMiddleware(base_app)
+
+print(f"\n[STARTUP] Socket.IO mounted successfully.")
+print(f"[STARTUP] CORS Allowed Origins: {settings.cors_origins_list}")
+print(f"[STARTUP] Async Mode: {sio.async_mode}")
+print(f"[STARTUP] Socket Path: /socket.io/\n")
