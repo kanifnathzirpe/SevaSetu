@@ -1,0 +1,176 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --background: #f3f7f8;
+  --foreground: #0b1f24;
+  --card: #ffffff;
+  --card-foreground: #0b1f24;
+  --muted: #eef4f5;
+  --muted-foreground: #5c7178;
+  --border: #dbe6e8;
+  --input: #e5eef0;
+  --ring: #0d9488;
+
+  --primary: #0d9488;
+  --primary-foreground: #ffffff;
+  --secondary: #1d4ed8;
+  --secondary-foreground: #ffffff;
+  --accent: #16a34a;
+  --accent-foreground: #ffffff;
+  --danger: #dc2626;
+  --warning: #d97706;
+  --success: #15803d;
+  --info: #0284c7;
+
+  --glass: rgba(255, 255, 255, 0.72);
+  --glass-border: rgba(255, 255, 255, 0.55);
+  --shadow-soft: 0 18px 40px -24px rgba(13, 148, 136, 0.45);
+}
+
+.dark {
+  --background: #04161a;
+  --foreground: #e6f4f5;
+  --card: #0a2228;
+  --card-foreground: #e6f4f5;
+  --muted: #0f2c33;
+  --muted-foreground: #8fb0b7;
+  --border: #163b44;
+  --input: #123037;
+  --ring: #2dd4bf;
+
+  --primary: #14b8a6;
+  --primary-foreground: #04161a;
+  --secondary: #3b82f6;
+  --secondary-foreground: #04161a;
+  --accent: #22c55e;
+  --accent-foreground: #04161a;
+  --danger: #f87171;
+  --warning: #fbbf24;
+  --success: #4ade80;
+  --info: #38bdf8;
+
+  --glass: rgba(10, 34, 40, 0.72);
+  --glass-border: rgba(45, 212, 191, 0.14);
+  --shadow-soft: 0 18px 40px -24px rgba(0, 0, 0, 0.75);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-danger: var(--danger);
+  --color-warning: var(--warning);
+  --color-success: var(--success);
+  --color-info: var(--info);
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+
+* {
+  border-color: var(--border);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background:
+    radial-gradient(1200px 600px at 8% -8%, color-mix(in srgb, var(--primary) 16%, transparent), transparent),
+    radial-gradient(1000px 520px at 96% 4%, color-mix(in srgb, var(--secondary) 14%, transparent), transparent),
+    var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+@utility glass {
+  background: var(--glass);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-soft);
+}
+
+@utility card-surface {
+  background: color-mix(in srgb, var(--card) 92%, transparent);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-soft);
+}
+
+@utility text-gradient {
+  background: linear-gradient(92deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility focus-ring {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--background), 0 0 0 4px color-mix(in srgb, var(--ring) 65%, transparent);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--muted-foreground) 35%, transparent);
+  border-radius: 9999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+
+.leaflet-container {
+  height: 100%;
+  width: 100%;
+  border-radius: 1rem;
+  font-family: var(--font-sans);
+  z-index: 0;
+}
+
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background: var(--card);
+  color: var(--card-foreground);
+}
+
+@keyframes pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--danger) 55%, transparent);
+  }
+  70% {
+    box-shadow: 0 0 0 18px transparent;
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+.animate-pulse-ring {
+  animation: pulse-ring 2s infinite;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
