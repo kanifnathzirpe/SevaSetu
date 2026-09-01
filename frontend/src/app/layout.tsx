@@ -8,10 +8,10 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 
 export const metadata: Metadata = {
-  title: "SevaSetu AI — Pune District Public Health Platform",
+  title: "SevaSetu AI",
   description:
-    "SevaSetu AI connects patients, ASHA workers, doctors and district health officers across Pune district with AI-assisted triage, telemedicine, emergency response and real-time health surveillance.",
-  keywords: ["public health", "Pune", "telemedicine", "ASHA", "PHC", "Smart India Hackathon"],
+    "SevaSetu AI brings quality healthcare to rural and underserved areas, connecting patients, ASHA workers, doctors and health officers with AI-assisted triage, telemedicine, emergency response and real-time health surveillance.",
+  keywords: ["public health", "telemedicine", "ASHA", "PHC"],
 };
 
 export const viewport: Viewport = {

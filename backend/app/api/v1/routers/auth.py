@@ -52,8 +52,8 @@ def _create_role_profile(db: Session, user: User, payload: RegisterRequest) -> N
                 health_id=f"PUN-{datetime.now().year}-{randint(100000, 999999)}",
                 date_of_birth=payload.date_of_birth or date(1995, 1, 1),
                 gender=payload.gender,
-                locality=payload.locality or "Pune City",
-                address=payload.locality or "Pune City",
+                locality=payload.locality or "City",
+                address=payload.locality or "City",
             )
         )
     elif user.role == UserRole.DOCTOR:
@@ -72,8 +72,8 @@ def _create_role_profile(db: Session, user: User, payload: RegisterRequest) -> N
             AshaWorker(
                 user_id=user.id,
                 asha_code=f"ASHA-PUN-{randint(1000, 9999)}",
-                assigned_area=payload.locality or "Pune City",
-                village_or_ward=payload.locality or "Pune City",
+                assigned_area=payload.locality or "City",
+                village_or_ward=payload.locality or "City",
             )
         )
     db.commit()

@@ -61,7 +61,7 @@ export default function PatientDashboardPage() {
     <>
       <PageHeader
         title={`Namaskar, ${patient.full_name.split(" ")[0]}`}
-        description={`Health ID ${patient.health_id} · ${patient.locality}, Pune district · ABHA ${patient.abha_number ?? "not linked"}`}
+        description={`Health ID ${patient.health_id} · ${patient.locality} · ABHA ${patient.abha_number ?? "not linked"}`}
         actions={
           <>
             <Button asChild variant="outline">

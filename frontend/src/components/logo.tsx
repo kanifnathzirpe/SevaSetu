@@ -13,7 +13,7 @@ export function Logo({ className, compact = false }: { className?: string; compa
         <span className="leading-tight">
           <span className="block text-base font-bold tracking-tight">SevaSetu AI</span>
           <span className="block text-[10px] uppercase tracking-[0.16em] text-[var(--muted-foreground)]">
-            Pune District Health
+            Public Health
           </span>
         </span>
       )}

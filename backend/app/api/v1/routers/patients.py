@@ -172,7 +172,7 @@ def health_card(
         "gender": patient.gender.value,
         "blood_group": patient.blood_group,
         "locality": patient.locality,
-        "district": "Pune",
+        "district": "District",
         "state": "Maharashtra",
         "emergency_contact": {
             "name": patient.emergency_contact_name,

@@ -361,7 +361,7 @@ def disease_heatmap(days: int = 30, db: Session = Depends(get_db)) -> dict:
             {"locality": loc, "cases": n}
             for loc, n in sorted(by_locality.items(), key=lambda kv: kv[1], reverse=True)
         ],
-        "forecast": outbreak_forecast(dict(weekly), "Pune District"),
+        "forecast": outbreak_forecast(dict(weekly), "District"),
     }
 
 
@@ -371,7 +371,7 @@ def district_report(db: Session = Depends(get_db)) -> dict:
     month_start = today.replace(day=1)
     return {
         "generated_on": today.isoformat(),
-        "district": "Pune",
+        "district": "District",
         "sections": [
             {
                 "title": "Service delivery",

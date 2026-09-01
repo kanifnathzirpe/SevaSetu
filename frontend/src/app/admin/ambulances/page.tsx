@@ -36,7 +36,7 @@ export default function AmbulanceTrackingPage() {
 
   return (
     <>
-      <PageHeader title="Ambulance tracking" description="Live 108 fleet positions and availability across Pune district" />
+      <PageHeader title="Ambulance tracking" description="Live fleet positions and availability" />
 
       <div className="grid gap-4 sm:grid-cols-3">
         <StatCard label="Fleet size" value={data.length} hint="Registered vehicles" icon={AmbulanceIcon} tone="primary" index={0} />

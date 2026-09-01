@@ -29,7 +29,7 @@ export default function VaccinationDashboardPage() {
 
   return (
     <>
-      <PageHeader title="Vaccination dashboard" description="Universal Immunisation Programme coverage across Pune district" />
+      <PageHeader title="Vaccination dashboard" description="Universal Immunisation Programme coverage" />
 
       <div className="grid gap-4 sm:grid-cols-3">
         <StatCard label="Overall coverage" value={`${data.overall_coverage_percent}%`} hint="All antigens" icon={Syringe} tone="success" index={0} />

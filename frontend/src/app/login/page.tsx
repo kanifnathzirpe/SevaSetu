@@ -66,7 +66,7 @@ export default function LoginPage() {
         </div>
         <div>
           <h2 className="max-w-md text-4xl font-bold leading-tight">
-            Quality public healthcare, delivered to every village in Pune district.
+            Quality public healthcare, delivered to every rural and underserved community.
           </h2>
           <p className="mt-4 max-w-md text-white/80">
             Secure, role-based access for patients, ASHA workers, medical officers, hospital administrators and
@@ -77,7 +77,7 @@ export default function LoginPage() {
           </div>
         </div>
         <p className="text-xs text-white/60">
-          Government of Maharashtra · Public Health Department · Smart India Hackathon 2026
+          Government of Maharashtra · Public Health Department
         </p>
       </div>
 

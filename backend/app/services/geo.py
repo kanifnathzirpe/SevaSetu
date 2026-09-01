@@ -1,6 +1,6 @@
 from math import asin, cos, radians, sin, sqrt
 
-PUNE_CENTER = (18.5204, 73.8567)
+LOCATION_CENTER = (18.5204, 73.8567)
 
 
 def haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:

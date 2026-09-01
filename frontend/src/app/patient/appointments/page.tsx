@@ -256,7 +256,7 @@ export default function PatientAppointmentsPage() {
     <>
       <PageHeader
         title="Appointments"
-        description="Consultations booked across Pune district government facilities"
+        description="Consultations booked across government facilities"
         actions={<BookingDialog />}
       />
 

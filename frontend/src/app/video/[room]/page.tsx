@@ -39,6 +39,8 @@ export default function VideoRoomPage() {
   const videoRef = React.useRef<HTMLVideoElement>(null);
   const streamRef = React.useRef<MediaStream | null>(null);
   const [joined, setJoined] = React.useState(false);
+  const [cameraLoading, setCameraLoading] = React.useState(false);
+  const [videoReady, setVideoReady] = React.useState(false);
   const [micOn, setMicOn] = React.useState(true);
   const [camOn, setCamOn] = React.useState(true);
   const [elapsed, setElapsed] = React.useState(0);
@@ -78,16 +80,132 @@ export default function VideoRoomPage() {
   React.useEffect(() => stopMedia, [stopMedia]);
 
   async function handleJoin() {
+    setCameraLoading(true);
+    setVideoReady(false);
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      console.log("Requesting camera access...");
+      
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          width: { ideal: 1280 },
+          height: { ideal: 720 },
+          facingMode: "user",
+        },
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true,
+        },
+      });
+      
+      console.log("Camera stream obtained:", stream);
       streamRef.current = stream;
-      if (videoRef.current) videoRef.current.srcObject = stream;
-    } catch {
-      toast.warning("Camera or microphone unavailable — joining in audio-only mode");
+      
+      // Ensure camera tracks are enabled
+      stream.getVideoTracks().forEach((track) => {
+        console.log("Video track:", track.label, "enabled:", track.enabled);
+        track.enabled = true;
+      });
+      
+      // First, join the consultation and set joined state
+      // This will render the video element
+      await join.mutateAsync().catch(() => undefined);
+      setJoined(true);
+      
+      // NOW that the video element is in the DOM, set up the stream
+      // Use a small delay to ensure the element is ready
+      setTimeout(() => {
+        const video = videoRef.current;
+        if (!video) {
+          console.error("Video element still not found!");
+          toast.error("Video element not found");
+          stream.getTracks().forEach(track => track.stop());
+          return;
+        }
+        
+        console.log("Video element found, setting stream...");
+        video.srcObject = stream;
+        video.muted = true;
+        
+        const onLoadedMetadata = () => {
+          console.log("Video metadata loaded, playing...");
+          video.play()
+            .then(() => {
+              console.log("Video playing successfully");
+              setVideoReady(true);
+              setCamOn(true);
+              toast.success("Camera enabled and playing");
+            })
+            .catch((error) => {
+              console.error("Video play error:", error);
+              toast.error("Failed to play video: " + error.message);
+            });
+        };
+        
+        video.onerror = (error) => {
+          console.error("Video element error:", error);
+        };
+        
+        if (video.readyState >= 1) {
+          console.log("Metadata already loaded");
+          onLoadedMetadata();
+        } else {
+          console.log("Waiting for metadata...");
+          video.addEventListener('loadedmetadata', onLoadedMetadata, { once: true });
+        }
+      }, 100);
+      
+      console.log("Camera setup initiated");
+      setCamOn(true);
+      toast.success("Joining consultation...");
+      
+    } catch (error: unknown) {
+      const errMsg = error instanceof Error ? error.message : "Unknown error";
+      console.error("Camera error details:", errMsg, error);
+      
+      if (errMsg.includes("Permission denied") || errMsg.includes("NotAllowedError")) {
+        toast.error("Camera permission denied. Please allow camera access in browser settings.");
+      } else if (errMsg.includes("NotFoundError")) {
+        toast.error("No camera device found on this computer.");
+      } else if (errMsg.includes("NotReadableError")) {
+        toast.error("Camera is already in use by another application.");
+      } else if (errMsg.includes("OverconstrainedError")) {
+        toast.error("Your camera doesn't support the requested resolution. Trying without constraints...");
+        // Retry without constraints
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+          streamRef.current = stream;
+          
+          await join.mutateAsync().catch(() => undefined);
+          setJoined(true);
+          
+          setTimeout(() => {
+            const video = videoRef.current;
+            if (video) {
+              video.srcObject = stream;
+              video.muted = true;
+              video.play()
+                .then(() => {
+                  setVideoReady(true);
+                  setCamOn(true);
+                  toast.success("Camera enabled");
+                })
+                .catch((error) => {
+                  toast.error("Camera stream error: " + error.message);
+                });
+            }
+          }, 100);
+        } catch (retryError) {
+          toast.error("Failed to access camera: " + (retryError instanceof Error ? retryError.message : "Unknown error"));
+        }
+      } else {
+        toast.error("Camera error: " + errMsg);
+      }
+      setCameraLoading(false);
+      return;
     }
-    await join.mutateAsync().catch(() => undefined);
-    setJoined(true);
-    toast.success("You have joined the consultation");
+    
+    setCameraLoading(false);
   }
 
   function toggleMic() {
@@ -125,35 +243,43 @@ export default function VideoRoomPage() {
       </header>
 
       <div className="grid flex-1 gap-4 p-4 lg:grid-cols-[1fr_320px]">
-        <div className="relative flex min-h-[420px] items-center justify-center overflow-hidden rounded-3xl bg-black/50">
+        <div className="relative flex min-h-[420px] items-center justify-center overflow-hidden rounded-3xl bg-black">
           {joined ? (
             <>
-              <div className="flex h-full w-full flex-col items-center justify-center gap-4">
-                <span className="flex h-28 w-28 items-center justify-center rounded-full bg-white/10 text-4xl font-bold">
-                  {initials(otherParty)}
-                </span>
-                <div className="text-center">
-                  <p className="text-xl font-semibold">{otherParty}</p>
-                  <p className="text-sm text-white/60">
-                    {session?.status === "active" ? "Connected · peer stream negotiating over WebRTC" : "Waiting for the other participant…"}
-                  </p>
-                </div>
-              </div>
               <video
                 ref={videoRef}
-                autoPlay
-                playsInline
-                muted
-                className={cn(
-                  "absolute bottom-4 right-4 h-36 w-52 rounded-2xl border border-white/20 object-cover",
-                  !camOn && "hidden"
-                )}
+                autoPlay={true}
+                playsInline={true}
+                muted={true}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  display: camOn && videoReady ? "block" : "none",
+                  backgroundColor: "#000",
+                }}
               />
               {!camOn ? (
-                <div className="absolute bottom-4 right-4 flex h-36 w-52 items-center justify-center rounded-2xl border border-white/20 bg-black/70 text-sm text-white/60">
-                  Camera off
+                <div className="flex h-full w-full items-center justify-center bg-black/70">
+                  <div className="flex flex-col items-center gap-4">
+                    <VideoOff className="h-12 w-12 text-white/60" />
+                    <p className="text-white/60">Camera off</p>
+                  </div>
+                </div>
+              ) : !videoReady ? (
+                <div className="flex h-full w-full items-center justify-center bg-black/70">
+                  <div className="flex flex-col items-center gap-4">
+                    <div className="h-12 w-12 animate-spin rounded-full border-4 border-white/20 border-t-white" />
+                    <p className="text-white/60">Initializing camera...</p>
+                  </div>
                 </div>
               ) : null}
+              <div className="absolute bottom-4 left-4 rounded-2xl border border-white/20 bg-black/70 px-4 py-3">
+                <p className="text-sm font-semibold">{otherParty}</p>
+                <p className="text-xs text-white/60">
+                  {session?.status === "active" ? "Connected" : "Waiting…"}
+                </p>
+              </div>
             </>
           ) : (
             <div className="max-w-md p-8 text-center">
@@ -162,9 +288,14 @@ export default function VideoRoomPage() {
                 You are about to join a consultation with {otherParty}. Please find a quiet, well-lit place and keep
                 your health card handy.
               </p>
-              <Button size="lg" className="mt-6" loading={join.isPending} onClick={handleJoin}>
-                <VideoIcon className="h-4 w-4" /> Join consultation
+              <Button size="lg" className="mt-6" loading={cameraLoading} onClick={handleJoin} disabled={cameraLoading}>
+                <VideoIcon className="h-4 w-4" /> {cameraLoading ? "Enabling camera..." : "Join consultation"}
               </Button>
+              {cameraLoading && (
+                <p className="mt-3 text-xs text-white/60">
+                  Please allow camera access when prompted by your browser...
+                </p>
+              )}
               <p className="mt-3 text-xs text-white/50">
                 By joining you consent to a teleconsultation as per Telemedicine Practice Guidelines 2020.
               </p>

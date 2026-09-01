@@ -85,7 +85,7 @@ class Hospital(Base, TimestampMixin):
     facility_type: Mapped[FacilityType] = mapped_column(enum_col(FacilityType), index=True)
     address: Mapped[str] = mapped_column(String(300))
     locality: Mapped[str] = mapped_column(String(120), index=True)
-    district: Mapped[str] = mapped_column(String(120), default="Pune")
+    district: Mapped[str] = mapped_column(String(120), default="District")
     state: Mapped[str] = mapped_column(String(120), default="Maharashtra")
     pincode: Mapped[str] = mapped_column(String(10))
     latitude: Mapped[float] = mapped_column(Float)
@@ -359,7 +359,7 @@ class Child(Base, TimestampMixin):
     current_weight_kg: Mapped[float] = mapped_column(Float, default=8.0)
     height_cm: Mapped[float] = mapped_column(Float, default=70)
     nutrition_status: Mapped[str] = mapped_column(String(60), default="Normal")
-    locality: Mapped[str] = mapped_column(String(120), default="Pune City")
+    locality: Mapped[str] = mapped_column(String(120), default="City")
 
 
 class PregnancyRecord(Base, TimestampMixin):

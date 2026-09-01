@@ -14,8 +14,7 @@ from app.models import models  # noqa: F401  (ensures models are registered)
 app = FastAPI(
     title="SevaSetu AI",
     description=(
-        "Public healthcare delivery platform for rural and underserved areas of Pune district. "
-        "Built for Smart India Hackathon 2026."
+        "Public healthcare delivery platform for rural and underserved areas."
     ),
     version="1.0.0",
     docs_url="/docs",
@@ -54,7 +53,7 @@ def root() -> dict:
     return {
         "name": settings.PROJECT_NAME,
         "version": "1.0.0",
-        "district": "Pune, Maharashtra",
+        "district": "Government",
         "docs": "/docs",
         "api": settings.API_V1_PREFIX,
     }
