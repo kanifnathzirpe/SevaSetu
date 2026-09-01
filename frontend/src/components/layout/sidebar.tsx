@@ -63,7 +63,7 @@ export function Sidebar({ user, onNavigate }: { user: AuthUser; onNavigate?: () 
       </nav>
 
       <p className="px-2 text-[10px] leading-relaxed text-[var(--muted-foreground)]">
-        Government of Maharashtra · Public Health Department · Pune District
+        Government of Maharashtra · Public Health Department
       </p>
     </aside>
   );

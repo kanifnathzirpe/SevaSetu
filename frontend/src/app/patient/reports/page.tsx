@@ -43,7 +43,7 @@ export default function PatientReportsPage() {
     <>
       <PageHeader
         title="Lab & diagnostic reports"
-        description="All investigations conducted at government laboratories across Pune district"
+        description="All investigations conducted at government laboratories"
         actions={
           <Select value={type} onChange={(event) => setType(event.target.value)} className="w-48">
             <option value="">All report types</option>

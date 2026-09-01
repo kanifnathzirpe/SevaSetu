@@ -1,4 +1,4 @@
-"""Seed the SevaSetu AI database with realistic Pune district data.
+"""Seed the SevaSetu AI database with realistic data.
 
 Run with:  python -m app.db.seed        (drops and recreates all tables)
 """
@@ -163,7 +163,7 @@ def seed_blood_banks(db: Session, hospitals: list[Hospital]) -> None:
     db.add(
         BloodBank(
             name="Janakalyan Blood Bank, Erandwane",
-            locality="Pune City",
+            locality="City Center",
             phone="020-25457777",
             latitude=18.5089,
             longitude=73.8322,
@@ -340,10 +340,10 @@ def seed_patients(db: Session, ashas: list[AshaWorker]) -> list[Patient]:
 
 def seed_staff_users(db: Session, hospitals: list[Hospital]) -> dict[str, User]:
     admin = make_user(
-        db, "Dr. Rajendra Kulkarni", "admin@sevasetu.gov.in", UserRole.HOSPITAL_ADMIN, "Pune City"
+        db, "Dr. Rajendra Kulkarni", "admin@sevasetu.gov.in", UserRole.HOSPITAL_ADMIN, "City Center"
     )
     dho = make_user(
-        db, "Dr. Sheetal Deshmukh", "dho@sevasetu.gov.in", UserRole.DHO, "Pune City"
+        db, "Dr. Sheetal Deshmukh", "dho@sevasetu.gov.in", UserRole.DHO, "City Center"
     )
     emergency = make_user(
         db, "Ramesh Gaikwad (108 Control Room)", "emergency@sevasetu.gov.in", UserRole.EMERGENCY, "Shivajinagar"
@@ -943,7 +943,7 @@ def seed_demo_accounts(
         )
     )
 
-    doctor_user = make_user(db, "Anjali Deshpande", "doctor@sevasetu.gov.in", UserRole.DOCTOR, "Pune City")
+    doctor_user = make_user(db, "Anjali Deshpande", "doctor@sevasetu.gov.in", UserRole.DOCTOR, "City Center")
     db.flush()
     demo_doctor = Doctor(
         user_id=doctor_user.id,

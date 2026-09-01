@@ -1,8 +1,8 @@
 # SevaSetu AI
 
-**Accessibility and Quality of Public Healthcare Services in Rural and Underserved Areas — Smart India Hackathon 2026 MVP.**
+**Accessibility and Quality of Public Healthcare Services in Rural and Underserved Areas**
 
-SevaSetu AI is a government-grade digital public health platform for **Pune district, Maharashtra**. It connects patients, ASHA workers, doctors, hospital administrators, the District Health Officer and the 108 emergency control room on a single stack, with AI-assisted triage, geospatial disease surveillance, teleconsultation and last-mile field workflows.
+SevaSetu AI is a government-grade digital public health platform for rural and underserved areas. It connects patients, ASHA workers, doctors, hospital administrators, the District Health Officer and the 108 emergency control room on a single stack, with AI-assisted triage, geospatial disease surveillance, teleconsultation and last-mile field workflows.
 
 ---
 
@@ -46,7 +46,7 @@ cd backend
 cp .env.example .env
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-python -m app.db.seed        # creates tables and loads realistic Pune data
+python -m app.db.seed        # creates tables and loads realistic data
 uvicorn app.main:app --reload
 ```
 
@@ -90,7 +90,7 @@ Password for every account: `Seva@1234`
 
 ## Seed data
 
-`python -m app.db.seed` recreates the schema and loads a connected district dataset: 15 government facilities (district hospitals, sub-district hospitals, urban health centres, PHCs, sub-centres), 40 doctors, 25 ASHA workers, 100 patients across Pune localities (Shivajinagar, Hinjewadi, Baner, Wakad, Pimpri, Chinchwad, Hadapsar, Katraj, Warje, Kondhwa, Bhosari, Aundh, Yerwada, Chakan, Saswad, Mulshi and nearby villages), 20 ambulances, households, field visits, appointments, prescriptions, lab reports, medicine inventory with batch expiry, immunisation schedules, pregnancy records, disease surveillance cases, chats and notifications.
+`python -m app.db.seed` recreates the schema and loads a connected dataset: 15 government facilities (district hospitals, sub-district hospitals, urban health centres, PHCs, sub-centres), 40 doctors, 25 ASHA workers, 100 patients across localities, 20 ambulances, households, field visits, appointments, prescriptions, lab reports, medicine inventory with batch expiry, immunisation schedules, pregnancy records, disease surveillance cases, chats and notifications.
 
 ---
 
@@ -125,7 +125,7 @@ backend/
     api/v1/routers/   # auth, patient, asha, doctor, admin, appointments, hospitals,
                       # reports, chat, symptoms, emergency, video, notifications
     core/             # settings, JWT + bcrypt security
-    db/               # session, Pune reference data, seeder
+    db/               # session, reference data, seeder
     models/           # SQLAlchemy models + enums
     schemas/          # Pydantic schemas
     services/         # AI + geospatial helpers

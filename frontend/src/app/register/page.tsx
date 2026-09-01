@@ -18,7 +18,7 @@ import { ROLE_HOME, useAuth } from "@/lib/auth";
 
 const LOCALITIES = [
   "Shivajinagar", "Hinjewadi", "Baner", "Wakad", "Pimpri", "Chinchwad", "Hadapsar", "Katraj",
-  "Warje", "Kondhwa", "Sinhagad Road", "Bhosari", "Aundh", "Yerwada", "Pune City", "Wagholi",
+  "Warje", "Kondhwa", "Sinhagad Road", "Bhosari", "Aundh", "Yerwada", "City Center", "Wagholi",
   "Chakan", "Mulshi", "Saswad", "Khed Shivapur",
 ];
 

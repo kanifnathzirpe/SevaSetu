@@ -176,7 +176,7 @@ def outbreak_prediction(db: Session = Depends(get_db), _: User = Depends(get_cur
         bucket = min(3, (date.today() - reported_on).days // 7)
         series = weekly.setdefault(disease, [0, 0, 0, 0])
         series[3 - bucket] += int(cases)
-    return outbreak_forecast(weekly, "Pune District")
+    return outbreak_forecast(weekly, "District")
 
 
 @ai_router.get("/risk-prediction")

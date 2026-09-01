@@ -135,7 +135,7 @@ def download_report(
     except json.JSONDecodeError:
         results = {}
     lines = [
-        "SEVASETU AI — GOVERNMENT OF MAHARASHTRA (PUNE DISTRICT)",
+        "SEVASETU AI — GOVERNMENT OF MAHARASHTRA",
         "=" * 62,
         f"Report        : {report.title}",
         f"Type          : {report.report_type.value}",

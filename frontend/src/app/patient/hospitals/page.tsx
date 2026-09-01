@@ -91,7 +91,7 @@ export default function NearbyHospitalsPage() {
             lat: patient.latitude,
             lng: patient.longitude,
             title: "Your location",
-            subtitle: `${patient.locality}, Pune`,
+            subtitle: `${patient.locality}`,
             kind: "patient" as const,
           },
         ]

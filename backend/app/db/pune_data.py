@@ -1,4 +1,4 @@
-"""Realistic reference data for Pune district used by the seeder."""
+"""Realistic reference data used by the seeder."""
 
 LOCALITIES: list[dict] = [
     {"name": "Shivajinagar", "lat": 18.5308, "lng": 73.8478, "pincode": "411005"},
@@ -15,7 +15,7 @@ LOCALITIES: list[dict] = [
     {"name": "Bhosari", "lat": 18.6298, "lng": 73.8467, "pincode": "411039"},
     {"name": "Aundh", "lat": 18.5590, "lng": 73.8077, "pincode": "411007"},
     {"name": "Yerwada", "lat": 18.5510, "lng": 73.8830, "pincode": "411006"},
-    {"name": "Pune City", "lat": 18.5204, "lng": 73.8567, "pincode": "411001"},
+    {"name": "City Center", "lat": 18.5204, "lng": 73.8567, "pincode": "411001"},
     {"name": "Khed Shivapur", "lat": 18.3555, "lng": 73.8300, "pincode": "412205"},
     {"name": "Wagholi", "lat": 18.5793, "lng": 73.9800, "pincode": "412207"},
     {"name": "Chakan", "lat": 18.7606, "lng": 73.8636, "pincode": "410501"},
@@ -27,8 +27,8 @@ HOSPITALS: list[dict] = [
     {
         "name": "Sassoon General Hospital",
         "facility_type": "district_hospital",
-        "locality": "Pune City",
-        "address": "Jai Prakash Narayan Road, Near Pune Railway Station",
+        "locality": "City Center",
+        "address": "Jai Prakash Narayan Road, Near Railway Station",
         "phone": "020-26128000",
         "total_beds": 1296,
         "icu_beds": 120,
@@ -102,7 +102,7 @@ HOSPITALS: list[dict] = [
         "name": "Katraj Urban Health Centre",
         "facility_type": "urban_health_center",
         "locality": "Katraj",
-        "address": "Katraj Chowk, Pune-Satara Road",
+        "address": "Katraj Chowk, Satara Road",
         "phone": "020-24367788",
         "total_beds": 30,
         "icu_beds": 2,
@@ -181,7 +181,7 @@ HOSPITALS: list[dict] = [
         "name": "Chakan Rural Hospital",
         "facility_type": "community_health_center",
         "locality": "Chakan",
-        "address": "Pune-Nashik Highway, Chakan",
+        "address": "Nashik Highway, Chakan",
         "phone": "02135-249900",
         "total_beds": 100,
         "icu_beds": 10,

@@ -15,7 +15,7 @@ CONDITION_RULES: list[dict] = [
         "condition": "Malaria",
         "department": "General Medicine",
         "weight": {"fever": 3, "chills": 3, "headache": 2, "sweating": 2, "body ache": 2, "vomiting": 1},
-        "description": "Mosquito-borne infection common in monsoon months across Pune district.",
+        "description": "Mosquito-borne infection common in monsoon months.",
         "base_triage": "moderate",
     },
     {

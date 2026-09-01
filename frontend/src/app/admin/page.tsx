@@ -29,7 +29,7 @@ export default function AdminDashboardPage() {
     <>
       <PageHeader
         title="District health analytics"
-        description="Live operational picture of public healthcare delivery across Pune district"
+        description="Live operational picture of rural healthcare delivery"
         actions={
           <Button asChild>
             <Link href="/admin/reports">Generate district report</Link>

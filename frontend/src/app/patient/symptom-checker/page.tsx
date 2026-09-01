@@ -96,7 +96,7 @@ export default function SymptomCheckerPage() {
     <>
       <PageHeader
         title="AI symptom checker"
-        description="Rule-based clinical triage tuned to Pune district disease patterns. Not a substitute for a doctor."
+        description="Rule-based clinical triage for your area. Not a substitute for a doctor."
       />
 
       <div className="grid gap-4 lg:grid-cols-3">

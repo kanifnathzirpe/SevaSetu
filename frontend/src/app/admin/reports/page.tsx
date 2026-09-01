@@ -36,7 +36,7 @@ export default function DistrictReportsPage() {
         ...section.metrics.map((metric) => `  ${metric.label}: ${metric.value}`),
         "",
       ]),
-      "Issued by the District Health Office, Pune — Government of Maharashtra",
+      "Issued by the District Health Office",
     ];
     downloadTextFile(`sevasetu-district-report-${data.generated_on}.txt`, lines.join("\n"));
   }
@@ -65,7 +65,7 @@ export default function DistrictReportsPage() {
               <CardTitle className="flex items-center gap-2 text-base">
                 <FileBarChart className="h-4 w-4 text-[var(--primary)]" /> {section.title}
               </CardTitle>
-              <CardDescription>Pune district · {data.district} health administration</CardDescription>
+              <CardDescription>{data.district} health administration</CardDescription>
             </CardHeader>
             <CardContent className="space-y-2">
               {section.metrics.map((metric) => (

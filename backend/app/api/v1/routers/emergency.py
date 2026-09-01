@@ -90,7 +90,7 @@ def raise_sos(
             Notification(
                 user_id=officer.id,
                 title=f"New SOS — {payload.emergency_type}",
-                body=f"{user.full_name} raised an SOS near {payload.address or 'Pune district'}.",
+                body=f"{user.full_name} raised an SOS near {payload.address or 'the area'}.",
                 category="emergency",
                 severity="critical",
                 action_url="/emergency/console",
@@ -216,7 +216,7 @@ def emergency_contacts() -> list[dict]:
     return [
         {"name": "Ambulance (108)", "number": "108", "category": "Ambulance"},
         {"name": "National Emergency", "number": "112", "category": "Emergency"},
-        {"name": "Pune Municipal Corporation Health", "number": "020-25501000", "category": "Municipal"},
+        {"name": "Municipal Corporation Health", "number": "020-25501000", "category": "Municipal"},
         {"name": "PCMC Health Department", "number": "020-67331111", "category": "Municipal"},
         {"name": "Sassoon General Hospital", "number": "020-26128000", "category": "Hospital"},
         {"name": "Women Helpline", "number": "181", "category": "Helpline"},

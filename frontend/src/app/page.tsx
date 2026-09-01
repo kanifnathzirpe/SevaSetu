@@ -117,15 +117,15 @@ export default function LandingPage() {
         <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-2">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
             <span className="inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-[color-mix(in_srgb,var(--primary)_10%,transparent)] px-3 py-1 text-xs font-semibold text-[var(--primary)]">
-              <ShieldCheck className="h-3.5 w-3.5" /> Smart India Hackathon 2026 · Public Health
+              <ShieldCheck className="h-3.5 w-3.5" /> Public Health
             </span>
             <h1 className="mt-5 text-4xl font-bold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
-              Bridging <span className="text-gradient">rural Pune</span> to quality public healthcare.
+              Delivering <span className="text-gradient">quality healthcare to every village</span> in rural and underserved areas.
             </h1>
             <p className="mt-5 max-w-xl text-base leading-relaxed text-[var(--muted-foreground)] sm:text-lg">
               SevaSetu AI unifies patients, ASHA workers, medical officers, hospitals and the district
               administration on one platform — with AI triage, teleconsultation, emergency dispatch and
-              real-time disease surveillance across every taluka of Pune district.
+              real-time disease surveillance across every area.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Button asChild size="lg">
@@ -233,7 +233,7 @@ export default function LandingPage() {
         <div className="mx-auto max-w-7xl rounded-3xl border border-[var(--border)] bg-[color-mix(in_srgb,var(--card)_70%,transparent)] p-8 backdrop-blur-xl">
           <div className="flex flex-wrap items-center gap-3">
             <Globe2 className="h-6 w-6 text-[var(--primary)]" />
-            <h2 className="text-2xl font-bold tracking-tight">Coverage across Pune district</h2>
+            <h2 className="text-2xl font-bold tracking-tight">Coverage</h2>
           </div>
           <p className="mt-2 max-w-3xl text-sm text-[var(--muted-foreground)]">
             Urban health centres, primary health centres, sub-centres, rural hospitals and district hospitals —
@@ -284,7 +284,7 @@ export default function LandingPage() {
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4">
           <Logo />
           <p className="text-xs text-[var(--muted-foreground)]">
-            SevaSetu AI · Public Health Department, Pune District · Built for Smart India Hackathon 2026
+            SevaSetu AI · Public Health Department
           </p>
         </div>
       </footer>
