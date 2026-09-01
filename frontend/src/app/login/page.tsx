@@ -81,20 +81,20 @@ export default function LoginPage() {
         </p>
       </div>
 
-      <div className="flex flex-col px-4 py-8 sm:px-8">
+      <div className="flex flex-col px-3 py-6 sm:px-8">
         <div className="flex items-center justify-between lg:hidden">
           <Logo />
           <ThemeToggle />
         </div>
 
-        <div className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center py-8">
+        <div className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center py-6 sm:py-8">
           <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}>
-            <h1 className="text-3xl font-bold tracking-tight">Sign in</h1>
-            <p className="mt-1 text-sm text-[var(--muted-foreground)]">
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Sign in</h1>
+            <p className="mt-1 text-xs sm:text-sm text-[var(--muted-foreground)]">
               Use your SevaSetu credentials or pick a demo account below.
             </p>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-4">
+            <form onSubmit={handleSubmit(onSubmit)} className="mt-6 sm:mt-8 space-y-4">
               <div className="space-y-1.5">
                 <Label htmlFor="email">Email address</Label>
                 <div className="relative">
@@ -117,24 +117,24 @@ export default function LoginPage() {
                   <p className="text-xs text-[var(--danger)]">Password must be at least 6 characters.</p>
                 ) : null}
               </div>
-              <Button type="submit" size="lg" className="w-full" loading={submitting}>
+              <Button type="submit" size="lg" className="w-full min-h-[48px]" loading={submitting}>
                 Sign in <ArrowRight className="h-4 w-4" />
               </Button>
             </form>
 
-            <p className="mt-4 text-sm text-[var(--muted-foreground)]">
+            <p className="mt-4 text-xs sm:text-sm text-[var(--muted-foreground)]">
               New to SevaSetu?{" "}
               <Link href="/register" className="font-semibold text-[var(--primary)] hover:underline">
                 Create an account
               </Link>
             </p>
 
-            <Card className="mt-8">
-              <CardContent className="p-4">
-                <p className="text-xs font-semibold uppercase tracking-wide text-[var(--muted-foreground)]">
+            <Card className="mt-6 sm:mt-8">
+              <CardContent className="p-3 sm:p-4">
+                <p className="text-[11px] sm:text-xs font-semibold uppercase tracking-wide text-[var(--muted-foreground)]">
                   Demo accounts · password Seva@1234
                 </p>
-                <div className="mt-3 grid gap-1.5">
+                <div className="mt-3 grid gap-2">
                   {DEMO_ACCOUNTS.map((account) => (
                     <button
                       key={account.email}
@@ -144,13 +144,13 @@ export default function LoginPage() {
                         setValue("password", "Seva@1234");
                         toast.info(`${account.role} credentials filled`);
                       }}
-                      className="flex items-center justify-between gap-3 rounded-xl border border-[var(--border)] px-3 py-2 text-left transition-colors hover:border-[var(--primary)] hover:bg-[color-mix(in_srgb,var(--primary)_8%,transparent)]"
+                      className="flex items-center justify-between gap-2.5 rounded-xl border border-[var(--border)] px-3 py-2.5 text-left transition-colors hover:border-[var(--primary)] hover:bg-[color-mix(in_srgb,var(--primary)_8%,transparent)] min-h-[44px] touch-target cursor-pointer"
                     >
-                      <span>
-                        <span className="block text-sm font-medium">{account.role}</span>
-                        <span className="block text-xs text-[var(--muted-foreground)]">{account.detail}</span>
+                      <span className="min-w-0 flex-1">
+                        <span className="block text-xs sm:text-sm font-medium truncate">{account.role}</span>
+                        <span className="block text-[11px] sm:text-xs text-[var(--muted-foreground)] truncate">{account.detail}</span>
                       </span>
-                      <span className="text-xs text-[var(--primary)]">Use</span>
+                      <span className="shrink-0 text-xs font-semibold text-[var(--primary)]">Use</span>
                     </button>
                   ))}
                 </div>

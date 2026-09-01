@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { MessageSquare, Paperclip, Plus, Search, Send } from "lucide-react";
+import { ArrowLeft, MessageSquare, Paperclip, Plus, Search, Send } from "lucide-react";
 import * as React from "react";
 import { toast } from "sonner";
 
@@ -90,6 +90,7 @@ export default function ChatPage() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [activeId, setActiveId] = React.useState<number | null>(null);
+  const [mobileView, setMobileView] = React.useState<"list" | "chat">("list");
   const [draft, setDraft] = React.useState("");
   const [typing, setTyping] = React.useState(false);
   const bottomRef = React.useRef<HTMLDivElement>(null);
@@ -101,7 +102,9 @@ export default function ChatPage() {
   });
 
   React.useEffect(() => {
-    if (activeId === null && threads.length > 0) setActiveId(threads[0].id);
+    if (activeId === null && threads.length > 0 && typeof window !== "undefined" && window.innerWidth >= 1024) {
+      setActiveId(threads[0].id);
+    }
   }, [threads, activeId]);
 
   const { data: messages = [] } = useQuery({
@@ -126,16 +129,31 @@ export default function ChatPage() {
 
   const active = threads.find((thread) => thread.id === activeId);
 
+  const handleSelectThread = (threadId: number) => {
+    setActiveId(threadId);
+    setMobileView("chat");
+  };
+
   return (
     <>
-      <PageHeader
-        title="Messages"
-        description="Secure conversations between patients, ASHA workers and medical officers"
-        actions={<NewConversationDialog onCreated={setActiveId} />}
-      />
+      <div className={cn(mobileView === "chat" ? "hidden lg:block" : "block")}>
+        <PageHeader
+          title="Messages"
+          description="Secure conversations between patients, ASHA workers and medical officers"
+          actions={
+            <NewConversationDialog
+              onCreated={(id) => {
+                setActiveId(id);
+                setMobileView("chat");
+              }}
+            />
+          }
+        />
+      </div>
 
       <div className="grid gap-4 lg:grid-cols-[320px_1fr]">
-        <Card className="h-[70vh] overflow-hidden">
+        {/* Thread list (hidden on mobile when viewing a chat) */}
+        <Card className={cn("h-[calc(100vh-14rem)] lg:h-[72vh] overflow-hidden", mobileView === "chat" ? "hidden lg:block" : "block")}>
           <CardContent className="h-full overflow-y-auto p-2">
             {threads.length === 0 ? (
               <EmptyState icon={MessageSquare} title="No conversations" description="Start a new chat to begin." />
@@ -143,9 +161,9 @@ export default function ChatPage() {
               threads.map((thread) => (
                 <button
                   key={thread.id}
-                  onClick={() => setActiveId(thread.id)}
+                  onClick={() => handleSelectThread(thread.id)}
                   className={cn(
-                    "flex w-full items-start gap-3 rounded-xl p-3 text-left transition-colors",
+                    "flex w-full items-start gap-3 rounded-xl p-3 text-left transition-colors min-h-[54px] touch-target cursor-pointer",
                     thread.id === activeId ? "bg-[color-mix(in_srgb,var(--primary)_12%,transparent)]" : "hover:bg-[var(--muted)]"
                   )}
                 >
@@ -168,20 +186,30 @@ export default function ChatPage() {
           </CardContent>
         </Card>
 
-        <Card className="flex h-[70vh] flex-col">
+        {/* Active conversation panel (hidden on mobile when viewing thread list) */}
+        <Card className={cn("h-[calc(100vh-14rem)] lg:h-[72vh] flex flex-col", mobileView === "list" ? "hidden lg:flex" : "flex")}>
           {active ? (
             <>
-              <div className="flex items-center gap-3 border-b border-[var(--border)] p-4">
+              <div className="flex items-center gap-3 border-b border-[var(--border)] p-3 sm:p-4">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="lg:hidden touch-target -ml-1 mr-1 shrink-0"
+                  onClick={() => setMobileView("list")}
+                  aria-label="Back to conversations"
+                >
+                  <ArrowLeft className="h-5 w-5" />
+                </Button>
                 <Avatar name={active.other_party_name} size="sm" />
-                <div>
-                  <p className="text-sm font-semibold">{active.other_party_name}</p>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-semibold">{active.other_party_name}</p>
                   <p className="text-xs text-[var(--muted-foreground)]">
                     {titleCase(active.other_party_role)} · {typing ? "typing…" : "online"}
                   </p>
                 </div>
               </div>
 
-              <div className="flex-1 space-y-3 overflow-y-auto p-4">
+              <div className="flex-1 space-y-3 overflow-y-auto p-3 sm:p-4">
                 {messages.map((message) => {
                   const mine = message.sender_id === user?.id;
                   return (
@@ -193,11 +221,11 @@ export default function ChatPage() {
                       ) : null}
                       <div
                         className={cn(
-                          "max-w-[75%] rounded-2xl px-3.5 py-2 text-sm",
+                          "max-w-[85%] sm:max-w-[75%] rounded-2xl px-3.5 py-2 text-sm",
                           mine ? "bg-[var(--primary)] text-white" : "border border-[var(--border)] bg-[var(--muted)]"
                         )}
                       >
-                        <p className="whitespace-pre-line">{message.body}</p>
+                        <p className="whitespace-pre-line break-words">{message.body}</p>
                         <p className={cn("mt-1 text-[10px]", mine ? "text-white/70" : "text-[var(--muted-foreground)]")}>
                           {relativeTime(message.created_at)}
                         </p>
@@ -209,7 +237,7 @@ export default function ChatPage() {
               </div>
 
               <form
-                className="flex items-center gap-2 border-t border-[var(--border)] p-3"
+                className="flex items-center gap-2 border-t border-[var(--border)] p-2.5 sm:p-3"
                 onSubmit={(event) => {
                   event.preventDefault();
                   if (!draft.trim()) return;
@@ -223,6 +251,7 @@ export default function ChatPage() {
                   size="icon"
                   variant="ghost"
                   aria-label="Attach file"
+                  className="shrink-0 touch-target"
                   onClick={() => toast.info("Attachments are enabled for verified facilities only")}
                 >
                   <Paperclip className="h-4 w-4" />
@@ -234,14 +263,15 @@ export default function ChatPage() {
                     setTyping(event.target.value.length > 0);
                   }}
                   placeholder="Type a message…"
+                  className="flex-1"
                 />
-                <Button type="submit" size="icon" loading={send.isPending} aria-label="Send message">
+                <Button type="submit" size="icon" loading={send.isPending} aria-label="Send message" className="shrink-0 touch-target">
                   <Send className="h-4 w-4" />
                 </Button>
               </form>
             </>
           ) : (
-            <div className="flex h-full items-center justify-center">
+            <div className="flex h-full items-center justify-center p-4">
               <EmptyState icon={MessageSquare} title="Select a conversation" description="Choose a chat from the list to start messaging." />
             </div>
           )}

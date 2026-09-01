@@ -65,8 +65,8 @@ export function Topbar({ user, onMenu }: { user: AuthUser; onMenu: () => void })
   }, [langOpen]);
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-[var(--border)] bg-[color-mix(in_srgb,var(--card)_78%,transparent)] px-4 backdrop-blur-xl">
-      <Button variant="ghost" size="icon" className="lg:hidden" onClick={onMenu} aria-label="Open menu">
+    <header className="sticky top-0 z-30 flex h-16 items-center gap-2 sm:gap-3 border-b border-[var(--border)] bg-[color-mix(in_srgb,var(--card)_78%,transparent)] px-3 sm:px-4 backdrop-blur-xl">
+      <Button variant="ghost" size="icon" className="lg:hidden touch-target shrink-0" onClick={onMenu} aria-label="Open menu">
         <Menu className="h-5 w-5" />
       </Button>
 

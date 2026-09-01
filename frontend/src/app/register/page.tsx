@@ -58,7 +58,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen px-4 py-8 sm:px-6">
+    <div className="min-h-screen px-3 py-6 sm:px-6">
       <div className="mx-auto flex max-w-3xl items-center justify-between">
         <Logo />
         <ThemeToggle />
@@ -67,14 +67,14 @@ export default function RegisterPage() {
       <motion.div
         initial={{ opacity: 0, y: 14 }}
         animate={{ opacity: 1, y: 0 }}
-        className="card-surface mx-auto mt-8 max-w-3xl rounded-3xl p-6 sm:p-8"
+        className="card-surface mx-auto mt-6 sm:mt-8 max-w-3xl rounded-2xl sm:rounded-3xl p-4 sm:p-8"
       >
-        <h1 className="text-3xl font-bold tracking-tight">Create your SevaSetu account</h1>
-        <p className="mt-1 text-sm text-[var(--muted-foreground)]">
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Create your SevaSetu account</h1>
+        <p className="mt-1 text-xs sm:text-sm text-[var(--muted-foreground)]">
           Patients get a digital health ID instantly. Health workers are verified by the district office.
         </p>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="mt-8 grid gap-4 sm:grid-cols-2">
+        <form onSubmit={handleSubmit(onSubmit)} className="mt-6 sm:mt-8 grid gap-4 sm:grid-cols-2">
           <div className="space-y-1.5 sm:col-span-2">
             <Label htmlFor="full_name">Full name</Label>
             <Input id="full_name" placeholder="Sunita Jadhav" {...register("full_name", { required: true, minLength: 2 })} />
@@ -131,7 +131,7 @@ export default function RegisterPage() {
             </p>
           ) : null}
 
-          <Button type="submit" size="lg" className="sm:col-span-2" loading={submitting}>
+          <Button type="submit" size="lg" className="sm:col-span-2 min-h-[48px] w-full" loading={submitting}>
             Create account <ArrowRight className="h-4 w-4" />
           </Button>
         </form>

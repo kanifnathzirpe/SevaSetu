@@ -146,7 +146,7 @@ function BookingDialog() {
                   disabled={!item.available}
                   onClick={() => setSlot(item.time)}
                   className={cn(
-                    "rounded-lg border px-3 py-1.5 text-sm transition-colors",
+                    "flex min-h-[44px] min-w-[56px] items-center justify-center rounded-xl border px-3 py-2 text-xs sm:text-sm font-medium transition-colors touch-target",
                     slot === item.time
                       ? "border-[var(--primary)] bg-[var(--primary)] text-white"
                       : item.available
@@ -162,7 +162,7 @@ function BookingDialog() {
         </div>
 
         <Button
-          className="mt-6 w-full"
+          className="mt-6 w-full min-h-[48px]"
           disabled={!doctorId || !slot}
           loading={book.isPending}
           onClick={() => book.mutate()}
@@ -199,9 +199,9 @@ function AppointmentCard({ appointment }: { appointment: Appointment }) {
 
   return (
     <Card>
-      <CardContent className="flex flex-wrap items-center justify-between gap-4 p-5">
-        <div className="min-w-56">
-          <div className="flex items-center gap-2">
+      <CardContent className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5">
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-2">
             <p className="font-semibold">{appointment.doctor_name}</p>
             <Badge tone="primary">Token {appointment.token_number}</Badge>
           </div>
@@ -214,12 +214,12 @@ function AppointmentCard({ appointment }: { appointment: Appointment }) {
             <p className="mt-1 text-xs text-[var(--primary)]">Diagnosis: {appointment.diagnosis}</p>
           ) : null}
         </div>
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 pt-2 sm:pt-0">
           <span className={cn("rounded-full px-2.5 py-1 text-xs font-semibold capitalize", STATUS_STYLES[appointment.status])}>
             {appointment.status.replace("_", " ")}
           </span>
           {appointment.appointment_type === "video" && appointment.status !== "cancelled" ? (
-            <Button asChild size="sm" variant="secondary">
+            <Button asChild size="sm" variant="secondary" className="min-h-[40px] touch-target">
               <Link href={`/video/${appointment.video_room_id ?? `appt-${appointment.id}`}?appointment=${appointment.id}`}>
                 <Video className="h-3.5 w-3.5" /> Join call
               </Link>
@@ -227,10 +227,10 @@ function AppointmentCard({ appointment }: { appointment: Appointment }) {
           ) : null}
           {upcoming && appointment.status === "scheduled" ? (
             <>
-              <Button size="sm" variant="outline" loading={checkIn.isPending} onClick={() => checkIn.mutate()}>
+              <Button size="sm" variant="outline" loading={checkIn.isPending} onClick={() => checkIn.mutate()} className="min-h-[40px] touch-target">
                 Check in
               </Button>
-              <Button size="sm" variant="ghost" loading={cancel.isPending} onClick={() => cancel.mutate()}>
+              <Button size="sm" variant="ghost" loading={cancel.isPending} onClick={() => cancel.mutate()} className="min-h-[40px] touch-target">
                 <X className="h-3.5 w-3.5" /> Cancel
               </Button>
             </>

@@ -70,7 +70,7 @@ export function NotificationBell() {
             initial={{ opacity: 0, y: -6, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -6, scale: 0.98 }}
-            className="absolute right-0 z-50 mt-2 w-80 overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--card)] shadow-2xl"
+            className="absolute -right-12 sm:right-0 z-50 mt-2 w-[calc(100vw-2rem)] max-w-xs sm:w-80 overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--card)] shadow-2xl"
           >
             <div className="flex items-center justify-between border-b border-[var(--border)] px-4 py-3">
               <p className="text-sm font-semibold">Notifications</p>

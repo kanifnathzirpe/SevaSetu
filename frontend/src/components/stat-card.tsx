@@ -33,17 +33,17 @@ export function StatCard({
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.04, duration: 0.3 }}
-      className="card-surface relative overflow-hidden rounded-2xl p-5"
+      className="card-surface relative overflow-hidden rounded-2xl p-4 sm:p-5"
     >
       <div className={cn("absolute inset-x-0 top-0 h-24 bg-gradient-to-b opacity-70", TONES[tone] ?? TONES.primary)} />
       <div className="relative flex items-start justify-between gap-3">
-        <div>
-          <p className="text-xs font-medium uppercase tracking-wide text-[var(--muted-foreground)]">{label}</p>
-          <p className="mt-2 text-3xl font-bold tracking-tight">{value}</p>
-          {hint ? <p className="mt-1 text-xs text-[var(--muted-foreground)]">{hint}</p> : null}
+        <div className="min-w-0 flex-1">
+          <p className="text-[11px] sm:text-xs font-medium uppercase tracking-wide text-[var(--muted-foreground)] truncate">{label}</p>
+          <p className="mt-1.5 sm:mt-2 text-2xl sm:text-3xl font-bold tracking-tight">{value}</p>
+          {hint ? <p className="mt-1 text-xs text-[var(--muted-foreground)] line-clamp-2">{hint}</p> : null}
         </div>
-        <span className={cn("rounded-xl bg-[var(--card)] p-2.5 shadow-sm", TONES[tone] ?? TONES.primary)}>
-          <Icon className="h-5 w-5" />
+        <span className={cn("shrink-0 rounded-xl bg-[var(--card)] p-2 sm:p-2.5 shadow-sm", TONES[tone] ?? TONES.primary)}>
+          <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
         </span>
       </div>
     </motion.div>

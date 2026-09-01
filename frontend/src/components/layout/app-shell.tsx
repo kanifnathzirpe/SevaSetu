@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import * as React from "react";
 
+import { BottomNav } from "@/components/layout/bottom-nav";
 import { Sidebar } from "@/components/layout/sidebar";
 import { SymptomChatbot } from "@/components/layout/symptom-chatbot";
 import { Topbar } from "@/components/layout/topbar";
@@ -26,7 +27,7 @@ export function AppShell({ children, allow }: { children: React.ReactNode; allow
 
   if (loading || !user || !allow.includes(user.role)) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center p-4">
         <div className="flex flex-col items-center gap-3">
           <span className="h-10 w-10 animate-spin rounded-full border-2 border-[var(--primary)] border-t-transparent" />
           <p className="text-sm text-[var(--muted-foreground)]">Loading your workspace…</p>
@@ -36,7 +37,7 @@ export function AppShell({ children, allow }: { children: React.ReactNode; allow
   }
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen flex-col lg:flex-row">
       <div className="hidden lg:block">
         <div className="sticky top-0 h-screen">
           <Sidebar user={user} />
@@ -51,14 +52,14 @@ export function AppShell({ children, allow }: { children: React.ReactNode; allow
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setMobileOpen(false)}
-              className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+              className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs lg:hidden"
             />
             <motion.div
               initial={{ x: -300 }}
               animate={{ x: 0 }}
               exit={{ x: -300 }}
-              transition={{ type: "spring", stiffness: 320, damping: 32 }}
-              className="fixed inset-y-0 left-0 z-50 lg:hidden"
+              transition={{ type: "spring", stiffness: 340, damping: 32 }}
+              className="fixed inset-y-0 left-0 z-50 w-72 max-w-[85vw] lg:hidden shadow-2xl"
             >
               <Sidebar user={user} onNavigate={() => setMobileOpen(false)} />
             </motion.div>
@@ -68,17 +69,20 @@ export function AppShell({ children, allow }: { children: React.ReactNode; allow
 
       <div className="flex min-w-0 flex-1 flex-col">
         <Topbar user={user} onMenu={() => setMobileOpen(true)} />
-        <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8">
+        <main className="flex-1 px-3 py-4 sm:px-6 sm:py-6 lg:px-8 pb-24 lg:pb-8">
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.25 }}
-            className="mx-auto w-full max-w-7xl"
+            className="mx-auto w-full max-w-7xl overflow-hidden"
           >
             {children}
           </motion.div>
         </main>
       </div>
+
+      {/* Mobile bottom navigation bar */}
+      <BottomNav user={user} onOpenMenu={() => setMobileOpen(true)} />
 
       {/* Floating symptom-checker chatbot */}
       <SymptomChatbot />

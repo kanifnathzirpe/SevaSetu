@@ -55,12 +55,30 @@ function FitBounds({ markers }: { markers: MapMarker[] }) {
   return null;
 }
 
+function MapResizeHandler() {
+  const map = useMap();
+  React.useEffect(() => {
+    const handleResize = () => {
+      map.invalidateSize();
+    };
+    window.addEventListener("resize", handleResize);
+    window.addEventListener("orientationchange", handleResize);
+    const timer = setTimeout(handleResize, 250);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("orientationchange", handleResize);
+      clearTimeout(timer);
+    };
+  }, [map]);
+  return null;
+}
+
 export default function LeafletMap({
   markers,
   center = [18.5204, 73.8567],
   zoom = 11,
   heat = false,
-  className = "h-[420px] w-full",
+  className = "h-[320px] sm:h-[400px] md:h-[480px] w-full",
 }: {
   markers: MapMarker[];
   center?: [number, number];
@@ -75,6 +93,7 @@ export default function LeafletMap({
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
+        <MapResizeHandler />
         <FitBounds markers={markers} />
         {markers.map((marker) =>
           heat ? (
@@ -90,16 +109,16 @@ export default function LeafletMap({
               }}
             >
               <Tooltip>{marker.title}</Tooltip>
-              <Popup>
-                <p className="text-sm font-semibold">{marker.title}</p>
-                {marker.subtitle ? <p className="text-xs">{marker.subtitle}</p> : null}
+              <Popup maxWidth={260} className="max-w-[calc(100vw-48px)]">
+                <p className="text-sm font-semibold break-words">{marker.title}</p>
+                {marker.subtitle ? <p className="text-xs break-words">{marker.subtitle}</p> : null}
               </Popup>
             </CircleMarker>
           ) : (
             <Marker key={marker.id} position={[marker.lat, marker.lng]} icon={pinIcon(marker.kind ?? "hospital")}>
-              <Popup>
-                <p className="text-sm font-semibold">{marker.title}</p>
-                {marker.subtitle ? <p className="text-xs">{marker.subtitle}</p> : null}
+              <Popup maxWidth={260} className="max-w-[calc(100vw-48px)]">
+                <p className="text-sm font-semibold break-words">{marker.title}</p>
+                {marker.subtitle ? <p className="text-xs break-words">{marker.subtitle}</p> : null}
               </Popup>
             </Marker>
           )

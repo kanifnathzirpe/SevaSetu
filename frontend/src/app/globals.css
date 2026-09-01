@@ -126,8 +126,8 @@ body {
 }
 
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
@@ -135,8 +135,27 @@ body {
 ::-webkit-scrollbar-thumb {
   background: color-mix(in srgb, var(--muted-foreground) 35%, transparent);
   border-radius: 9999px;
-  border: 3px solid transparent;
+  border: 1px solid transparent;
   background-clip: content-box;
+}
+
+/* Safe area support for notched devices & iOS home indicator */
+.safe-bottom {
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 0.75rem);
+}
+.safe-top {
+  padding-top: calc(env(safe-area-inset-top, 0px) + 0.5rem);
+}
+
+/* Touch target guarantee utility */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Ensure images and media don't exceed container */
+img, video, canvas, svg {
+  max-width: 100%;
 }
 
 .leaflet-container {

@@ -122,7 +122,7 @@ export function SymptomChatbot() {
           setOpen(true);
           setMinimized(false);
         }}
-        className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[var(--primary)] to-teal-600 text-white shadow-lg shadow-teal-500/25 transition-shadow hover:shadow-xl hover:shadow-teal-500/30 cursor-pointer"
+        className="fixed bottom-20 lg:bottom-6 right-4 sm:right-6 z-40 flex h-13 w-13 sm:h-14 sm:w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[var(--primary)] to-teal-600 text-white shadow-lg shadow-teal-500/25 transition-shadow hover:shadow-xl hover:shadow-teal-500/30 cursor-pointer touch-target"
         aria-label={t("symptom.title")}
       >
         <Stethoscope className="h-6 w-6" />
@@ -144,8 +144,8 @@ export function SymptomChatbot() {
         }
         exit={{ opacity: 0, y: 40, scale: 0.92 }}
         transition={{ type: "spring", stiffness: 380, damping: 30 }}
-        className="fixed bottom-6 right-6 z-50 flex w-[390px] max-w-[calc(100vw-3rem)] flex-col overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--card)] shadow-2xl"
-        style={{ maxHeight: minimized ? 56 : "min(620px, calc(100vh - 6rem))" }}
+        className="fixed bottom-20 lg:bottom-6 right-3 sm:right-6 z-50 flex w-[calc(100vw-1.5rem)] sm:w-[390px] max-w-[calc(100vw-1.5rem)] sm:max-w-[400px] flex-col overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--card)] shadow-2xl"
+        style={{ maxHeight: minimized ? 56 : "min(580px, calc(100vh - 8rem))" }}
       >
         {/* ---- Header ---- */}
         <div className="flex items-center gap-2.5 border-b border-[var(--border)] bg-gradient-to-r from-[var(--primary)] to-teal-600 px-4 py-3 text-white">
