@@ -10,8 +10,8 @@ SevaSetu AI is a government-grade digital public health platform for rural and u
 
 | Layer | Technology |
 | --- | --- |
-| Frontend | Next.js 15 (App Router), TypeScript, TailwindCSS v4, ShadCN-style primitives, Framer Motion, Lucide, React Hook Form, TanStack Query, Recharts, Leaflet, Sonner, next-themes |
-| Backend | FastAPI, Python 3.13, SQLAlchemy 2, Pydantic v2 |
+| Frontend | Next.js 15 (App Router), TypeScript, TailwindCSS v4, WebRTC, Socket.IO Client, ShadCN-style primitives, Framer Motion, Lucide, React Hook Form, TanStack Query, Recharts, Leaflet, Sonner, next-themes |
+| Backend | FastAPI, Python 3.13, python-socketio (ASGI), SQLAlchemy 2, Pydantic v2 |
 | Database | PostgreSQL 16 |
 | Auth | JWT access + refresh tokens, bcrypt password hashing, role-based routing |
 | Storage | Local uploads (`backend/uploads`), served at `/uploads` |
@@ -114,6 +114,17 @@ Deterministic, explainable clinical logic in `backend/app/services/ai.py` — no
 - medicine reminder generation from active prescriptions
 - disease outbreak forecasting from weekly case velocity (drives the district heatmap)
 - medical chatbot grounded in the patient's own record
+
+---
+
+## Real-Time Teleconsultation (WebRTC + Socket.IO)
+
+The platform features a production-ready, peer-to-peer video consultation system connecting doctors and patients:
+
+- **WebRTC**: Direct peer-to-peer audio and video streaming with STUN servers for NAT traversal.
+- **Socket.IO Signaling**: Real-time websocket channels powered by `python-socketio` mounted natively as an ASGI app within the FastAPI lifecycle, handling SDP Offers, Answers, and ICE candidates.
+- **Production Ready**: Configured for reverse proxies (Render) with strict CORS Origin validation, Uvicorn proxy headers, and WebSockets-only transport for optimal performance and security.
+- **Responsive Layout**: A split-screen 50/50 video grid layout with fallback placeholders and connection states.
 
 ---
 
