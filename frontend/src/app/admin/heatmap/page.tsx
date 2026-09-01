@@ -109,7 +109,7 @@ export default function DiseaseHeatmapPage() {
               <TrendingUp className="h-4 w-4 text-[var(--primary)]" /> AI outbreak forecast
             </CardTitle>
             <CardDescription>
-              {data.forecast.locality} · generated {formatDate(data.forecast.generated_on)}
+              {data.forecast.locality} · four-week case velocity · generated {formatDate(data.forecast.generated_on)}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
@@ -133,7 +133,7 @@ export default function DiseaseHeatmapPage() {
                       </div>
                     </div>
                     <p className="mt-1 text-sm">
-                      {item.current_cases} cases reported in the selected window across {data.forecast.locality}.
+                      {item.current_cases} cases reported in the last 7 days across {data.forecast.locality}.
                     </p>
                     <p className="mt-1 text-xs text-[var(--muted-foreground)]">
                       Projected next week: {item.projected_next_week} cases

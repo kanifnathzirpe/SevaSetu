@@ -339,9 +339,16 @@ def disease_heatmap(days: int = 30, db: Session = Depends(get_db)) -> dict:
         by_disease[c.disease] += c.case_count
         by_locality[c.locality] += c.case_count
 
+    forecast_rows = (
+        rows
+        if days >= 28
+        else db.query(DiseaseCase).filter(DiseaseCase.reported_on >= date.today() - timedelta(days=28)).all()
+    )
     weekly: dict[str, list[int]] = defaultdict(lambda: [0, 0, 0, 0])
-    for c in rows:
-        bucket = min(3, (date.today() - c.reported_on).days // 7)
+    for c in forecast_rows:
+        bucket = (date.today() - c.reported_on).days // 7
+        if bucket > 3:
+            continue
         weekly[c.disease][3 - bucket] += c.case_count
 
     return {
