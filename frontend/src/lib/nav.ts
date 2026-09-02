@@ -53,6 +53,13 @@ export const NAV_BY_ROLE: Record<Role, NavSection[]> = {
       ],
     },
     {
+      title: "Connect",
+      items: [
+        { label: "Chat", href: "/chat", icon: MessageSquare },
+        { label: "Video Consults", href: "/patient/video", icon: Video },
+      ],
+    },
+    {
       title: "Records",
       items: [
         { label: "Medical History", href: "/patient/history", icon: ClipboardList },
@@ -69,13 +76,6 @@ export const NAV_BY_ROLE: Record<Role, NavSection[]> = {
         { label: "Vaccinations", href: "/patient/vaccinations", icon: Syringe },
         { label: "Pregnancy", href: "/patient/pregnancy", icon: Baby },
         { label: "Nutrition", href: "/patient/nutrition", icon: HeartPulse },
-      ],
-    },
-    {
-      title: "Connect",
-      items: [
-        { label: "Chat", href: "/chat", icon: MessageSquare },
-        { label: "Video Consults", href: "/patient/video", icon: Video },
       ],
     },
   ],
