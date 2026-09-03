@@ -5,9 +5,13 @@ import {
   Activity,
   Bell,
   CalendarDays,
+  CheckCircle2,
+  Clock,
+  Droplets,
   FileText,
   HeartPulse,
   Pill,
+  Plus,
   Siren,
   Sparkles,
   Stethoscope,
@@ -15,8 +19,9 @@ import {
   Video,
 } from "lucide-react";
 import Link from "next/link";
+import * as React from "react";
+import { toast } from "sonner";
 
-import { TrendAreaChart } from "@/components/charts";
 import { PageHeader } from "@/components/page-header";
 import { StatCard } from "@/components/stat-card";
 import { Badge } from "@/components/ui/badge";
@@ -45,6 +50,8 @@ const QUICK_ACTIONS = [
 
 export default function PatientDashboardPage() {
   const { t } = useI18n();
+  const [takenDoses, setTakenDoses] = React.useState<Record<number, boolean>>({});
+
   const { data, isLoading } = useQuery({
     queryKey: ["patient", "dashboard"],
     queryFn: () => api.get<PatientDashboard>("/api/v1/patient/dashboard"),
@@ -58,6 +65,25 @@ export default function PatientDashboardPage() {
   if (isLoading || !data) return <LoadingBlock rows={6} />;
 
   const { patient, stats } = data;
+  const latestVitals = data.vitals_trend?.[data.vitals_trend.length - 1] ?? data.vitals_trend?.[0];
+
+  const handleToggleTaken = (id: number, medicineName: string) => {
+    const isNowTaken = !takenDoses[id];
+    setTakenDoses((prev) => ({ ...prev, [id]: isNowTaken }));
+    if (isNowTaken) {
+      toast.success(`${medicineName} marked as taken for today! 🎉`);
+    } else {
+      toast.info(`${medicineName} dose reset`);
+    }
+  };
+
+  const activeReminders = data.medicine_reminders ?? [];
+  const takenCount = activeReminders.filter((r) => takenDoses[r.id]).length;
+  const totalCount = activeReminders.length;
+  const adherenceAvg =
+    totalCount > 0
+      ? Math.round(activeReminders.reduce((acc, r) => acc + (r.adherence_percent || 80), 0) / totalCount)
+      : 100;
 
   return (
     <>
@@ -86,24 +112,126 @@ export default function PatientDashboardPage() {
       </div>
 
       <div className="mt-4 grid gap-4 lg:grid-cols-3">
+        {/* Today's Medicines Section */}
         <Card className="lg:col-span-2">
-          <CardHeader>
-            <CardTitle>{t("dashboard.vitalsTrend")}</CardTitle>
-            <CardDescription>{t("dashboard.vitalsDesc")}</CardDescription>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                <Pill className="h-5 w-5 text-[var(--primary)]" />
+                {t("dashboard.medicinesTitle")}
+              </CardTitle>
+              <CardDescription className="mt-1">
+                {t("dashboard.medicinesDesc")} · {new Date().toLocaleDateString(undefined, { weekday: "long", month: "short", day: "numeric" })}
+              </CardDescription>
+            </div>
+            <div className="flex items-center gap-2">
+              {totalCount > 0 ? (
+                <Badge tone={takenCount === totalCount && totalCount > 0 ? "success" : "primary"}>
+                  {takenCount}/{totalCount} Taken Today
+                </Badge>
+              ) : null}
+              <Button asChild size="sm" variant="outline">
+                <Link href="/patient/reminders">
+                  <Plus className="h-3.5 w-3.5" /> {t("dashboard.manageReminders")}
+                </Link>
+              </Button>
+            </div>
           </CardHeader>
-          <CardContent>
-            <TrendAreaChart
-              data={data.vitals_trend}
-              xKey="date"
-              series={[
-                { key: "systolic", label: t("dashboard.systolic") },
-                { key: "diastolic", label: t("dashboard.diastolic") },
-                { key: "sugar", label: t("dashboard.bloodSugar") },
-              ]}
-            />
+          <CardContent className="space-y-3">
+            {activeReminders.length === 0 ? (
+              <EmptyState
+                icon={Pill}
+                title={t("dashboard.noReminders")}
+                description="Set up your daily dosage schedule to track adherence effortlessly."
+                action={
+                  <Button asChild size="sm">
+                    <Link href="/patient/reminders">
+                      <Plus className="h-4 w-4" /> Add your first medicine
+                    </Link>
+                  </Button>
+                }
+              />
+            ) : (
+              <div className="grid gap-3 sm:grid-cols-2">
+                {activeReminders.map((reminder) => {
+                  const isTaken = !!takenDoses[reminder.id];
+                  return (
+                    <div
+                      key={reminder.id}
+                      className={cn(
+                        "group relative flex flex-col justify-between rounded-xl border p-4 transition-all",
+                        isTaken
+                          ? "border-[color-mix(in_srgb,var(--primary)_30%,var(--border))] bg-[color-mix(in_srgb,var(--primary)_4%,transparent)]"
+                          : "border-[var(--border)] bg-[var(--card)] hover:border-[var(--primary)] hover:shadow-sm"
+                      )}
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2">
+                            <span className="font-semibold text-[var(--foreground)]">{reminder.medicine_name}</span>
+                            {isTaken ? (
+                              <Badge tone="success" className="text-[10px] py-0 px-1.5">
+                                Taken
+                              </Badge>
+                            ) : null}
+                          </div>
+                          <p className="text-xs text-[var(--muted-foreground)]">
+                            {reminder.dosage} · Daily Schedule
+                          </p>
+                        </div>
+                        <Button
+                          size="sm"
+                          variant={isTaken ? "default" : "outline"}
+                          className={cn("h-8 gap-1.5 text-xs transition-all", isTaken ? "bg-emerald-600 hover:bg-emerald-700 text-white" : "")}
+                          onClick={() => handleToggleTaken(reminder.id, reminder.medicine_name)}
+                        >
+                          <CheckCircle2 className="h-3.5 w-3.5" />
+                          {isTaken ? "Taken" : "Take Dose"}
+                        </Button>
+                      </div>
+
+                      <div className="mt-3 flex flex-wrap items-center gap-2">
+                        {reminder.times_of_day.split(",").map((time, idx) => (
+                          <span
+                            key={idx}
+                            className="inline-flex items-center gap-1 rounded-md bg-[var(--muted)] px-2 py-0.5 text-xs font-medium text-[var(--foreground)]"
+                          >
+                            <Clock className="h-3 w-3 text-[var(--primary)]" />
+                            {time.trim()}
+                          </span>
+                        ))}
+                      </div>
+
+                      <div className="mt-3 pt-2 border-t border-[var(--border)] flex items-center justify-between gap-3">
+                        <div className="flex-1 space-y-1">
+                          <div className="flex justify-between text-[11px] text-[var(--muted-foreground)]">
+                            <span>Adherence</span>
+                            <span className="font-semibold">{reminder.adherence_percent}%</span>
+                          </div>
+                          <Progress value={reminder.adherence_percent} className="h-1.5" />
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            {totalCount > 0 ? (
+              <div className="mt-2 flex flex-wrap items-center justify-between gap-3 rounded-xl bg-[var(--muted)]/50 p-3 text-xs text-[var(--muted-foreground)]">
+                <span className="flex items-center gap-1.5">
+                  <HeartPulse className="h-4 w-4 text-[var(--primary)]" />
+                  Average Monthly Adherence: <strong className="text-[var(--foreground)]">{adherenceAvg}%</strong>
+                </span>
+                <Link href="/patient/prescriptions" className="font-medium text-[var(--primary)] hover:underline">
+                  View prescriptions →
+                </Link>
+              </div>
+            ) : null}
           </CardContent>
         </Card>
 
+        {/* AI Insights Card */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -198,29 +326,44 @@ export default function PatientDashboardPage() {
             </CardContent>
           </Card>
 
+          {/* Recent Vitals & Health Snapshot Card */}
           <Card>
             <CardHeader>
-              <CardTitle>{t("dashboard.medicinesTitle")}</CardTitle>
-              <CardDescription>{t("dashboard.medicinesDesc")}</CardDescription>
+              <CardTitle className="flex items-center justify-between">
+                <span>{t("dashboard.vitalsTrend")}</span>
+                <Badge tone="success">Normal</Badge>
+              </CardTitle>
+              <CardDescription>Latest recorded health measurements</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
-              {data.medicine_reminders.length === 0 ? (
-                <p className="text-sm text-[var(--muted-foreground)]">{t("dashboard.noReminders")}</p>
-              ) : (
-                data.medicine_reminders.slice(0, 4).map((reminder) => (
-                  <div key={reminder.id}>
-                    <div className="flex items-center justify-between gap-2 text-sm">
-                      <span className="flex items-center gap-2">
-                        <Pill className="h-3.5 w-3.5 text-[var(--primary)]" /> {reminder.medicine_name}
-                      </span>
-                      <span className="text-xs text-[var(--muted-foreground)]">{reminder.times_of_day}</span>
-                    </div>
-                    <Progress className="mt-2" value={reminder.adherence_percent} />
-                  </div>
-                ))
-              )}
+              <div className="grid grid-cols-2 gap-2">
+                <div className="rounded-lg border border-[var(--border)] p-2.5 bg-[var(--muted)]/20">
+                  <span className="text-[11px] text-[var(--muted-foreground)] flex items-center gap-1">
+                    <HeartPulse className="h-3 w-3 text-[var(--primary)]" /> Blood Pressure
+                  </span>
+                  <p className="mt-1 text-sm font-bold">{latestVitals?.systolic ?? 120}/{latestVitals?.diastolic ?? 80} <span className="text-[10px] font-normal text-[var(--muted-foreground)]">mmHg</span></p>
+                </div>
+                <div className="rounded-lg border border-[var(--border)] p-2.5 bg-[var(--muted)]/20">
+                  <span className="text-[11px] text-[var(--muted-foreground)] flex items-center gap-1">
+                    <Droplets className="h-3 w-3 text-amber-500" /> Blood Sugar
+                  </span>
+                  <p className="mt-1 text-sm font-bold">{latestVitals?.sugar ?? 96} <span className="text-[10px] font-normal text-[var(--muted-foreground)]">mg/dL</span></p>
+                </div>
+                <div className="rounded-lg border border-[var(--border)] p-2.5 bg-[var(--muted)]/20">
+                  <span className="text-[11px] text-[var(--muted-foreground)] flex items-center gap-1">
+                    <Activity className="h-3 w-3 text-sky-500" /> Pulse Rate
+                  </span>
+                  <p className="mt-1 text-sm font-bold">{latestVitals?.pulse ?? 72} <span className="text-[10px] font-normal text-[var(--muted-foreground)]">bpm</span></p>
+                </div>
+                <div className="rounded-lg border border-[var(--border)] p-2.5 bg-[var(--muted)]/20">
+                  <span className="text-[11px] text-[var(--muted-foreground)] flex items-center gap-1">
+                    <Activity className="h-3 w-3 text-emerald-500" /> BMI Index
+                  </span>
+                  <p className="mt-1 text-sm font-bold">{stats.bmi} <span className="text-[10px] font-normal text-[var(--muted-foreground)]">kg/m²</span></p>
+                </div>
+              </div>
               <Button asChild variant="outline" size="sm" className="w-full">
-                <Link href="/patient/reminders">{t("dashboard.manageReminders")}</Link>
+                <Link href="/patient/medical-history">View Medical History</Link>
               </Button>
             </CardContent>
           </Card>

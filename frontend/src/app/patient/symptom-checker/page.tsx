@@ -148,8 +148,8 @@ export default function SymptomCheckerPage() {
                 </Select>
               </div>
               <div className="space-y-1.5 sm:col-span-3">
-                <Label htmlFor="notes">Anything else?</Label>
-                <Textarea id="notes" value={notes} onChange={(event) => setNotes(event.target.value)} placeholder="Travel history, existing conditions, medicines taken…" />
+                <Label htmlFor="notes">Description of Symptom: </Label>
+                <Textarea id="notes" value={notes} onChange={(event) => setNotes(event.target.value)} placeholder="Travel history, Symptom frequency, existing conditions, medicines taken…" />
               </div>
             </div>
 
