@@ -12,6 +12,7 @@ import {
   HeartPulse,
   Pill,
   Plus,
+  ShieldCheck,
   Siren,
   Sparkles,
   Stethoscope,
@@ -43,7 +44,7 @@ interface Insight {
 
 const QUICK_ACTIONS = [
   { labelKey: "dashboard.bookAppt", href: "/patient/appointments", icon: CalendarDays },
-  { labelKey: "dashboard.checkSymptoms", href: "/patient/symptom-checker", icon: Activity },
+  { labelKey: "nav.govtSchemes", href: "/patient/schemes", icon: ShieldCheck },
   { labelKey: "dashboard.findHospital", href: "/patient/hospitals", icon: Stethoscope },
   { labelKey: "nav.emergencySOS", href: "/patient/emergency", icon: Siren },
 ];
@@ -105,10 +106,10 @@ export default function PatientDashboardPage() {
       />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard label={t("dashboard.healthScore")} value={stats.health_score} hint={t("dashboard.compositeIdx")} icon={HeartPulse} tone="primary" index={0} />
-        <StatCard label={t("dashboard.bmi")} value={stats.bmi} hint={`${patient.height_cm} cm · ${patient.weight_kg} kg`} icon={Activity} tone="info" index={1} />
-        <StatCard label={t("dashboard.upcomingVisits")} value={stats.upcoming_appointments} hint={t("dashboard.next30")} icon={CalendarDays} tone="success" index={2} />
-        <StatCard label={t("dashboard.activeRemind")} value={stats.active_reminders} hint={`${stats.pending_vaccinations} ${t("dashboard.vaccDue")}`} icon={Bell} tone="warning" index={3} />
+        <StatCard label={t("dashboard.bmi")} value={stats.bmi} hint={`${patient.height_cm} cm · ${patient.weight_kg} kg`} icon={Activity} tone="info" index={0} />
+        <StatCard label={t("dashboard.upcomingVisits")} value={stats.upcoming_appointments} hint={t("dashboard.next30")} icon={CalendarDays} tone="success" index={1} />
+        <StatCard label={t("dashboard.activeRemind")} value={stats.active_reminders} hint={`${stats.pending_vaccinations} ${t("dashboard.vaccDue")}`} icon={Bell} tone="warning" index={2} />
+        <StatCard label={t("nav.prescriptions")} value={stats.prescriptions} hint="Active medical prescriptions" icon={Pill} tone="primary" index={3} />
       </div>
 
       <div className="mt-4 grid gap-4 lg:grid-cols-3">

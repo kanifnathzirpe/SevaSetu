@@ -48,7 +48,6 @@ export const NAV_BY_ROLE: Record<Role, NavSection[]> = {
       items: [
         { label: "Dashboard", href: "/patient", icon: Home },
         { label: "Appointments", href: "/patient/appointments", icon: CalendarDays },
-        { label: "Symptom Checker", href: "/patient/symptom-checker", icon: Activity },
         { label: "Nearby Hospitals", href: "/patient/hospitals", icon: Hospital },
         { label: "Emergency SOS", href: "/patient/emergency", icon: Siren },
       ],

@@ -78,7 +78,7 @@ export default function HealthCardPage() {
                 downloadTextFile(
                   `sevasetu-health-card-${data.health_id}.txt`,
                   [
-                    "SEVASETU AI — DIGITAL HEALTH CARD",
+                    "SEVASETU — DIGITAL HEALTH CARD",
                     "Government of Maharashtra · Public Health Department",
                     "",
                     `Health ID       : ${data.health_id}`,

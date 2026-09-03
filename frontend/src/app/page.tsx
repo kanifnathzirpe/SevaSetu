@@ -123,7 +123,7 @@ export default function LandingPage() {
               Delivering <span className="text-gradient">quality healthcare to every village</span> in rural and underserved areas.
             </h1>
             <p className="mt-5 max-w-xl text-base leading-relaxed text-[var(--muted-foreground)] sm:text-lg">
-              SevaSetu AI unifies patients, ASHA workers, medical officers, hospitals and the district
+              SevaSetu unifies patients, ASHA workers, medical officers, hospitals and the district
               administration on one platform — with AI triage, teleconsultation, emergency dispatch and
               real-time disease surveillance across every area.
             </p>
@@ -284,7 +284,7 @@ export default function LandingPage() {
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4">
           <Logo />
           <p className="text-xs text-[var(--muted-foreground)]">
-            SevaSetu AI · Public Health Department
+            SevaSetu · Public Health Department
           </p>
         </div>
       </footer>

@@ -36,8 +36,8 @@ const PRIMARY_NAV_BY_ROLE: Record<Role, BottomNavItem[]> = {
   patient: [
     { label: "Dashboard", href: "/patient", icon: Home },
     { label: "Appointments", href: "/patient/appointments", icon: CalendarDays },
-    { label: "Symptom Checker", href: "/patient/symptom-checker", icon: Activity },
     { label: "Emergency SOS", href: "/patient/emergency", icon: Siren, isSpecial: true },
+    { label: "Nearby Hospitals", href: "/patient/hospitals", icon: Hospital },
     { label: "Profile", href: "/patient/profile", icon: UserRound },
   ],
   asha: [
