@@ -521,3 +521,51 @@ export interface HealthCard {
   issued_on: string;
   qr_payload: string;
 }
+
+export interface GovernmentScheme {
+  id: string;
+  name: string;
+  short_name: string;
+  category: string;
+  authority: string;
+  coverage_amount: string;
+  description: string;
+  benefits: string[];
+  required_documents: string[];
+  application_steps: string[];
+  helpline: string;
+  portal_url: string;
+  is_state_specific: boolean;
+  state?: string | null;
+  match_score: number;
+  is_eligible: boolean;
+  status: string;
+  badge_tone: "default" | "primary" | "success" | "warning" | "danger" | "info";
+  criteria_met: string[];
+  action_recommendation: string;
+}
+
+export interface SchemeEvaluationResult {
+  summary: {
+    total_coverage: string;
+    eligible_count: number;
+    other_count: number;
+    active_benefits: string[];
+    top_recommendation: string;
+  };
+  patient_profile_evaluated: {
+    full_name: string;
+    health_id: string;
+    abha_number: string | null;
+    age: number;
+    gender: string;
+    locality: string;
+    state: string;
+    is_pregnant: boolean;
+    chronic_conditions: string;
+    health_score: number;
+  };
+  eligible_schemes: GovernmentScheme[];
+  other_schemes: GovernmentScheme[];
+}
+

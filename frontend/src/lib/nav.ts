@@ -19,6 +19,7 @@ import {
   Package,
   Pill,
   Radar,
+  ShieldCheck,
   Siren,
   Stethoscope,
   Syringe,
@@ -65,10 +66,12 @@ export const NAV_BY_ROLE: Record<Role, NavSection[]> = {
         { label: "Medical History", href: "/patient/history", icon: ClipboardList },
         { label: "Reports", href: "/patient/reports", icon: FileText },
         { label: "Prescriptions", href: "/patient/prescriptions", icon: Pill },
+        { label: "Govt Schemes", href: "/patient/schemes", icon: ShieldCheck },
         { label: "Health Card", href: "/patient/health-card", icon: CreditCard },
         { label: "Profile", href: "/patient/profile", icon: UserRound },
       ],
     },
+
     {
       title: "Wellness",
       items: [

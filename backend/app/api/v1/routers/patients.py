@@ -43,8 +43,10 @@ from app.schemas import (
     VaccinationOut,
 )
 from app.services.ai import health_score, pregnancy_risk
+from app.services.schemes import evaluate_patient_schemes
 
 router = APIRouter(prefix="/patient", tags=["patient"])
+
 
 
 @router.get("/me", response_model=PatientOut)
@@ -539,3 +541,41 @@ def my_appointments(
         appointment_out(a).model_dump()
         for a in query.order_by(Appointment.scheduled_at.desc()).all()
     ]
+
+
+@router.get("/schemes")
+def get_eligible_schemes(
+    patient: Patient = Depends(get_current_patient),
+) -> dict:
+    patient_data = {
+        "full_name": patient.user.full_name if patient.user else "Patient",
+        "health_id": patient.health_id,
+        "abha_number": patient.abha_number,
+        "age": age_from_dob(patient.date_of_birth),
+        "gender": patient.gender.value if hasattr(patient.gender, "value") else str(patient.gender),
+        "locality": patient.locality,
+        "chronic_conditions": patient.chronic_conditions,
+        "is_pregnant": patient.is_pregnant,
+        "health_score": patient.health_score,
+    }
+    return evaluate_patient_schemes(patient_data)
+
+
+@router.post("/schemes/check")
+def check_custom_schemes(
+    payload: dict,
+    patient: Patient = Depends(get_current_patient),
+) -> dict:
+    patient_data = {
+        "full_name": payload.get("full_name") or (patient.user.full_name if patient.user else "Patient"),
+        "health_id": patient.health_id,
+        "abha_number": payload.get("abha_number") or patient.abha_number,
+        "age": int(payload.get("age", age_from_dob(patient.date_of_birth))),
+        "gender": str(payload.get("gender", patient.gender.value if hasattr(patient.gender, "value") else str(patient.gender))).lower(),
+        "locality": str(payload.get("locality", patient.locality)),
+        "chronic_conditions": str(payload.get("chronic_conditions", patient.chronic_conditions)),
+        "is_pregnant": bool(payload.get("is_pregnant", patient.is_pregnant)),
+        "health_score": int(payload.get("health_score", patient.health_score)),
+    }
+    return evaluate_patient_schemes(patient_data)
+
