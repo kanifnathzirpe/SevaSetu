@@ -408,6 +408,26 @@ export interface AshaDashboard {
 }
 
 export interface AdminDashboard {
+  role?: "hospital_admin" | "dho";
+  scope?: "hospital" | "district";
+  district_name?: string;
+  hospital?: {
+    id: number;
+    name: string;
+    facility_type: string;
+    locality: string;
+    address: string;
+    phone: string;
+    rating: number;
+    total_beds: number;
+    available_beds: number;
+    icu_beds: number;
+    available_icu_beds: number;
+    has_emergency: boolean;
+    has_blood_bank: boolean;
+    open_24x7: boolean;
+    services?: string;
+  };
   stats: {
     total_patients: number;
     total_doctors: number;
@@ -423,6 +443,10 @@ export interface AdminDashboard {
     available_beds: number;
     visits_this_month: number;
     open_referrals: number;
+    icu_beds?: number;
+    available_icu_beds?: number;
+    total_medicines?: number;
+    low_stock_medicines?: number;
   };
   appointment_trend: { date: string; appointments: number; completed: number }[];
   facility_split: { facility_type: string; count: number }[];

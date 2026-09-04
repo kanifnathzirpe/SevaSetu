@@ -7,6 +7,7 @@ import { toast } from "sonner";
 
 import { PageHeader } from "@/components/page-header";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Input } from "@/components/ui/input";
@@ -14,16 +15,32 @@ import { LoadingBlock } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 import { Table, TBody, TD, TH, THead, TR } from "@/components/ui/table";
 import { api } from "@/lib/api";
+import { useAuth } from "@/lib/auth";
 import type { Doctor } from "@/lib/types";
 
 export default function AdminDoctorsPage() {
+  const { user } = useAuth();
+  const isHospitalAdmin = user?.role === "hospital_admin";
   const queryClient = useQueryClient();
   const [search, setSearch] = React.useState("");
+  const [onlyMyHospital, setOnlyMyHospital] = React.useState(isHospitalAdmin);
 
   const { data = [], isLoading } = useQuery({
     queryKey: ["admin", "doctors", search],
     queryFn: () => api.get<Doctor[]>(`/api/v1/admin/doctors${search ? `?search=${encodeURIComponent(search)}` : ""}`),
   });
+
+  const filteredData = React.useMemo(() => {
+    if (isHospitalAdmin && onlyMyHospital) {
+      // Show doctors associated with admin's locality or hospital
+      return data.filter(
+        (doc) =>
+          doc.hospital_name?.toLowerCase().includes("sassoon") ||
+          (user?.locality && doc.hospital_name?.toLowerCase().includes(user.locality.toLowerCase()))
+      );
+    }
+    return data;
+  }, [data, isHospitalAdmin, onlyMyHospital, user?.locality]);
 
   const toggle = useMutation({
     mutationFn: (id: number) => api.patch<Doctor>(`/api/v1/admin/doctors/${id}/availability`),
@@ -34,23 +51,41 @@ export default function AdminDoctorsPage() {
     onError: (error: Error) => toast.error(error.message),
   });
 
+  const pageTitle = isHospitalAdmin
+    ? "Hospital Medical Officers & Specialists"
+    : "District Medical Workforce";
+  const pageDesc = isHospitalAdmin
+    ? "Clinical staff on roster, department specialisations, and teleconsultation duty status"
+    : "Medical officers and specialists posted across Pune District facilities";
+
   return (
     <>
       <PageHeader
-        title="Doctor management"
-        description="Medical officers and specialists posted across district facilities"
+        title={pageTitle}
+        description={pageDesc}
         actions={
-          <div className="relative w-64">
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--muted-foreground)]" />
-            <Input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search doctors" className="pl-9" />
+          <div className="flex flex-wrap items-center gap-3">
+            {isHospitalAdmin && (
+              <Button
+                variant={onlyMyHospital ? "default" : "outline"}
+                size="sm"
+                onClick={() => setOnlyMyHospital(!onlyMyHospital)}
+              >
+                {onlyMyHospital ? "Showing My Hospital Staff" : "Showing All District Doctors"}
+              </Button>
+            )}
+            <div className="relative w-64">
+              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--muted-foreground)]" />
+              <Input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search doctors" className="pl-9" />
+            </div>
           </div>
         }
       />
 
       {isLoading ? (
         <LoadingBlock />
-      ) : data.length === 0 ? (
-        <EmptyState icon={Stethoscope} title="No doctors found" description="Try a different search term." />
+      ) : filteredData.length === 0 ? (
+        <EmptyState icon={Stethoscope} title="No doctors found" description="Try a different search term or toggle filter." />
       ) : (
         <Card>
           <CardContent className="overflow-x-auto p-0">
@@ -68,7 +103,7 @@ export default function AdminDoctorsPage() {
                 </TR>
               </THead>
               <TBody>
-                {data.map((doctor) => (
+                {filteredData.map((doctor) => (
                   <TR key={doctor.id}>
                     <TD className="font-medium">{doctor.full_name}</TD>
                     <TD>{doctor.specialization}</TD>

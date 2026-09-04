@@ -17,6 +17,7 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { LoadingBlock } from "@/components/ui/skeleton";
 import { api } from "@/lib/api";
+import { useAuth } from "@/lib/auth";
 import type { Hospital } from "@/lib/types";
 import { titleCase } from "@/lib/utils";
 
@@ -73,6 +74,8 @@ function BedDialog({ hospital, onClose }: { hospital: Hospital | null; onClose: 
 }
 
 export default function AdminHospitalsPage() {
+  const { user } = useAuth();
+  const isHospitalAdmin = user?.role === "hospital_admin";
   const [search, setSearch] = React.useState("");
   const [editing, setEditing] = React.useState<Hospital | null>(null);
 
@@ -80,6 +83,10 @@ export default function AdminHospitalsPage() {
     queryKey: ["admin", "hospitals", search],
     queryFn: () => api.get<Hospital[]>(`/api/v1/admin/hospitals${search ? `?search=${encodeURIComponent(search)}` : ""}`),
   });
+
+  const myHospital = isHospitalAdmin
+    ? data.find((h) => h.locality === user?.locality) ?? data[0]
+    : null;
 
   const markers: MapMarker[] = data.map((hospital) => ({
     id: hospital.id,
@@ -90,11 +97,18 @@ export default function AdminHospitalsPage() {
     kind: hospital.facility_type === "phc" || hospital.facility_type === "sub_center" ? "phc" : "hospital",
   }));
 
+  const pageTitle = isHospitalAdmin
+    ? `${myHospital?.name ?? "Hospital"} · Beds & Wards`
+    : "District Hospital Management";
+  const pageDesc = isHospitalAdmin
+    ? `Live bed management, ICU availability, and district referral facilities`
+    : `Government facilities, bed capacity and live occupancy across Pune District`;
+
   return (
     <>
       <PageHeader
-        title="Hospital management"
-        description="Government facilities, bed capacity and live occupancy across the district"
+        title={pageTitle}
+        description={pageDesc}
         actions={
           <div className="relative w-64">
             <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--muted-foreground)]" />
@@ -102,6 +116,57 @@ export default function AdminHospitalsPage() {
           </div>
         }
       />
+
+      {isHospitalAdmin && myHospital && !search && (
+        <Card className="mb-4 border-2 border-[var(--primary)] bg-gradient-to-r from-[color-mix(in_srgb,var(--primary)_8%,transparent)] to-transparent">
+          <CardContent className="p-5">
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div>
+                <Badge tone="primary" className="mb-1.5">My Assigned Hospital</Badge>
+                <h2 className="text-xl font-bold">{myHospital.name}</h2>
+                <p className="text-xs text-[var(--muted-foreground)] mt-0.5">
+                  {titleCase(myHospital.facility_type)} · {myHospital.locality} · {myHospital.address}
+                </p>
+                <p className="text-xs text-[var(--muted-foreground)] mt-1">
+                  📞 {myHospital.phone} {myHospital.services ? `· Services: ${myHospital.services}` : ""}
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {myHospital.has_emergency && <Badge tone="danger">Emergency Bay 24×7</Badge>}
+                {myHospital.has_blood_bank && <Badge tone="info">Blood Bank</Badge>}
+                <Button size="sm" onClick={() => setEditing(myHospital)}>
+                  <BedDouble className="h-4 w-4" /> Update My Hospital Beds
+                </Button>
+              </div>
+            </div>
+
+            <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+              <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-3">
+                <p className="text-xs text-[var(--muted-foreground)]">General Beds</p>
+                <p className="text-lg font-bold text-[var(--primary)]">{myHospital.available_beds} / {myHospital.total_beds}</p>
+                <p className="text-[10px] text-[var(--muted-foreground)]">Available / Total</p>
+              </div>
+              <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-3">
+                <p className="text-xs text-[var(--muted-foreground)]">ICU Beds</p>
+                <p className="text-lg font-bold text-red-500">{myHospital.available_icu_beds} / {myHospital.icu_beds}</p>
+                <p className="text-[10px] text-[var(--muted-foreground)]">Available / Total</p>
+              </div>
+              <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-3">
+                <p className="text-xs text-[var(--muted-foreground)]">Occupancy Rate</p>
+                <p className="text-lg font-bold text-amber-500">
+                  {myHospital.total_beds ? Math.round(((myHospital.total_beds - myHospital.available_beds) / myHospital.total_beds) * 100) : 0}%
+                </p>
+                <p className="text-[10px] text-[var(--muted-foreground)]">Inpatient capacity</p>
+              </div>
+              <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-3">
+                <p className="text-xs text-[var(--muted-foreground)]">Rating</p>
+                <p className="text-lg font-bold text-emerald-500">★ {myHospital.rating}</p>
+                <p className="text-[10px] text-[var(--muted-foreground)]">Public rating</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       <Card className="mb-4 overflow-hidden">
         <CardContent className="p-0">

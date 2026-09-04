@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { api } from "@/lib/api";
+import { useAuth } from "@/lib/auth";
 import { useI18n } from "@/lib/i18n";
 import type { SymptomCheckResult } from "@/lib/types";
 import { cn, RISK_STYLES } from "@/lib/utils";
@@ -37,6 +38,7 @@ type Step = "symptoms" | "details" | "analysing" | "result";
 /* ------------------------------------------------------------------ */
 
 export function SymptomChatbot() {
+  const { user } = useAuth();
   const { t } = useI18n();
   const [open, setOpen] = React.useState(false);
   const [minimized, setMinimized] = React.useState(false);
@@ -109,6 +111,9 @@ export function SymptomChatbot() {
   const filteredSymptoms = (catalog?.symptoms ?? []).filter((s) =>
     s.toLowerCase().includes(search.toLowerCase())
   );
+
+  // Symptom checker is only available for patient interface
+  if (user?.role !== "patient") return null;
 
   /* ---- FAB button ---- */
   if (!open) {

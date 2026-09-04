@@ -16,6 +16,7 @@ import { LoadingBlock } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 import { Table, TBody, TD, TH, THead, TR } from "@/components/ui/table";
 import { api } from "@/lib/api";
+import { useAuth } from "@/lib/auth";
 import { formatDate, titleCase } from "@/lib/utils";
 
 interface InventoryRow {
@@ -35,9 +36,12 @@ interface InventoryRow {
 }
 
 export default function InventoryPage() {
+  const { user } = useAuth();
+  const isHospitalAdmin = user?.role === "hospital_admin";
   const queryClient = useQueryClient();
   const [search, setSearch] = React.useState("");
   const [lowOnly, setLowOnly] = React.useState(false);
+  const [onlyMyHospital, setOnlyMyHospital] = React.useState(isHospitalAdmin);
 
   const { data = [], isLoading } = useQuery({
     queryKey: ["admin", "inventory", search, lowOnly],
@@ -46,6 +50,17 @@ export default function InventoryPage() {
         `/api/v1/admin/inventory?${new URLSearchParams({ ...(search ? { search } : {}), low_stock_only: String(lowOnly) })}`
       ),
   });
+
+  const filteredData = React.useMemo(() => {
+    if (isHospitalAdmin && onlyMyHospital) {
+      return data.filter(
+        (row) =>
+          row.hospital_name?.toLowerCase().includes("sassoon") ||
+          (user?.locality && row.hospital_name?.toLowerCase().includes(user.locality.toLowerCase()))
+      );
+    }
+    return data;
+  }, [data, isHospitalAdmin, onlyMyHospital, user?.locality]);
 
   const restock = useMutation({
     mutationFn: ({ id, quantity }: { id: number; quantity: number }) =>
@@ -57,16 +72,32 @@ export default function InventoryPage() {
     onError: (error: Error) => toast.error(error.message),
   });
 
-  const critical = data.filter((row) => row.status === "critical").length;
-  const expiring = data.filter((row) => row.expiring_soon).length;
+  const critical = filteredData.filter((row) => row.status === "critical").length;
+  const expiring = filteredData.filter((row) => row.expiring_soon).length;
+
+  const pageTitle = isHospitalAdmin
+    ? "Hospital Pharmacy & Medicine Store"
+    : "District Medicine Supply & Inventory";
+  const pageDesc = isHospitalAdmin
+    ? "Real-time stock levels, batch expiry and 1-click pharmacy restocking"
+    : "Stock levels, batch expiry and reorder alerts across district facilities";
 
   return (
     <>
       <PageHeader
-        title="Medicine inventory"
-        description="Stock levels, batch expiry and reorder alerts across district facilities"
+        title={pageTitle}
+        description={pageDesc}
         actions={
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
+            {isHospitalAdmin && (
+              <Button
+                variant={onlyMyHospital ? "default" : "outline"}
+                size="sm"
+                onClick={() => setOnlyMyHospital(!onlyMyHospital)}
+              >
+                {onlyMyHospital ? "My Hospital Pharmacy" : "All Facilities"}
+              </Button>
+            )}
             <div className="flex items-center gap-2 text-sm">
               <Switch checked={lowOnly} onCheckedChange={setLowOnly} />
               Low stock only
@@ -80,14 +111,14 @@ export default function InventoryPage() {
       />
 
       <div className="grid gap-4 sm:grid-cols-3">
-        <StatCard label="Line items" value={data.length} hint="Tracked batches" icon={Warehouse} tone="primary" index={0} />
+        <StatCard label="Line items" value={filteredData.length} hint="Tracked batches" icon={Warehouse} tone="primary" index={0} />
         <StatCard label="Critical stock" value={critical} hint="Below 40% of reorder level" icon={PackagePlus} tone="danger" index={1} />
         <StatCard label="Expiring soon" value={expiring} hint="Within 90 days" icon={PackagePlus} tone="warning" index={2} />
       </div>
 
       {isLoading ? (
         <LoadingBlock />
-      ) : data.length === 0 ? (
+      ) : filteredData.length === 0 ? (
         <EmptyState icon={Warehouse} title="No inventory records" description="Adjust the filters to view stock." />
       ) : (
         <Card className="mt-4">
@@ -106,7 +137,7 @@ export default function InventoryPage() {
                 </TR>
               </THead>
               <TBody>
-                {data.map((row) => (
+                {filteredData.map((row) => (
                   <TR key={row.id}>
                     <TD className="font-medium">
                       {row.medicine_name}

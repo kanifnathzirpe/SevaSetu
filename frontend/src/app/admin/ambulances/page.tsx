@@ -12,10 +12,14 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { LoadingBlock } from "@/components/ui/skeleton";
 import { Table, TBody, TD, TH, THead, TR } from "@/components/ui/table";
 import { api } from "@/lib/api";
+import { useAuth } from "@/lib/auth";
 import type { Ambulance } from "@/lib/types";
 import { titleCase } from "@/lib/utils";
 
 export default function AmbulanceTrackingPage() {
+  const { user } = useAuth();
+  const isHospitalAdmin = user?.role === "hospital_admin";
+
   const { data = [], isLoading } = useQuery({
     queryKey: ["admin", "ambulances"],
     queryFn: () => api.get<Ambulance[]>("/api/v1/admin/ambulances"),
@@ -31,17 +35,51 @@ export default function AmbulanceTrackingPage() {
     kind: "ambulance",
   }));
 
-  const available = data.filter((item) => item.status === "available").length;
-  const dispatched = data.filter((item) => item.status === "on_duty").length;
+  const hospitalAmbulances = data.filter(
+    (a) =>
+      a.hospital_name?.toLowerCase().includes("sassoon") ||
+      (user?.locality && a.hospital_name?.toLowerCase().includes(user.locality.toLowerCase()))
+  );
+
+  const available = (isHospitalAdmin ? hospitalAmbulances : data).filter((item) => item.status === "available").length;
+  const dispatched = (isHospitalAdmin ? hospitalAmbulances : data).filter((item) => item.status === "on_duty").length;
+
+  const pageTitle = isHospitalAdmin
+    ? "Ambulance Bay & Emergency Fleet"
+    : "District Emergency Fleet Management";
+  const pageDesc = isHospitalAdmin
+    ? "Stationed 108/102 emergency vehicles at trauma center and district-wide fleet map"
+    : "Live fleet positions and emergency readiness across Pune District";
 
   return (
     <>
-      <PageHeader title="Ambulance tracking" description="Live fleet positions and availability" />
+      <PageHeader title={pageTitle} description={pageDesc} />
 
       <div className="grid gap-4 sm:grid-cols-3">
-        <StatCard label="Fleet size" value={data.length} hint="Registered vehicles" icon={AmbulanceIcon} tone="primary" index={0} />
-        <StatCard label="Available" value={available} hint="Ready for dispatch" icon={AmbulanceIcon} tone="success" index={1} />
-        <StatCard label="On duty" value={dispatched} hint="Dispatched or on scene" icon={AmbulanceIcon} tone="warning" index={2} />
+        <StatCard
+          label={isHospitalAdmin ? "Stationed Vehicles" : "District Fleet Size"}
+          value={isHospitalAdmin ? hospitalAmbulances.length : data.length}
+          hint={isHospitalAdmin ? "Base facility: Sassoon General" : "Registered vehicles across district"}
+          icon={AmbulanceIcon}
+          tone="primary"
+          index={0}
+        />
+        <StatCard
+          label="Available at Bay"
+          value={available}
+          hint="Ready for instant dispatch"
+          icon={AmbulanceIcon}
+          tone="success"
+          index={1}
+        />
+        <StatCard
+          label="On Active Run"
+          value={dispatched}
+          hint="Dispatched or on scene"
+          icon={AmbulanceIcon}
+          tone="warning"
+          index={2}
+        />
       </div>
 
       <Card className="mt-4 overflow-hidden">

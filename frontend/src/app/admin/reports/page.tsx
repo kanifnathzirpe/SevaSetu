@@ -8,17 +8,25 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { LoadingBlock } from "@/components/ui/skeleton";
 import { api } from "@/lib/api";
+import { useAuth } from "@/lib/auth";
 import { downloadTextFile, formatDate } from "@/lib/utils";
 
 interface DistrictReport {
+  role?: "hospital_admin" | "dho";
+  scope?: "hospital" | "district";
+  hospital_name?: string;
+  title?: string;
   generated_on: string;
   district: string;
   sections: { title: string; metrics: { label: string; value: number }[] }[];
 }
 
 export default function DistrictReportsPage() {
+  const { user } = useAuth();
+  const isHospitalAdmin = user?.role === "hospital_admin";
+
   const { data, isLoading } = useQuery({
-    queryKey: ["admin", "report-summary"],
+    queryKey: ["admin", "report-summary", user?.role],
     queryFn: () => api.get<DistrictReport>("/api/v1/admin/reports/summary"),
   });
 
@@ -26,9 +34,16 @@ export default function DistrictReportsPage() {
 
   function download() {
     if (!data) return;
+    const headerTitle = isHospitalAdmin
+      ? `SEVASETU AI — ${data.hospital_name?.toUpperCase() ?? "HOSPITAL"} OPERATIONS REPORT`
+      : "SEVASETU AI — DISTRICT HEALTH REPORT";
+    const issuedBy = isHospitalAdmin
+      ? `Issued by Hospital Administration · ${data.hospital_name ?? "Hospital"}`
+      : "Issued by the District Health Office · Pune District";
+
     const lines = [
-      "SEVASETU AI — DISTRICT HEALTH REPORT",
-      `District: ${data.district}`,
+      headerTitle,
+      `Facility / District: ${data.hospital_name ?? data.district}`,
       `Generated on: ${data.generated_on}`,
       "",
       ...data.sections.flatMap((section) => [
@@ -36,16 +51,26 @@ export default function DistrictReportsPage() {
         ...section.metrics.map((metric) => `  ${metric.label}: ${metric.value}`),
         "",
       ]),
-      "Issued by the District Health Office",
+      issuedBy,
     ];
-    downloadTextFile(`sevasetu-district-report-${data.generated_on}.txt`, lines.join("\n"));
+    const filename = isHospitalAdmin
+      ? `sevasetu-hospital-report-${data.generated_on}.txt`
+      : `sevasetu-district-report-${data.generated_on}.txt`;
+    downloadTextFile(filename, lines.join("\n"));
   }
+
+  const pageTitle = isHospitalAdmin
+    ? `${data.hospital_name ?? "Hospital"} · Operations Report`
+    : "District Health Reports";
+  const pageDesc = isHospitalAdmin
+    ? `Monthly inpatient admissions, bed turnover, pharmacy supply, and OPD performance · generated ${formatDate(data.generated_on)}`
+    : `Consolidated public health performance report across Pune District · generated ${formatDate(data.generated_on)}`;
 
   return (
     <>
       <PageHeader
-        title="District reports"
-        description={`Consolidated public health performance report · generated ${formatDate(data.generated_on)}`}
+        title={pageTitle}
+        description={pageDesc}
         actions={
           <>
             <Button variant="outline" onClick={() => window.print()}>
@@ -65,7 +90,9 @@ export default function DistrictReportsPage() {
               <CardTitle className="flex items-center gap-2 text-base">
                 <FileBarChart className="h-4 w-4 text-[var(--primary)]" /> {section.title}
               </CardTitle>
-              <CardDescription>{data.district} health administration</CardDescription>
+              <CardDescription>
+                {isHospitalAdmin ? data.hospital_name ?? "Hospital" : `${data.district} health administration`}
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-2">
               {section.metrics.map((metric) => (

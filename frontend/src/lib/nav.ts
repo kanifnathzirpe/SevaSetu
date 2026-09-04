@@ -47,6 +47,7 @@ export const NAV_BY_ROLE: Record<Role, NavSection[]> = {
       title: "Care",
       items: [
         { label: "Dashboard", href: "/patient", icon: Home },
+        { label: "Symptom Checker", href: "/patient/symptom-checker", icon: Stethoscope },
         { label: "Appointments", href: "/patient/appointments", icon: CalendarDays },
         { label: "Nearby Hospitals", href: "/patient/hospitals", icon: Hospital },
         { label: "Emergency SOS", href: "/patient/emergency", icon: Siren },
@@ -127,15 +128,14 @@ export const NAV_BY_ROLE: Record<Role, NavSection[]> = {
       title: "Overview",
       items: [
         { label: "Dashboard", href: "/admin", icon: Home },
-        { label: "District Reports", href: "/admin/reports", icon: FileText },
+        { label: "Hospital Reports", href: "/admin/reports", icon: FileText },
       ],
     },
     {
-      title: "Network",
+      title: "Facility",
       items: [
         { label: "Hospitals", href: "/admin/hospitals", icon: Building2 },
         { label: "Doctors", href: "/admin/doctors", icon: Stethoscope },
-        { label: "ASHA Workers", href: "/admin/asha-workers", icon: Users },
         { label: "Ambulances", href: "/admin/ambulances", icon: Ambulance },
       ],
     },
@@ -144,7 +144,12 @@ export const NAV_BY_ROLE: Record<Role, NavSection[]> = {
       items: [
         { label: "Medicine Inventory", href: "/admin/inventory", icon: Package },
         { label: "Vaccination", href: "/admin/vaccination", icon: Syringe },
-        { label: "Disease Heatmap", href: "/admin/heatmap", icon: Radar },
+      ],
+    },
+    {
+      title: "Connect",
+      items: [
+        { label: "Chat", href: "/chat", icon: MessageSquare },
       ],
     },
   ],
@@ -171,6 +176,12 @@ export const NAV_BY_ROLE: Record<Role, NavSection[]> = {
         { label: "Medicine Inventory", href: "/admin/inventory", icon: Package },
         { label: "Vaccination", href: "/admin/vaccination", icon: Syringe },
         { label: "Disease Heatmap", href: "/admin/heatmap", icon: Radar },
+      ],
+    },
+    {
+      title: "Connect",
+      items: [
+        { label: "Chat", href: "/chat", icon: MessageSquare },
       ],
     },
   ],

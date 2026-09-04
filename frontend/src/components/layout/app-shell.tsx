@@ -84,8 +84,8 @@ export function AppShell({ children, allow }: { children: React.ReactNode; allow
       {/* Mobile bottom navigation bar */}
       <BottomNav user={user} onOpenMenu={() => setMobileOpen(true)} />
 
-      {/* Floating symptom-checker chatbot */}
-      <SymptomChatbot />
+      {/* Floating symptom-checker chatbot - only visible for patients */}
+      {user.role === "patient" && <SymptomChatbot />}
     </div>
   );
 }

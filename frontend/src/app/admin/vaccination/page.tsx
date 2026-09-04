@@ -10,6 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Progress } from "@/components/ui/progress";
 import { LoadingBlock } from "@/components/ui/skeleton";
 import { api } from "@/lib/api";
+import { useAuth } from "@/lib/auth";
 
 interface VaccinationDashboard {
   overall_coverage_percent: number;
@@ -20,6 +21,9 @@ interface VaccinationDashboard {
 }
 
 export default function VaccinationDashboardPage() {
+  const { user } = useAuth();
+  const isHospitalAdmin = user?.role === "hospital_admin";
+
   const { data, isLoading } = useQuery({
     queryKey: ["admin", "vaccination"],
     queryFn: () => api.get<VaccinationDashboard>("/api/v1/admin/vaccination-dashboard"),
@@ -27,9 +31,16 @@ export default function VaccinationDashboardPage() {
 
   if (isLoading || !data) return <LoadingBlock rows={5} />;
 
+  const pageTitle = isHospitalAdmin
+    ? "Hospital Vaccination Center & Cold Chain"
+    : "Universal Immunisation Programme (UIP)";
+  const pageDesc = isHospitalAdmin
+    ? "Facility vaccination center operations, cold chain monitoring, and administered doses"
+    : "District-wide coverage across all 15 facilities, talukas and beneficiary cohorts";
+
   return (
     <>
-      <PageHeader title="Vaccination dashboard" description="Universal Immunisation Programme coverage" />
+      <PageHeader title={pageTitle} description={pageDesc} />
 
       <div className="grid gap-4 sm:grid-cols-3">
         <StatCard label="Overall coverage" value={`${data.overall_coverage_percent}%`} hint="All antigens" icon={Syringe} tone="success" index={0} />
