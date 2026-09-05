@@ -237,6 +237,11 @@ export interface Referral {
   from_facility: string;
   to_hospital_id?: number | null;
   to_hospital_name?: string | null;
+  to_doctor_id?: number | null;
+  to_doctor_name?: string | null;
+  to_doctor_specialization?: string | null;
+  specialty?: string;
+  referred_by_name?: string | null;
   reason: string;
   urgency: RiskLevel;
   status: "open" | "accepted" | "closed";

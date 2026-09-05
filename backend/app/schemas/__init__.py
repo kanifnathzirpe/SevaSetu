@@ -395,18 +395,35 @@ class VisitOut(ORMModel):
 class ReferralCreate(BaseModel):
     patient_id: int
     to_hospital_id: int | None = None
+    to_doctor_id: int | None = None
+    specialty: str = ""
     reason: str
     urgency: RiskLevel = RiskLevel.MODERATE
     notes: str = ""
+
+
+class ReferralStatusUpdate(BaseModel):
+    status: ReferralStatus
+    notes: str | None = None
 
 
 class ReferralOut(ORMModel):
     id: int
     patient_id: int
     patient_name: str = ""
+    patient_age: int | None = None
+    patient_gender: str | None = None
+    patient_health_id: str | None = None
+    patient_blood_group: str | None = None
     from_facility: str
     to_hospital_id: int | None = None
     to_hospital_name: str | None = None
+    to_doctor_id: int | None = None
+    to_doctor_name: str | None = None
+    to_doctor_specialization: str | None = None
+    specialty: str = ""
+    created_by_user_id: int | None = None
+    referred_by_name: str | None = None
     reason: str
     urgency: RiskLevel
     status: ReferralStatus

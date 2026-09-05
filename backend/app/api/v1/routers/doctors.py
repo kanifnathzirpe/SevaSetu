@@ -10,6 +10,7 @@ from app.api.v1.serializers import (
     doctor_out,
     patient_out,
     prescription_out,
+    referral_out,
     report_out,
 )
 from app.db.session import get_db
@@ -17,12 +18,14 @@ from app.models import (
     Appointment,
     AppointmentStatus,
     Doctor,
+    Hospital,
     Medicine,
     Notification,
     Patient,
     Prescription,
     PrescriptionItem,
     Referral,
+    ReferralStatus,
     Report,
     ReportType,
     User,
@@ -35,6 +38,9 @@ from app.schemas import (
     PatientOut,
     PrescriptionCreate,
     PrescriptionOut,
+    ReferralCreate,
+    ReferralOut,
+    ReferralStatusUpdate,
     ReportCreate,
     ReportOut,
 )
@@ -438,27 +444,217 @@ def create_lab_request(
     return report_out(report)
 
 
-@router.post("/referrals", response_model=MessageResponse, status_code=201)
-def doctor_referral(
-    patient_id: int,
-    reason: str,
-    to_hospital_id: int | None = None,
+@router.get("/referrals", response_model=list[ReferralOut])
+def list_doctor_referrals(
     db: Session = Depends(get_db),
     doctor: Doctor = Depends(get_current_doctor),
-) -> MessageResponse:
-    if not db.get(Patient, patient_id):
-        raise HTTPException(404, "Patient not found")
-    db.add(
-        Referral(
-            patient_id=patient_id,
-            created_by_user_id=doctor.user_id,
-            from_facility=doctor.hospital.name if doctor.hospital else "SevaSetu Teleconsult",
-            to_hospital_id=to_hospital_id,
-            reason=reason,
+    direction: str = Query("all", description="all, outgoing, or incoming"),
+    status_filter: str | None = Query(None, alias="status"),
+    urgency_filter: str | None = Query(None, alias="urgency"),
+    search: str | None = None,
+) -> list[ReferralOut]:
+    query = (
+        db.query(Referral)
+        .options(
+            joinedload(Referral.patient).joinedload(Patient.user),
+            joinedload(Referral.to_doctor).joinedload(Doctor.user),
+            joinedload(Referral.to_hospital),
         )
     )
+
+    if direction == "outgoing":
+        query = query.filter(Referral.created_by_user_id == doctor.user_id)
+    elif direction == "incoming":
+        query = query.filter(Referral.to_doctor_id == doctor.id)
+    else:
+        query = query.filter(
+            or_(
+                Referral.created_by_user_id == doctor.user_id,
+                Referral.to_doctor_id == doctor.id,
+            )
+        )
+
+    if status_filter:
+        query = query.filter(Referral.status == status_filter)
+    if urgency_filter:
+        query = query.filter(Referral.urgency == urgency_filter)
+
+    if search:
+        pattern = f"%{search}%"
+        query = query.join(Patient, Referral.patient_id == Patient.id).join(
+            User, Patient.user_id == User.id
+        ).filter(
+            or_(
+                User.full_name.ilike(pattern),
+                Referral.reason.ilike(pattern),
+                Referral.specialty.ilike(pattern),
+            )
+        )
+
+    rows = query.order_by(Referral.created_at.desc()).all()
+
+    referrer_user_ids = {r.created_by_user_id for r in rows if r.created_by_user_id}
+    referrer_map = {}
+    if referrer_user_ids:
+        users = db.query(User).filter(User.id.in_(referrer_user_ids)).all()
+        referrer_map = {u.id: u.full_name for u in users}
+
+    result = []
+    for r in rows:
+        ref_name = referrer_map.get(r.created_by_user_id)
+        if ref_name and r.created_by_user_id == doctor.user_id:
+            ref_name = f"You (Dr. {doctor.user.full_name})"
+        elif ref_name:
+            ref_name = f"Dr. {ref_name}" if not ref_name.startswith("Dr.") else ref_name
+
+        result.append(
+            referral_out(
+                r,
+                hospital_name=r.to_hospital.name if r.to_hospital else None,
+                referred_by_name=ref_name,
+            )
+        )
+    return result
+
+
+@router.post("/referrals", response_model=ReferralOut, status_code=201)
+def create_doctor_referral(
+    payload: ReferralCreate,
+    db: Session = Depends(get_db),
+    doctor: Doctor = Depends(get_current_doctor),
+) -> ReferralOut:
+    patient = db.get(Patient, payload.patient_id)
+    if not patient:
+        raise HTTPException(404, "Patient not found")
+
+    dest_doctor = None
+    dest_hospital_id = payload.to_hospital_id
+    specialty = payload.specialty
+
+    if payload.to_doctor_id:
+        dest_doctor = (
+            db.query(Doctor)
+            .options(joinedload(Doctor.user), joinedload(Doctor.hospital))
+            .filter(Doctor.id == payload.to_doctor_id)
+            .first()
+        )
+        if not dest_doctor:
+            raise HTTPException(404, "Referred doctor not found")
+        if not dest_hospital_id and dest_doctor.hospital_id:
+            dest_hospital_id = dest_doctor.hospital_id
+        if not specialty:
+            specialty = dest_doctor.specialization
+
+    from_fac = doctor.hospital.name if doctor.hospital else "SevaSetu Teleconsult"
+
+    referral = Referral(
+        patient_id=payload.patient_id,
+        created_by_user_id=doctor.user_id,
+        from_facility=from_fac,
+        to_hospital_id=dest_hospital_id,
+        to_doctor_id=payload.to_doctor_id,
+        specialty=specialty,
+        reason=payload.reason,
+        urgency=payload.urgency,
+        notes=payload.notes or "",
+        status=ReferralStatus.OPEN,
+    )
+    db.add(referral)
+    db.flush()
+
+    doc_target = (
+        f"Dr. {dest_doctor.user.full_name} ({specialty})"
+        if dest_doctor and dest_doctor.user
+        else f"{specialty or 'specialist care'}"
+    )
+    db.add(
+        Notification(
+            user_id=patient.user_id,
+            title="Referral to specialist doctor",
+            body=f"Dr. {doctor.user.full_name} referred you to {doc_target}: {payload.reason}",
+            category="referral",
+            severity="warning" if payload.urgency in ["high", "critical"] else "info",
+            action_url="/patient/history",
+        )
+    )
+
+    if dest_doctor and dest_doctor.user_id:
+        p_name = patient.user.full_name if patient.user else "a patient"
+        urgency_str = (
+            payload.urgency.value.upper()
+            if hasattr(payload.urgency, "value")
+            else str(payload.urgency).upper()
+        )
+        db.add(
+            Notification(
+                user_id=dest_doctor.user_id,
+                title="New Patient Referral Received",
+                body=f"Dr. {doctor.user.full_name} referred patient {p_name} to you ({urgency_str}): {payload.reason}",
+                category="referral",
+                severity="warning" if payload.urgency in ["high", "critical"] else "info",
+                action_url="/doctor/referrals",
+            )
+        )
+
     db.commit()
-    return MessageResponse(message="Referral created")
+    db.refresh(referral)
+    return referral_out(
+        referral,
+        hospital_name=referral.to_hospital.name if referral.to_hospital else None,
+        referred_by_name=f"You (Dr. {doctor.user.full_name})",
+    )
+
+
+@router.patch("/referrals/{referral_id}/status", response_model=ReferralOut)
+def update_doctor_referral_status(
+    referral_id: int,
+    payload: ReferralStatusUpdate,
+    db: Session = Depends(get_db),
+    doctor: Doctor = Depends(get_current_doctor),
+) -> ReferralOut:
+    referral = (
+        db.query(Referral)
+        .options(
+            joinedload(Referral.patient).joinedload(Patient.user),
+            joinedload(Referral.to_doctor).joinedload(Doctor.user),
+            joinedload(Referral.to_hospital),
+        )
+        .filter(
+            Referral.id == referral_id,
+            or_(
+                Referral.created_by_user_id == doctor.user_id,
+                Referral.to_doctor_id == doctor.id,
+            ),
+        )
+        .first()
+    )
+    if not referral:
+        raise HTTPException(404, "Referral not found")
+
+    referral.status = payload.status
+    if payload.notes:
+        existing_notes = referral.notes or ""
+        referral.notes = f"{existing_notes}\n[{doctor.user.full_name}]: {payload.notes}".strip()
+
+    if referral.patient and referral.patient.user_id:
+        status_val = payload.status.value if hasattr(payload.status, "value") else str(payload.status)
+        db.add(
+            Notification(
+                user_id=referral.patient.user_id,
+                title=f"Referral {status_val.title()}",
+                body=f"Your referral for {referral.reason} status changed to {status_val}.",
+                category="referral",
+                severity="success" if payload.status == ReferralStatus.CLOSED else "info",
+                action_url="/patient/history",
+            )
+        )
+
+    db.commit()
+    db.refresh(referral)
+    return referral_out(
+        referral,
+        hospital_name=referral.to_hospital.name if referral.to_hospital else None,
+    )
 
 
 @router.get("/medicines", response_model=list[MedicineOut])

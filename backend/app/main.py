@@ -41,6 +41,8 @@ fastapi_app.include_router(api_router, prefix=settings.API_V1_PREFIX)
 def on_startup() -> None:
     with engine.begin() as conn:
         conn.exec_driver_sql("ALTER TABLE video_sessions ADD COLUMN IF NOT EXISTS duration INTEGER;")
+        conn.exec_driver_sql("ALTER TABLE referrals ADD COLUMN IF NOT EXISTS to_doctor_id INTEGER REFERENCES doctors(id);")
+        conn.exec_driver_sql("ALTER TABLE referrals ADD COLUMN IF NOT EXISTS specialty VARCHAR(120) DEFAULT '';")
         
     Base.metadata.create_all(bind=engine)
     if settings.SEED_ON_STARTUP:

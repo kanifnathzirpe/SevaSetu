@@ -1,6 +1,7 @@
 import {
   Activity,
   Ambulance,
+  ArrowRightLeft,
   Baby,
   BarChart3,
   Bell,
@@ -109,6 +110,7 @@ export const NAV_BY_ROLE: Record<Role, NavSection[]> = {
         { label: "Dashboard", href: "/doctor", icon: Home },
         { label: "Appointments", href: "/doctor/appointments", icon: CalendarDays },
         { label: "Queue", href: "/doctor/queue", icon: Users },
+        { label: "Referrals", href: "/doctor/referrals", icon: ArrowRightLeft },
         { label: "Patients", href: "/doctor/patients", icon: UserRound },
       ],
     },

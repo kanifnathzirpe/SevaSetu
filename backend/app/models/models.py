@@ -392,6 +392,8 @@ class Referral(Base, TimestampMixin):
     created_by_user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     from_facility: Mapped[str] = mapped_column(String(160), default="")
     to_hospital_id: Mapped[int | None] = mapped_column(ForeignKey("hospitals.id"), nullable=True)
+    to_doctor_id: Mapped[int | None] = mapped_column(ForeignKey("doctors.id"), nullable=True)
+    specialty: Mapped[str] = mapped_column(String(120), default="")
     reason: Mapped[str] = mapped_column(String(300))
     urgency: Mapped[RiskLevel] = mapped_column(enum_col(RiskLevel), default=RiskLevel.MODERATE)
     status: Mapped[ReferralStatus] = mapped_column(
@@ -400,6 +402,8 @@ class Referral(Base, TimestampMixin):
     notes: Mapped[str] = mapped_column(Text, default="")
 
     patient: Mapped[Patient] = relationship()
+    to_doctor: Mapped["Doctor | None"] = relationship(foreign_keys=[to_doctor_id])
+    to_hospital: Mapped["Hospital | None"] = relationship(foreign_keys=[to_hospital_id])
 
 
 class Ambulance(Base, TimestampMixin):

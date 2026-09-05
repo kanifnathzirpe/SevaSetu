@@ -114,10 +114,47 @@ def pregnancy_out(record: PregnancyRecord) -> PregnancyOut:
     return data
 
 
-def referral_out(ref: Referral, hospital_name: str | None = None) -> ReferralOut:
+def referral_out(
+    ref: Referral,
+    hospital_name: str | None = None,
+    doctor_name: str | None = None,
+    doctor_specialization: str | None = None,
+    referred_by_name: str | None = None,
+) -> ReferralOut:
     data = ReferralOut.model_validate(ref)
-    data.patient_name = ref.patient.user.full_name if ref.patient and ref.patient.user else ""
-    data.to_hospital_name = hospital_name
+    if ref.patient:
+        if ref.patient.user:
+            data.patient_name = ref.patient.user.full_name
+        if ref.patient.date_of_birth:
+            data.patient_age = age_from_dob(ref.patient.date_of_birth)
+        if ref.patient.gender:
+            data.patient_gender = (
+                ref.patient.gender.value
+                if hasattr(ref.patient.gender, "value")
+                else str(ref.patient.gender)
+            )
+        data.patient_health_id = ref.patient.health_id
+        data.patient_blood_group = ref.patient.blood_group
+
+    if hospital_name:
+        data.to_hospital_name = hospital_name
+    elif getattr(ref, "to_hospital", None) and ref.to_hospital:
+        data.to_hospital_name = ref.to_hospital.name
+
+    if doctor_name:
+        data.to_doctor_name = doctor_name
+    elif getattr(ref, "to_doctor", None) and ref.to_doctor and ref.to_doctor.user:
+        d_name = ref.to_doctor.user.full_name
+        data.to_doctor_name = f"Dr. {d_name}" if not d_name.startswith("Dr.") else d_name
+
+    if doctor_specialization:
+        data.to_doctor_specialization = doctor_specialization
+    elif getattr(ref, "to_doctor", None) and ref.to_doctor:
+        data.to_doctor_specialization = ref.to_doctor.specialization
+
+    if referred_by_name:
+        data.referred_by_name = referred_by_name
+
     return data
 
 

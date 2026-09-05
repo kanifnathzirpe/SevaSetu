@@ -1,11 +1,13 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, ClipboardList, FlaskConical, MessageSquare, Plus, Trash2 } from "lucide-react";
+import { ArrowLeft, ArrowRightLeft, ClipboardList, FlaskConical, MessageSquare, Plus, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import * as React from "react";
 import { toast } from "sonner";
+
+import { NewReferralModal } from "@/components/new-referral-modal";
 
 import { PageHeader } from "@/components/page-header";
 import { Badge } from "@/components/ui/badge";
@@ -272,6 +274,14 @@ export default function PatientChartPage() {
                 <MessageSquare className="h-4 w-4" /> Message
               </Link>
             </Button>
+            <NewReferralModal
+              defaultPatientId={patientId}
+              triggerButton={
+                <Button size="sm" variant="outline">
+                  <ArrowRightLeft className="h-3.5 w-3.5 mr-1" /> Refer to doctor
+                </Button>
+              }
+            />
             <LabRequestDialog patientId={patientId} />
             <PrescriptionDialog patientId={patientId} />
           </>
