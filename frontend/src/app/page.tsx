@@ -92,7 +92,7 @@ const LOCALITIES = [
 export default function LandingPage() {
   return (
     <div className="min-h-screen">
-      <header className="sticky top-0 z-40 border-b border-[var(--border)] bg-[color-mix(in_srgb,var(--card)_72%,transparent)] backdrop-blur-xl">
+      <header className="sticky top-0 z-40 border-b border-[var(--border)] bg-[var(--card)]">
         <div className="mx-auto flex h-16 max-w-7xl items-center gap-4 px-4 sm:px-6 lg:px-8">
           <Logo />
           <nav className="ml-8 hidden items-center gap-6 text-sm font-medium text-[var(--muted-foreground)] lg:flex">
@@ -116,11 +116,11 @@ export default function LandingPage() {
       <section className="relative overflow-hidden px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-2">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-            <span className="inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-[color-mix(in_srgb,var(--primary)_10%,transparent)] px-3 py-1 text-xs font-semibold text-[var(--primary)]">
-              <ShieldCheck className="h-3.5 w-3.5" /> Public Health
+            <span className="inline-flex items-center gap-2 rounded-full border border-[#C5DCF5] bg-[var(--primary-light)] px-3 py-1 text-xs font-semibold text-[var(--primary)] dark:border-[#1D5FA7]/40">
+              <ShieldCheck className="h-3.5 w-3.5" /> Public Health Infrastructure
             </span>
-            <h1 className="mt-5 text-4xl font-bold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
-              Delivering <span className="text-gradient">quality healthcare to every village</span> in rural and underserved areas.
+            <h1 className="mt-5 text-4xl font-bold leading-tight tracking-tight sm:text-5xl lg:text-6xl text-[var(--foreground)]">
+              Delivering <span className="text-[var(--primary)]">quality healthcare to every village</span> in rural and underserved areas.
             </h1>
             <p className="mt-5 max-w-xl text-base leading-relaxed text-[var(--muted-foreground)] sm:text-lg">
               SevaSetu unifies patients, ASHA workers, medical officers, hospitals and the district
@@ -150,18 +150,18 @@ export default function LandingPage() {
             initial={{ opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="glass rounded-3xl p-6"
+            className="card-surface rounded-2xl sm:rounded-3xl p-6 shadow-sm"
           >
             <div className="grid gap-4 sm:grid-cols-2">
               {STATS.map((stat) => (
-                <div key={stat.label} className="rounded-2xl bg-[color-mix(in_srgb,var(--card)_80%,transparent)] p-5">
+                <div key={stat.label} className="rounded-xl border border-[var(--border)] bg-[var(--background)] p-5">
                   <stat.icon className="h-5 w-5 text-[var(--primary)]" />
                   <p className="mt-3 text-3xl font-bold">{stat.value}</p>
                   <p className="text-xs text-[var(--muted-foreground)]">{stat.label}</p>
                 </div>
               ))}
             </div>
-            <div className="mt-4 rounded-2xl border border-[var(--border)] p-5">
+            <div className="mt-4 rounded-xl border border-[var(--border)] bg-[var(--card)] p-5">
               <p className="flex items-center gap-2 text-sm font-semibold">
                 <HeartPulse className="h-4 w-4 text-[var(--danger)]" /> Live district snapshot
               </p>
@@ -230,10 +230,10 @@ export default function LandingPage() {
       </section>
 
       <section id="coverage" className="px-4 py-16 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl rounded-3xl border border-[var(--border)] bg-[color-mix(in_srgb,var(--card)_70%,transparent)] p-8 backdrop-blur-xl">
+        <div className="mx-auto max-w-7xl rounded-2xl sm:rounded-3xl border border-[var(--border)] bg-[var(--card)] p-8 shadow-xs">
           <div className="flex flex-wrap items-center gap-3">
             <Globe2 className="h-6 w-6 text-[var(--primary)]" />
-            <h2 className="text-2xl font-bold tracking-tight">Coverage</h2>
+            <h2 className="text-2xl font-bold tracking-tight text-[var(--foreground)]">Coverage</h2>
           </div>
           <p className="mt-2 max-w-3xl text-sm text-[var(--muted-foreground)]">
             Urban health centres, primary health centres, sub-centres, rural hospitals and district hospitals —
@@ -243,7 +243,7 @@ export default function LandingPage() {
             {LOCALITIES.map((locality) => (
               <span
                 key={locality}
-                className="rounded-full border border-[var(--border)] bg-[var(--card)] px-3 py-1.5 text-sm"
+                className="rounded-full border border-[var(--border)] bg-[var(--background)] px-3 py-1.5 text-sm text-[var(--foreground)]"
               >
                 {locality}
               </span>
@@ -255,9 +255,9 @@ export default function LandingPage() {
               { icon: Hospital, title: "PHCs & urban health centres", body: "Warje, Kondhwa, Hinjewadi, Wakad, Katraj, Hadapsar" },
               { icon: Ambulance, title: "Emergency network", body: "108 ALS/BLS ambulances and 102 maternity vans" },
             ].map((item) => (
-              <div key={item.title} className="rounded-2xl border border-[var(--border)] p-5">
+              <div key={item.title} className="rounded-xl border border-[var(--border)] bg-[var(--background)] p-5">
                 <item.icon className="h-5 w-5 text-[var(--primary)]" />
-                <p className="mt-3 font-semibold">{item.title}</p>
+                <p className="mt-3 font-semibold text-[var(--foreground)]">{item.title}</p>
                 <p className="mt-1 text-sm text-[var(--muted-foreground)]">{item.body}</p>
               </div>
             ))}

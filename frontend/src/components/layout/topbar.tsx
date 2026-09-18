@@ -65,7 +65,7 @@ export function Topbar({ user, onMenu }: { user: AuthUser; onMenu: () => void })
   }, [langOpen]);
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center gap-2 sm:gap-3 border-b border-[var(--border)] bg-[color-mix(in_srgb,var(--card)_78%,transparent)] px-3 sm:px-4 backdrop-blur-xl">
+    <header className="sticky top-0 z-30 flex h-16 items-center gap-2 sm:gap-3 border-b border-[var(--border)] bg-[var(--card)] px-3 sm:px-4">
       <Button variant="ghost" size="icon" className="lg:hidden touch-target shrink-0" onClick={onMenu} aria-label="Open menu">
         <Menu className="h-5 w-5" />
       </Button>
@@ -82,7 +82,7 @@ export function Topbar({ user, onMenu }: { user: AuthUser; onMenu: () => void })
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           placeholder={t("topbar.search")}
-          className="pl-9"
+          className="pl-9 bg-[var(--background)]"
         />
       </form>
 
@@ -107,12 +107,12 @@ export function Topbar({ user, onMenu }: { user: AuthUser; onMenu: () => void })
             onClick={() => setLangOpen((p) => !p)}
             aria-label={t("language")}
           >
-            <Globe className="h-4 w-4" />
+            <Globe className="h-4 w-4 text-slate-600 dark:text-slate-400" />
           </Button>
 
           {langOpen && (
-            <div className="absolute right-0 top-full mt-2 w-44 origin-top-right animate-[profileDropIn_0.18s_ease-out] rounded-xl border border-[var(--border)] bg-[var(--card)] p-1.5 shadow-xl">
-              <p className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wide text-[var(--muted-foreground)]">
+            <div className="absolute right-0 top-full mt-2 w-44 origin-top-right animate-[profileDropIn_0.15s_ease-out] rounded-xl border border-[var(--border)] bg-[var(--card)] p-1.5 shadow-lg">
+              <p className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-[var(--muted-foreground)]">
                 {t("language")}
               </p>
               {LOCALES.map((loc) => (
@@ -125,7 +125,7 @@ export function Topbar({ user, onMenu }: { user: AuthUser; onMenu: () => void })
                   }}
                   className={`flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-colors cursor-pointer ${
                     locale === loc.code
-                      ? "bg-[color-mix(in_srgb,var(--primary)_12%,transparent)] text-[var(--primary)] font-medium"
+                      ? "bg-[var(--primary-light)] text-[var(--primary)] font-semibold"
                       : "text-[var(--foreground)] hover:bg-[var(--muted)]"
                   }`}
                 >
@@ -152,7 +152,7 @@ export function Topbar({ user, onMenu }: { user: AuthUser; onMenu: () => void })
           <button
             type="button"
             onClick={() => setProfileOpen((p) => !p)}
-            className="flex items-center gap-2 rounded-xl border border-[var(--border)] py-1 pl-1 pr-2 transition-colors hover:bg-[var(--muted)] cursor-pointer"
+            className="flex items-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--background)] py-1 pl-1 pr-2.5 transition-colors hover:bg-[var(--muted)] cursor-pointer"
           >
             <Avatar name={user.full_name} size="sm" />
             <div className="hidden leading-tight sm:block text-left">
@@ -164,7 +164,7 @@ export function Topbar({ user, onMenu }: { user: AuthUser; onMenu: () => void })
           </button>
 
           {profileOpen && (
-            <div className="absolute right-0 top-full mt-2 w-52 origin-top-right animate-[profileDropIn_0.18s_ease-out] rounded-xl border border-[var(--border)] bg-[var(--card)] p-1.5 shadow-xl">
+            <div className="absolute right-0 top-full mt-2 w-52 origin-top-right animate-[profileDropIn_0.15s_ease-out] rounded-xl border border-[var(--border)] bg-[var(--card)] p-1.5 shadow-lg">
               <div className="border-b border-[var(--border)] px-3 py-2.5 mb-1">
                 <p className="text-sm font-semibold truncate">{user.full_name}</p>
                 <p className="text-xs text-[var(--muted-foreground)] truncate">
@@ -209,7 +209,7 @@ export function Topbar({ user, onMenu }: { user: AuthUser; onMenu: () => void })
                   setProfileOpen(false);
                   logout();
                 }}
-                className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-red-500 transition-colors hover:bg-red-50 dark:hover:bg-red-950/30 cursor-pointer"
+                className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-[var(--danger)] transition-colors hover:bg-red-50 dark:hover:bg-red-950/30 cursor-pointer"
               >
                 <LogOut className="h-4 w-4" />
                 {t("topbar.signOut")}

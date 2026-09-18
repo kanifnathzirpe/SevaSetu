@@ -372,7 +372,7 @@ export default function VideoRoomPage() {
   const clock = `${String(Math.floor(elapsed / 60)).padStart(2, "0")}:${String(elapsed % 60).padStart(2, "0")}`;
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#06161a] text-white">
+    <div className="flex min-h-screen flex-col bg-[#0F172A] text-white">
       <header className="flex items-center justify-between gap-3 border-b border-white/10 px-3 sm:px-4 py-3">
         <Logo />
         <div className="flex items-center gap-2 sm:gap-3 text-sm">
@@ -471,7 +471,7 @@ export default function VideoRoomPage() {
 
         {/* In-call Chat Panel (Slide-up sheet on mobile, sidebar on desktop) */}
         <div className={cn(
-          "flex flex-col rounded-2xl sm:rounded-3xl border border-white/10 bg-[#0c2228] transition-all",
+          "flex flex-col rounded-2xl sm:rounded-3xl border border-white/10 bg-[#1E293B] transition-all",
           "lg:static lg:flex lg:h-auto lg:min-h-[420px]",
           mobileChatOpen
             ? "fixed inset-x-2 bottom-20 top-20 z-30 shadow-2xl flex"
@@ -538,7 +538,7 @@ export default function VideoRoomPage() {
       </div>
 
       {/* Fixed Call Controls Footer */}
-      <footer className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 border-t border-white/10 px-3 py-3 sm:py-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] bg-[#06161a]/95 backdrop-blur-lg">
+      <footer className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 border-t border-white/10 px-3 py-3 sm:py-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] bg-[#0F172A]/95 backdrop-blur-lg">
         <Button variant={micOn ? "outline" : "danger"} size="icon" onClick={toggleMic} aria-label="Toggle microphone" disabled={!joined} className="h-12 w-12 rounded-full sm:rounded-xl touch-target">
           {micOn ? <Mic className="h-5 w-5" /> : <MicOff className="h-5 w-5" />}
         </Button>

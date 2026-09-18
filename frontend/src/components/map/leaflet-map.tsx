@@ -17,12 +17,12 @@ export interface MapMarker {
 }
 
 const KIND_COLORS: Record<string, string> = {
-  hospital: "#0d9488",
-  phc: "#2563eb",
-  ambulance: "#f59e0b",
-  patient: "#7c3aed",
-  household: "#16a34a",
-  sos: "#dc2626",
+  hospital: "#123B6D",
+  phc: "#1D5FA7",
+  ambulance: "#D97706",
+  patient: "#1D5FA7",
+  household: "#16A34A",
+  sos: "#DC2626",
 };
 
 const EMOJI: Record<string, string> = {
@@ -35,7 +35,7 @@ const EMOJI: Record<string, string> = {
 };
 
 function pinIcon(kind: string) {
-  const color = KIND_COLORS[kind] ?? "#0d9488";
+  const color = KIND_COLORS[kind] ?? "#123B6D";
   return L.divIcon({
     className: "",
     html: `<div style="display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50% 50% 50% 6px;transform:rotate(-45deg);background:${color};box-shadow:0 6px 16px rgba(0,0,0,.28);border:2px solid #fff"><span style="transform:rotate(45deg);font-size:14px">${EMOJI[kind] ?? "📍"}</span></div>`,

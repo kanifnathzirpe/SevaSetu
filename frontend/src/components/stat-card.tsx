@@ -6,11 +6,11 @@ import type { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const TONES: Record<string, string> = {
-  primary: "from-[color-mix(in_srgb,var(--primary)_20%,transparent)] to-transparent text-[var(--primary)]",
-  success: "from-[color-mix(in_srgb,var(--success)_20%,transparent)] to-transparent text-[var(--success)]",
-  warning: "from-[color-mix(in_srgb,var(--warning)_20%,transparent)] to-transparent text-[var(--warning)]",
-  danger: "from-[color-mix(in_srgb,var(--danger)_18%,transparent)] to-transparent text-[var(--danger)]",
-  info: "from-[color-mix(in_srgb,var(--info)_18%,transparent)] to-transparent text-[var(--info)]",
+  primary: "bg-[#EAF4FC] dark:bg-[#1D5FA7]/20 text-[#1D5FA7] dark:text-[#5FA9E6] border border-[#C5DCF5] dark:border-[#1D5FA7]/40",
+  info: "bg-[#EAF4FC] dark:bg-[#1D5FA7]/20 text-[#1D5FA7] dark:text-[#5FA9E6] border border-[#C5DCF5] dark:border-[#1D5FA7]/40",
+  success: "bg-[#DCFCE7] dark:bg-[#16A34A]/20 text-[#16A34A] dark:text-[#4ADE80] border border-[#BBF7D0] dark:border-[#16A34A]/40",
+  warning: "bg-[#FEF3C7] dark:bg-[#D97706]/20 text-[#D97706] dark:text-[#FBBF24] border border-[#FDE68A] dark:border-[#D97706]/40",
+  danger: "bg-[#FEE2E2] dark:bg-[#DC2626]/20 text-[#DC2626] dark:text-[#F87171] border border-[#FECACA] dark:border-[#DC2626]/40",
 };
 
 export function StatCard({
@@ -30,20 +30,19 @@ export function StatCard({
 }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 12 }}
+      initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.04, duration: 0.3 }}
-      className="card-surface relative overflow-hidden rounded-2xl p-4 sm:p-5"
+      transition={{ delay: index * 0.03, duration: 0.25 }}
+      className="card-surface rounded-xl sm:rounded-2xl p-4 sm:p-5"
     >
-      <div className={cn("absolute inset-x-0 top-0 h-24 bg-gradient-to-b opacity-70", TONES[tone] ?? TONES.primary)} />
-      <div className="relative flex items-start justify-between gap-3">
+      <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
-          <p className="text-[11px] sm:text-xs font-medium uppercase tracking-wide text-[var(--muted-foreground)] truncate">{label}</p>
-          <p className="mt-1.5 sm:mt-2 text-2xl sm:text-3xl font-bold tracking-tight">{value}</p>
-          {hint ? <p className="mt-1 text-xs text-[var(--muted-foreground)] line-clamp-2">{hint}</p> : null}
+          <p className="text-[11px] sm:text-xs font-semibold uppercase tracking-wider text-[var(--muted-foreground)] truncate">{label}</p>
+          <p className="mt-1.5 sm:mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-[var(--foreground)]">{value}</p>
+          {hint ? <p className="mt-1 text-xs text-slate-600 dark:text-slate-400 line-clamp-2">{hint}</p> : null}
         </div>
-        <span className={cn("shrink-0 rounded-xl bg-[var(--card)] p-2 sm:p-2.5 shadow-sm", TONES[tone] ?? TONES.primary)}>
-          <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
+        <span className={cn("shrink-0 rounded-xl p-2.5 shadow-2xs", TONES[tone] ?? TONES.primary)}>
+          <Icon className="h-5 w-5" />
         </span>
       </div>
     </motion.div>

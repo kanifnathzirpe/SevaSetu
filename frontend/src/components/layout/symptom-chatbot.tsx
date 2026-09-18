@@ -127,11 +127,10 @@ export function SymptomChatbot() {
           setOpen(true);
           setMinimized(false);
         }}
-        className="fixed bottom-20 lg:bottom-6 right-4 sm:right-6 z-40 flex h-13 w-13 sm:h-14 sm:w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[var(--primary)] to-teal-600 text-white shadow-lg shadow-teal-500/25 transition-shadow hover:shadow-xl hover:shadow-teal-500/30 cursor-pointer touch-target"
+        className="fixed bottom-20 lg:bottom-6 right-4 sm:right-6 z-40 flex h-13 w-13 sm:h-14 sm:w-14 items-center justify-center rounded-2xl bg-[var(--primary)] text-white shadow-md hover:bg-[var(--primary-dark)] transition-colors cursor-pointer touch-target"
         aria-label={t("symptom.title")}
       >
         <Stethoscope className="h-6 w-6" />
-        <span className="absolute inset-0 animate-ping rounded-2xl bg-[var(--primary)] opacity-20" />
       </motion.button>
     );
   }
@@ -153,8 +152,8 @@ export function SymptomChatbot() {
         style={{ maxHeight: minimized ? 56 : "min(580px, calc(100vh - 8rem))" }}
       >
         {/* ---- Header ---- */}
-        <div className="flex items-center gap-2.5 border-b border-[var(--border)] bg-gradient-to-r from-[var(--primary)] to-teal-600 px-4 py-3 text-white">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/20 backdrop-blur-sm">
+        <div className="flex items-center gap-2.5 border-b border-[var(--border)] bg-[var(--primary)] px-4 py-3 text-white">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/15">
             <Stethoscope className="h-4 w-4" />
           </div>
           <div className="flex-1 min-w-0">

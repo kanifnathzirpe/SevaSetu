@@ -182,8 +182,8 @@ export default function PatientDashboardPage() {
                         </div>
                         <Button
                           size="sm"
-                          variant={isTaken ? "default" : "outline"}
-                          className={cn("h-8 gap-1.5 text-xs transition-all", isTaken ? "bg-emerald-600 hover:bg-emerald-700 text-white" : "")}
+                          variant={isTaken ? "success" : "outline"}
+                          className="h-8 gap-1.5 text-xs transition-all"
                           onClick={() => handleToggleTaken(reminder.id, reminder.medicine_name)}
                         >
                           <CheckCircle2 className="h-3.5 w-3.5" />
@@ -346,19 +346,19 @@ export default function PatientDashboardPage() {
                 </div>
                 <div className="rounded-lg border border-[var(--border)] p-2.5 bg-[var(--muted)]/20">
                   <span className="text-[11px] text-[var(--muted-foreground)] flex items-center gap-1">
-                    <Droplets className="h-3 w-3 text-amber-500" /> Blood Sugar
+                    <Droplets className="h-3 w-3 text-[var(--warning)]" /> Blood Sugar
                   </span>
                   <p className="mt-1 text-sm font-bold">{latestVitals?.sugar ?? 96} <span className="text-[10px] font-normal text-[var(--muted-foreground)]">mg/dL</span></p>
                 </div>
                 <div className="rounded-lg border border-[var(--border)] p-2.5 bg-[var(--muted)]/20">
                   <span className="text-[11px] text-[var(--muted-foreground)] flex items-center gap-1">
-                    <Activity className="h-3 w-3 text-sky-500" /> Pulse Rate
+                    <Activity className="h-3 w-3 text-[var(--info)]" /> Pulse Rate
                   </span>
                   <p className="mt-1 text-sm font-bold">{latestVitals?.pulse ?? 72} <span className="text-[10px] font-normal text-[var(--muted-foreground)]">bpm</span></p>
                 </div>
                 <div className="rounded-lg border border-[var(--border)] p-2.5 bg-[var(--muted)]/20">
                   <span className="text-[11px] text-[var(--muted-foreground)] flex items-center gap-1">
-                    <Activity className="h-3 w-3 text-emerald-500" /> BMI Index
+                    <Activity className="h-3 w-3 text-[var(--success)]" /> BMI Index
                   </span>
                   <p className="mt-1 text-sm font-bold">{stats.bmi} <span className="text-[10px] font-normal text-[var(--muted-foreground)]">kg/m²</span></p>
                 </div>

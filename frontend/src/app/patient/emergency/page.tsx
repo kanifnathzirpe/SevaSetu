@@ -118,7 +118,7 @@ export default function EmergencyPage() {
             <CardContent className="flex flex-wrap items-center justify-between gap-4 p-5">
               <div>
                 <p className="flex items-center gap-2 font-semibold text-[var(--danger)]">
-                  <Siren className="h-4 w-4 animate-pulse" /> Active emergency · {active.emergency_type}
+                  <Siren className="h-4 w-4" /> Active emergency · {active.emergency_type}
                 </p>
                 <p className="mt-1 text-sm">{active.description || "Emergency response in progress"}</p>
                 <p className="mt-1 text-xs text-[var(--muted-foreground)]">Raised {formatDate(active.created_at, true)}</p>
@@ -161,7 +161,7 @@ export default function EmergencyPage() {
             <Button
               variant="danger"
               size="lg"
-              className="w-full animate-pulse-ring"
+              className="w-full shadow-md font-semibold"
               loading={raise.isPending}
               onClick={() => raise.mutate()}
             >

@@ -16,18 +16,18 @@ export function Sidebar({ user, onNavigate }: { user: AuthUser; onNavigate?: () 
   const { t } = useI18n();
 
   return (
-    <aside className="flex h-full w-72 flex-col gap-6 overflow-y-auto border-r border-[var(--border)] bg-[color-mix(in_srgb,var(--card)_86%,transparent)] px-4 py-5 backdrop-blur-xl">
+    <aside className="flex h-full w-72 flex-col gap-6 overflow-y-auto border-r border-[var(--border)] bg-[var(--card)] px-4 py-5">
       <Logo />
-      <div className="rounded-2xl bg-[color-mix(in_srgb,var(--primary)_10%,transparent)] px-3 py-2.5">
-        <p className="text-xs uppercase tracking-wide text-[var(--muted-foreground)]">{t("sidebar.signedInAs")}</p>
-        <p className="truncate text-sm font-semibold">{user.full_name}</p>
-        <p className="text-xs text-[var(--primary)]">{t(`role.${user.role}`)}</p>
+      <div className="rounded-xl border border-[var(--border)] bg-[var(--background)] px-3.5 py-3">
+        <p className="text-[10px] font-semibold uppercase tracking-wider text-[var(--muted-foreground)]">{t("sidebar.signedInAs")}</p>
+        <p className="truncate text-sm font-semibold text-[var(--foreground)] mt-0.5">{user.full_name}</p>
+        <p className="text-xs font-medium text-[var(--primary)]">{t(`role.${user.role}`)}</p>
       </div>
 
       <nav className="flex flex-1 flex-col gap-5">
         {sections.map((section) => (
           <div key={section.title}>
-            <p className="mb-2 px-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--muted-foreground)]">
+            <p className="mb-2 px-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--muted-foreground)]">
               {t(NAV_SECTION_KEY[section.title] ?? section.title)}
             </p>
             <ul className="space-y-1">
@@ -42,14 +42,14 @@ export function Sidebar({ user, onNavigate }: { user: AuthUser; onNavigate?: () 
                       className={cn(
                         "relative flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition-colors",
                         active
-                          ? "text-[var(--primary)]"
-                          : "text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)]"
+                          ? "bg-[var(--primary-light)] text-[var(--primary)] font-semibold"
+                          : "text-[#52667A] dark:text-[#CBD5E1] hover:bg-[#F1F6FA] dark:hover:bg-[#1E3A5F] hover:text-[#102A43] dark:hover:text-[#F8FAFC]"
                       )}
                     >
                       {active && (
                         <motion.span
                           layoutId="sidebar-active"
-                          className="absolute inset-0 -z-10 rounded-xl bg-[color-mix(in_srgb,var(--primary)_14%,transparent)]"
+                          className="absolute inset-0 -z-10 rounded-xl bg-[var(--primary-light)]"
                           transition={{ type: "spring", stiffness: 380, damping: 30 }}
                         />
                       )}

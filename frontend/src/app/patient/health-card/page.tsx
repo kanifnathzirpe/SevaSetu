@@ -49,7 +49,7 @@ function QrCode({ value }: { value: string }) {
       aria-label="Health ID QR code"
     >
       {cells.map((filled, index) => (
-        <span key={index} style={{ width: 6, height: 6, background: filled ? "#0b1f24" : "#ffffff" }} />
+        <span key={index} style={{ width: 6, height: 6, background: filled ? "#0F172A" : "#FFFFFF" }} />
       ))}
     </div>
   );
@@ -104,7 +104,7 @@ export default function HealthCardPage() {
 
       <div className="grid gap-4 lg:grid-cols-3">
         <div className="lg:col-span-2">
-          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[var(--primary)] via-[color-mix(in_srgb,var(--primary)_65%,var(--secondary))] to-[var(--secondary)] p-7 text-white shadow-2xl">
+          <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-[var(--primary)] to-[var(--primary-dark)] p-7 text-white shadow-lg">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-xs uppercase tracking-[0.2em] text-white/70">Government of Maharashtra</p>

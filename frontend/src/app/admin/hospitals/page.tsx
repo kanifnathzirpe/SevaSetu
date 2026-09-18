@@ -148,19 +148,19 @@ export default function AdminHospitalsPage() {
               </div>
               <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-3">
                 <p className="text-xs text-[var(--muted-foreground)]">ICU Beds</p>
-                <p className="text-lg font-bold text-red-500">{myHospital.available_icu_beds} / {myHospital.icu_beds}</p>
+                <p className="text-lg font-bold text-[var(--danger)]">{myHospital.available_icu_beds} / {myHospital.icu_beds}</p>
                 <p className="text-[10px] text-[var(--muted-foreground)]">Available / Total</p>
               </div>
               <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-3">
                 <p className="text-xs text-[var(--muted-foreground)]">Occupancy Rate</p>
-                <p className="text-lg font-bold text-amber-500">
+                <p className="text-lg font-bold text-[var(--warning)]">
                   {myHospital.total_beds ? Math.round(((myHospital.total_beds - myHospital.available_beds) / myHospital.total_beds) * 100) : 0}%
                 </p>
                 <p className="text-[10px] text-[var(--muted-foreground)]">Inpatient capacity</p>
               </div>
               <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-3">
                 <p className="text-xs text-[var(--muted-foreground)]">Rating</p>
-                <p className="text-lg font-bold text-emerald-500">★ {myHospital.rating}</p>
+                <p className="text-lg font-bold text-[var(--success)]">★ {myHospital.rating}</p>
                 <p className="text-[10px] text-[var(--muted-foreground)]">Public rating</p>
               </div>
             </div>

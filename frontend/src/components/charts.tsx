@@ -21,7 +21,7 @@ import {
   YAxis,
 } from "recharts";
 
-export const CHART_COLORS = ["#0d9488", "#2563eb", "#16a34a", "#f59e0b", "#dc2626", "#7c3aed", "#0891b2"];
+export const CHART_COLORS = ["#1D5FA7", "#5FA9E6", "#123B6D", "#16A34A", "#D97706", "#DC2626", "#64748B"];
 
 const axisProps = {
   stroke: "var(--muted-foreground)",
@@ -219,7 +219,7 @@ export function ScoreGauge({ value, label, height = 200 }: { value: number; labe
           endAngle={-30}
         >
           <PolarAngleAxis type="number" domain={[0, 100]} tick={false} />
-          <RadialBar background dataKey="value" cornerRadius={16} fill="var(--primary)" />
+          <RadialBar background dataKey="value" cornerRadius={16} fill="var(--secondary)" />
           <text
             x="50%"
             y="52%"

@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import {
-  Activity,
   CalendarDays,
   FileText,
   Home,
@@ -79,7 +78,7 @@ export function BottomNav({ user, onOpenMenu }: { user: AuthUser; onOpenMenu: ()
   return (
     <nav
       aria-label="Mobile navigation"
-      className="fixed bottom-0 left-0 right-0 z-40 block border-t border-[var(--border)] bg-[color-mix(in_srgb,var(--card)_92%,transparent)] px-2 pt-1.5 pb-[max(0.5rem,env(safe-area-inset-bottom))] shadow-lg backdrop-blur-xl lg:hidden"
+      className="fixed bottom-0 left-0 right-0 z-40 block border-t border-[var(--border)] bg-[var(--card)] px-2 pt-1.5 pb-[max(0.5rem,env(safe-area-inset-bottom))] shadow-lg lg:hidden"
     >
       <div className="mx-auto flex max-w-md items-center justify-around">
         {items.map((item) => {
@@ -95,7 +94,7 @@ export function BottomNav({ user, onOpenMenu }: { user: AuthUser; onOpenMenu: ()
                 className="flex flex-col items-center justify-center min-h-[48px] min-w-[54px] px-1 group"
                 aria-label={translatedLabel}
               >
-                <div className="flex h-10 w-10 -translate-y-2 items-center justify-center rounded-full bg-[var(--danger)] text-white shadow-lg shadow-[color-mix(in_srgb,var(--danger)_40%,transparent)] transition-transform active:scale-95">
+                <div className="flex h-10 w-10 -translate-y-2 items-center justify-center rounded-full bg-[var(--danger)] text-white shadow-md transition-transform active:scale-95">
                   <item.icon className="h-5 w-5" />
                 </div>
                 <span className="-mt-1 text-[10px] font-semibold text-[var(--danger)]">
@@ -111,7 +110,7 @@ export function BottomNav({ user, onOpenMenu }: { user: AuthUser; onOpenMenu: ()
               href={item.href}
               className={cn(
                 "relative flex flex-col items-center justify-center min-h-[48px] min-w-[50px] px-1 py-1 text-center transition-colors touch-target",
-                active ? "text-[var(--primary)]" : "text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
+                active ? "text-[var(--primary)] font-semibold" : "text-[#52667A] dark:text-[#CBD5E1] hover:text-[#102A43] dark:hover:text-[#F8FAFC]"
               )}
             >
               <div className="relative flex items-center justify-center">
@@ -119,7 +118,7 @@ export function BottomNav({ user, onOpenMenu }: { user: AuthUser; onOpenMenu: ()
                 {active && (
                   <motion.div
                     layoutId="bottom-nav-active"
-                    className="absolute -inset-1.5 -z-10 rounded-xl bg-[color-mix(in_srgb,var(--primary)_15%,transparent)]"
+                    className="absolute -inset-1.5 -z-10 rounded-xl bg-[var(--primary-light)]"
                     transition={{ type: "spring", stiffness: 400, damping: 30 }}
                   />
                 )}
@@ -135,7 +134,7 @@ export function BottomNav({ user, onOpenMenu }: { user: AuthUser; onOpenMenu: ()
         <button
           type="button"
           onClick={onOpenMenu}
-          className="flex flex-col items-center justify-center min-h-[48px] min-w-[50px] px-1 py-1 text-[var(--muted-foreground)] hover:text-[var(--foreground)] touch-target cursor-pointer"
+          className="flex flex-col items-center justify-center min-h-[48px] min-w-[50px] px-1 py-1 text-slate-600 dark:text-slate-400 hover:text-[var(--foreground)] touch-target cursor-pointer"
           aria-label={t("menu") || "All sections"}
         >
           <Menu className="h-5 w-5" />

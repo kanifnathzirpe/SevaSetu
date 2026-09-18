@@ -61,13 +61,11 @@ export default function DiseaseHeatmapPage() {
     kind: "sos",
     radius: Math.min(40, 8 + point.cases * 1.5),
     color:
-      point.severity === "critical"
-        ? "#dc2626"
-        : point.severity === "high"
-          ? "#ea580c"
-          : point.severity === "moderate"
-            ? "#f59e0b"
-            : "#0ea5e9",
+      point.severity === "critical" || point.severity === "high"
+        ? "#DC2626"
+        : point.severity === "moderate"
+          ? "#D97706"
+          : "#2563EB",
   }));
 
   return (

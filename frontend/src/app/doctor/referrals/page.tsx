@@ -80,50 +80,50 @@ export default function DoctorReferralsPage() {
 
       {/* KPI Stat Cards */}
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-6">
-        <Card className="border-[var(--border)]">
+        <Card>
           <CardContent className="p-4 flex items-center gap-4">
-            <div className="rounded-xl bg-[var(--primary)]/10 p-3 text-[var(--primary)]">
+            <div className="rounded-xl bg-[#EAF4FC] dark:bg-[#1D5FA7]/20 p-3 text-[#1D5FA7] dark:text-[#5FA9E6]">
               <ArrowRightLeft className="h-6 w-6" />
             </div>
             <div>
-              <p className="text-xs font-medium text-[var(--muted-foreground)]">Total Referrals</p>
-              <p className="text-2xl font-bold">{metrics.total}</p>
+              <p className="text-xs font-semibold uppercase tracking-wider text-[var(--muted-foreground)]">Total Referrals</p>
+              <p className="text-2xl font-bold text-[var(--foreground)]">{metrics.total}</p>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-[var(--border)]">
+        <Card>
           <CardContent className="p-4 flex items-center gap-4">
-            <div className="rounded-xl bg-amber-500/10 p-3 text-amber-600 dark:text-amber-400">
+            <div className="rounded-xl bg-amber-50 dark:bg-amber-950/40 p-3 text-[#D97706] dark:text-amber-300">
               <Clock className="h-6 w-6" />
             </div>
             <div>
-              <p className="text-xs font-medium text-[var(--muted-foreground)]">Open / Pending</p>
-              <p className="text-2xl font-bold">{metrics.openCount}</p>
+              <p className="text-xs font-semibold uppercase tracking-wider text-[var(--muted-foreground)]">Open / Pending</p>
+              <p className="text-2xl font-bold text-[var(--foreground)]">{metrics.openCount}</p>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-[var(--border)]">
+        <Card>
           <CardContent className="p-4 flex items-center gap-4">
-            <div className="rounded-xl bg-blue-500/10 p-3 text-blue-600 dark:text-blue-400">
+            <div className="rounded-xl bg-blue-50 dark:bg-blue-950/40 p-3 text-[#2563EB] dark:text-blue-300">
               <CheckCircle2 className="h-6 w-6" />
             </div>
             <div>
-              <p className="text-xs font-medium text-[var(--muted-foreground)]">Accepted Cases</p>
-              <p className="text-2xl font-bold">{metrics.acceptedCount}</p>
+              <p className="text-xs font-semibold uppercase tracking-wider text-[var(--muted-foreground)]">Accepted Cases</p>
+              <p className="text-2xl font-bold text-[var(--foreground)]">{metrics.acceptedCount}</p>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-[var(--border)]">
+        <Card>
           <CardContent className="p-4 flex items-center gap-4">
-            <div className="rounded-xl bg-red-500/10 p-3 text-red-600 dark:text-red-400">
+            <div className="rounded-xl bg-red-50 dark:bg-red-950/40 p-3 text-[#DC2626] dark:text-red-300">
               <Stethoscope className="h-6 w-6" />
             </div>
             <div>
-              <p className="text-xs font-medium text-[var(--muted-foreground)]">High / Critical Urgency</p>
-              <p className="text-2xl font-bold">{metrics.highUrgency}</p>
+              <p className="text-xs font-semibold uppercase tracking-wider text-[var(--muted-foreground)]">High / Critical</p>
+              <p className="text-2xl font-bold text-[var(--foreground)]">{metrics.highUrgency}</p>
             </div>
           </CardContent>
         </Card>
@@ -232,11 +232,11 @@ export default function DoctorReferralsPage() {
                         </Badge>
 
                         {isOutgoing ? (
-                          <span className="rounded-md bg-blue-500/10 px-2 py-0.5 text-[11px] font-medium text-blue-600 dark:text-blue-400">
+                          <span className="rounded-md border border-[#C5DCF5] bg-[#EAF4FC] px-2 py-0.5 text-[11px] font-medium text-[#1D5FA7] dark:border-[#1D5FA7]/40 dark:bg-[#1D5FA7]/20 dark:text-[#5FA9E6]">
                             Outgoing Referral
                           </span>
                         ) : (
-                          <span className="rounded-md bg-emerald-500/10 px-2 py-0.5 text-[11px] font-medium text-emerald-600 dark:text-emerald-400">
+                          <span className="rounded-md border border-[#C5DCF5] bg-[#EAF4FC] px-2 py-0.5 text-[11px] font-medium text-[#123B6D] dark:border-[#1D5FA7]/40 dark:bg-[#1D5FA7]/30 dark:text-[#5FA9E6] font-semibold">
                             Incoming Referral
                           </span>
                         )}
