@@ -124,7 +124,7 @@ export function BottomNav({ user, onOpenMenu }: { user: AuthUser; onOpenMenu: ()
                   />
                 )}
               </div>
-              <span className="mt-1 max-w-[64px] truncate text-[10px] font-medium leading-tight">
+              <span className="mt-1 max-w-[80px] truncate text-[10px] font-medium leading-tight">
                 {translatedLabel.split(" ")[0]}
               </span>
             </Link>
@@ -135,7 +135,7 @@ export function BottomNav({ user, onOpenMenu }: { user: AuthUser; onOpenMenu: ()
         <button
           type="button"
           onClick={onOpenMenu}
-          className="flex flex-col items-center justify-center min-h-[48px] min-w-[50px] px-1 py-1 text-white hover:text-[var(--foreground)] touch-target cursor-pointer"
+          className="flex flex-col items-center justify-center min-h-[48px] min-w-[50px] px-1 py-1 text-[#52667A] dark:text-[#CBD5E1] hover:text-[#102A43] dark:hover:text-[#F8FAFC] touch-target cursor-pointer"
           aria-label={t("all") || "All sections"}
         >
           <Menu className="h-5 w-5" />
