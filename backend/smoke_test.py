@@ -1,4 +1,4 @@
-"""End-to-end smoke test for every SevaSetu AI API surface."""
+"""End-to-end smoke test for every SevaSetu API surface."""
 
 from fastapi.testclient import TestClient
 

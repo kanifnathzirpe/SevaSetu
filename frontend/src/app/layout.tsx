@@ -8,9 +8,9 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 
 export const metadata: Metadata = {
-  title: "SevaSetu AI",
+  title: "SevaSetu",
   description:
-    "SevaSetu AI brings quality healthcare to rural and underserved areas, connecting patients, ASHA workers, doctors and health officers with AI-assisted triage, telemedicine, emergency response and real-time health surveillance.",
+    "SevaSetu brings quality healthcare to rural and underserved areas, connecting patients, ASHA workers, doctors and health officers with AI-assisted triage, telemedicine, emergency response and real-time health surveillance.",
   keywords: ["public health", "telemedicine", "ASHA", "PHC"],
 };
 

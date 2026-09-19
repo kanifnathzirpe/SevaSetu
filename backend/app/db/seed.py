@@ -1,4 +1,4 @@
-"""Seed the SevaSetu AI database with realistic data.
+"""Seed the SevaSetu database with realistic data.
 
 Run with:  python -m app.db.seed        (drops and recreates all tables)
 """

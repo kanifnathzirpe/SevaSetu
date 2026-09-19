@@ -148,7 +148,7 @@ def download_report(
     for key, value in results.items():
         lines.append(f"  {key:<28}: {value}")
     lines += ["-" * 62, "SUMMARY", f"  {report.summary}", "=" * 62,
-              "This is a digitally generated report from the SevaSetu AI platform."]
+              "This is a digitally generated report from the SevaSetu platform."]
     return PlainTextResponse(
         "\n".join(lines),
         headers={"Content-Disposition": f'attachment; filename="report-{report_id}.txt"'},

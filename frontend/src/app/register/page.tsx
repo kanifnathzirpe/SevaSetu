@@ -48,7 +48,7 @@ export default function RegisterPage() {
         ...values,
         date_of_birth: values.date_of_birth || null,
       });
-      toast.success("Account created. Welcome to SevaSetu AI.");
+      toast.success("Account created. Welcome to SevaSetu.");
       router.replace(ROLE_HOME[account.role]);
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Registration failed");

@@ -1,6 +1,6 @@
 # SevaSetu Frontend
 
-This is the frontend application for **SevaSetu AI**, a digital public health platform built with Next.js 15, React 19, and TypeScript.
+This is the frontend application for **SevaSetu**, a digital public health platform built with Next.js 15, React 19, and TypeScript.
 
 ## Overview
 

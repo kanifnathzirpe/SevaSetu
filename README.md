@@ -1,4 +1,4 @@
-# SevaSetu AI
+# SevaSetu
 
 <div align="center">
 
@@ -45,7 +45,7 @@
 
 ## 🌟 Overview
 
-**SevaSetu AI** is a digital public health platform engineered specifically for rural, remote, and underserved communities. It bridges the critical gap between grassroots community health workers (**ASHAs**), Primary & Community Health Centres (**PHCs/CHCs**), District Hospitals, the **108 Emergency Services**, and the **District Health Administration**.
+**SevaSetu** is a digital public health platform engineered specifically for rural, remote, and underserved communities. It bridges the critical gap between grassroots community health workers (**ASHAs**), Primary & Community Health Centres (**PHCs/CHCs**), District Hospitals, the **108 Emergency Services**, and the **District Health Administration**.
 
 By combining **explainable rule-based clinical intelligence**, **real-time WebRTC teleconsultation**, **geospatial disease outbreak surveillance**, and **field-ready workflows**, SevaSetu ensures that high-quality medical guidance reaches the last mile without requiring expensive hardware or paid proprietary cloud APIs.
 

@@ -35,8 +35,8 @@ export default function DistrictReportsPage() {
   function download() {
     if (!data) return;
     const headerTitle = isHospitalAdmin
-      ? `SEVASETU AI — ${data.hospital_name?.toUpperCase() ?? "HOSPITAL"} OPERATIONS REPORT`
-      : "SEVASETU AI — DISTRICT HEALTH REPORT";
+      ? `SEVASETU — ${data.hospital_name?.toUpperCase() ?? "HOSPITAL"} OPERATIONS REPORT`
+      : "SEVASETU — DISTRICT HEALTH REPORT";
     const issuedBy = isHospitalAdmin
       ? `Issued by Hospital Administration · ${data.hospital_name ?? "Hospital"}`
       : "Issued by the District Health Office · Pune District";
