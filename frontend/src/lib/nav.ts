@@ -64,6 +64,7 @@ export const NAV_BY_ROLE: Record<Role, NavSection[]> = {
       items: [
         { label: "Medical History", href: "/patient/history", icon: ClipboardList },
         { label: "Reports", href: "/patient/reports", icon: FileText },
+        { label: "Referrals", href: "/patient/referrals", icon: ArrowRightLeft },
         { label: "Prescriptions", href: "/patient/prescriptions", icon: Pill },
         { label: "Govt Schemes", href: "/patient/schemes", icon: ShieldCheck },
         { label: "Health Card", href: "/patient/health-card", icon: CreditCard },

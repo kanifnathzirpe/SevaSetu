@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import {
+  ArrowRightLeft,
   CalendarDays,
   CheckCircle2,
   Clock,
@@ -13,6 +14,7 @@ import {
   Syringe,
   FileText as HistoryIcon,
   MapPin,
+  Users,
 } from "lucide-react";
 import Link from "next/link";
 import * as React from "react";
@@ -35,6 +37,8 @@ const QUICK_ACTIONS = [
   { labelKey: "nav.govtSchemes", href: "/patient/schemes", icon: ShieldCheck },
   { labelKey: "nav.nearbyServices", href: "/patient/hospitals", icon: MapPin },
   { labelKey: "nav.prescriptions", href: "/patient/prescriptions", icon: Pill },
+  { labelKey: "nav.referrals", href: "/patient/referrals", icon: ArrowRightLeft },
+  { labelKey: "nav.myFamily", href: "/patient/family", icon: Users },
 ];
 
 export default function PatientDashboardPage() {
@@ -212,7 +216,7 @@ export default function PatientDashboardPage() {
           <CardHeader>
             <CardTitle>{t("dashboard.quickActions")}</CardTitle>
           </CardHeader>
-          <CardContent className="grid grid-cols-2 gap-3">
+          <CardContent className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {QUICK_ACTIONS.map((action) => (
               <Link
                 key={action.href}

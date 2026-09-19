@@ -13,6 +13,7 @@ from app.api.v1.serializers import (
     patient_out,
     pregnancy_out,
     prescription_out,
+    referral_out,
     report_out,
     vaccination_out,
 )
@@ -26,7 +27,9 @@ from app.models import (
     Patient,
     PregnancyRecord,
     Prescription,
+    Referral,
     Report,
+    User,
     Vaccination,
     VaccinationStatus,
 )
@@ -40,6 +43,7 @@ from app.schemas import (
     PatientProfileUpdate,
     PregnancyOut,
     PrescriptionOut,
+    ReferralOut,
     ReportOut,
     VaccinationOut,
 )
@@ -272,6 +276,37 @@ def my_reports(
     if report_type:
         query = query.filter(Report.report_type == report_type)
     return [report_out(r) for r in query.order_by(Report.report_date.desc()).all()]
+
+
+@router.get("/referrals", response_model=list[ReferralOut])
+def my_referrals(
+    db: Session = Depends(get_db),
+    patient: Patient = Depends(get_current_patient),
+) -> list[ReferralOut]:
+    query = (
+        db.query(Referral)
+        .options(
+            joinedload(Referral.patient).joinedload(Patient.user),
+            joinedload(Referral.to_doctor).joinedload(Doctor.user),
+            joinedload(Referral.to_hospital),
+        )
+        .filter(Referral.patient_id == patient.id)
+    )
+    
+    referrals = query.order_by(Referral.created_at.desc()).all()
+    
+    # Get referring doctor names
+    user_ids = [r.created_by_user_id for r in referrals if r.created_by_user_id]
+    users = {u.id: u.full_name for u in db.query(User).filter(User.id.in_(user_ids)).all()} if user_ids else {}
+    
+    output = []
+    for ref in referrals:
+        data = referral_out(ref)
+        if ref.created_by_user_id and ref.created_by_user_id in users:
+            data.referred_by_name = f"Dr. {users[ref.created_by_user_id]}" if not users[ref.created_by_user_id].startswith("Dr.") else users[ref.created_by_user_id]
+        output.append(data)
+    
+    return output
 
 
 @router.get("/reminders", response_model=list[MedicineReminderOut])
