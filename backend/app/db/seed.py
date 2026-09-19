@@ -1016,18 +1016,33 @@ def seed_demo_accounts(
                     synced=offset < 0,
                 )
             )
-        child = Child(
-            household_id=household.id,
-            mother_patient_id=patient.id if i == 0 else None,
-            name=person_name(random.choice([Gender.MALE, Gender.FEMALE])),
-            date_of_birth=TODAY - timedelta(days=random.randint(60, 1200)),
-            gender=random.choice([Gender.MALE, Gender.FEMALE]),
-            birth_weight_kg=round(random.uniform(2.3, 3.6), 2),
-            current_weight_kg=round(random.uniform(5, 14), 1),
-            height_cm=round(random.uniform(55, 95), 1),
-            nutrition_status=random.choice(["Normal", "Moderately underweight"]),
-            locality="Hadapsar",
-        )
+        # For the demo patient's household (i == 0), create deterministic family member
+        if i == 0:
+            child = Child(
+                household_id=household.id,
+                mother_patient_id=patient.id,
+                name="Pravin Jadhav",
+                date_of_birth=date(2024, 7, 13),
+                gender=Gender.MALE,
+                birth_weight_kg=2.6,
+                current_weight_kg=5.4,
+                height_cm=65.0,
+                nutrition_status="Normal",
+                locality="Hadapsar",
+            )
+        else:
+            child = Child(
+                household_id=household.id,
+                mother_patient_id=None,
+                name=person_name(random.choice([Gender.MALE, Gender.FEMALE])),
+                date_of_birth=TODAY - timedelta(days=random.randint(60, 1200)),
+                gender=random.choice([Gender.MALE, Gender.FEMALE]),
+                birth_weight_kg=round(random.uniform(2.3, 3.6), 2),
+                current_weight_kg=round(random.uniform(5, 14), 1),
+                height_cm=round(random.uniform(55, 95), 1),
+                nutrition_status=random.choice(["Normal", "Moderately underweight"]),
+                locality="Hadapsar",
+            )
         db.add(child)
         db.flush()
         for vaccine, dose, due_day in VACCINES_CHILD[:10]:

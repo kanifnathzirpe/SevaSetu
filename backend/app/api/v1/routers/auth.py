@@ -64,7 +64,7 @@ def _create_role_profile(db: Session, user: User, payload: RegisterRequest) -> N
                 qualification="MBBS",
                 registration_no=f"MMC-{randint(100000, 999999)}",
                 experience_years=1,
-                bio="Newly registered medical officer on SevaSetu AI.",
+                bio="Newly registered medical officer on SevaSetu.",
             )
         )
     elif user.role == UserRole.ASHA:

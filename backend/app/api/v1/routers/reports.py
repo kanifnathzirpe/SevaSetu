@@ -135,7 +135,7 @@ def download_report(
     except json.JSONDecodeError:
         results = {}
     lines = [
-        "SEVASETU AI — GOVERNMENT OF MAHARASHTRA",
+        "SEVASETU — GOVERNMENT OF MAHARASHTRA",
         "=" * 62,
         f"Report        : {report.title}",
         f"Type          : {report.report_type.value}",
@@ -172,7 +172,7 @@ def download_prescription(
     if not pres:
         raise HTTPException(404, "Prescription not found")
     lines = [
-        "SEVASETU AI — DIGITAL PRESCRIPTION",
+        "SEVASETU — DIGITAL PRESCRIPTION",
         "=" * 62,
         f"Patient   : {pres.patient.user.full_name} ({pres.patient.health_id})",
         f"Doctor    : Dr. {pres.doctor.user.full_name}, {pres.doctor.qualification}",

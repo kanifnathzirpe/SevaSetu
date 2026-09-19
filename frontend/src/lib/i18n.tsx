@@ -34,6 +34,7 @@ const en: TranslationDict = {
   "topbar.search":           "Search hospitals, doctors, patients…",
   "topbar.sos":              "SOS",
   "topbar.viewProfile":      "View Profile",
+  "topbar.myFamily":         "My Family",
   "topbar.darkMode":         "Dark Mode",
   "topbar.signOut":          "Sign Out",
 
@@ -57,6 +58,7 @@ const en: TranslationDict = {
   "nav.appointments":        "Appointments",
   "nav.symptomChecker":      "Symptom Checker",
   "nav.nearbyHospitals":     "Nearby Hospitals",
+  "nav.nearbyServices":      "Nearby Services",
   "nav.emergencySOS":        "Emergency SOS",
   "nav.medicalHistory":      "Medical History",
   "nav.reports":             "Reports",
@@ -297,6 +299,7 @@ const en: TranslationDict = {
   "emergency.cancel": "Cancel",
 
   "language":                "Language",
+  "all":                     "All",
 
   /* ---------- Government Health Schemes ---------- */
   "schemes.title":           "Government Health Schemes",
@@ -447,6 +450,7 @@ const hi: TranslationDict = {
   "topbar.search":           "अस्पताल, डॉक्टर, मरीज़ खोजें…",
   "topbar.sos":              "SOS",
   "topbar.viewProfile":      "प्रोफ़ाइल देखें",
+  "topbar.myFamily":         "मेरा परिवार",
   "topbar.darkMode":         "डार्क मोड",
   "topbar.signOut":          "साइन आउट",
 
@@ -850,6 +854,7 @@ const mr: TranslationDict = {
   "topbar.search":           "रुग्णालय, डॉक्टर, रुग्ण शोधा…",
   "topbar.sos":              "SOS",
   "topbar.viewProfile":      "प्रोफाइल पहा",
+  "topbar.myFamily":         "माझे कुटुंब",
   "topbar.darkMode":         "डार्क मोड",
   "topbar.signOut":          "साइन आउट",
 
@@ -2115,6 +2120,8 @@ export const NAV_LABEL_KEY: Record<string, string> = {
   "Appointments":       "nav.appointments",
   "Symptom Checker":    "nav.symptomChecker",
   "Nearby Hospitals":   "nav.nearbyHospitals",
+  "Nearby":             "nav.nearbyServices",
+  "Emergency":          "nav.emergencySOS",
   "Emergency SOS":      "nav.emergencySOS",
   "Medical History":    "nav.medicalHistory",
   "Reports":            "nav.reports",

@@ -14,7 +14,7 @@ from app.models import User
 from app.models import models  # noqa: F401  (ensures models are registered)
 
 fastapi_app = FastAPI(
-    title="SevaSetu AI",
+    title="SevaSetu",
     description=(
         "Public healthcare delivery platform for rural and underserved areas."
     ),

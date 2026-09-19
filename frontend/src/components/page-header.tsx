@@ -12,7 +12,7 @@ export function PageHeader({
   return (
     <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-3">
       <div className="min-w-0 flex-1">
-        <h1 className="text-xl font-bold tracking-tight sm:text-2xl lg:text-3xl break-words">{title}</h1>
+        <h1 className="text-lg font-bold tracking-tight sm:text-xl lg:text-2xl break-words">{title}</h1>
         {description ? (
           <p className="mt-1 max-w-2xl text-xs sm:text-sm text-[var(--muted-foreground)] break-words">{description}</p>
         ) : null}

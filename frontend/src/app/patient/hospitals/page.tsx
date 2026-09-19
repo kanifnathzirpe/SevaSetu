@@ -1,10 +1,9 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { Building2, Droplets, Hospital, MapPin, Phone, Search, Star, Syringe } from "lucide-react";
+import { Building2, Droplets, Hospital, MapPin, Phone, Pill, Search, Star, Syringe, TestTube } from "lucide-react";
 import * as React from "react";
 
-import { MapView, type MapMarker } from "@/components/map";
 import { PageHeader } from "@/components/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -31,12 +30,58 @@ interface BloodBank {
   total_units: number;
 }
 
+interface Pharmacy {
+  id: number;
+  name: string;
+  locality: string;
+  address: string;
+  phone: string;
+  distance_km: number;
+  is_demo: boolean;
+}
+
+interface DiagnosticLab {
+  id: number;
+  name: string;
+  locality: string;
+  address: string;
+  phone: string;
+  distance_km: number;
+  is_demo: boolean;
+}
+
 const FACILITY_TYPES = [
   "district_hospital",
   "community_health_center",
   "urban_health_center",
   "phc",
   "sub_center",
+];
+
+const DEMO_PHARMACIES: Pharmacy[] = [
+  { id: 1001, name: "Apollo Pharmacy", locality: "Hadapsar", address: "Gadital Road, Hadapsar", phone: "020-26991234", distance_km: 0.8, is_demo: true },
+  { id: 1002, name: "MedPlus", locality: "Kharadi", address: "EON IT Park Road, Kharadi", phone: "020-27004567", distance_km: 2.1, is_demo: true },
+  { id: 1003, name: "Jan Aushadhi Kendra", locality: "Viman Nagar", address: "Near Airport Road, Viman Nagar", phone: "020-26678901", distance_km: 3.5, is_demo: true },
+  { id: 1004, name: "Wellness Forever", locality: "Kothrud", address: "Karve Road, Kothrud", phone: "020-25432109", distance_km: 4.2, is_demo: true },
+  { id: 1005, name: "PharmEasy", locality: "Baner", address: "Baner-Pashan Road, Baner", phone: "020-23456789", distance_km: 5.8, is_demo: true },
+  { id: 1006, name: "Netmeds", locality: "Aundh", address: "Aundh Road, Aundh", phone: "020-25678901", distance_km: 3.2, is_demo: true },
+  { id: 1007, name: "1mg", locality: "Shivajinagar", address: "Shivaji Road, Shivajinagar", phone: "020-26012345", distance_km: 1.5, is_demo: true },
+  { id: 1008, name: "Subsequent Pharma", locality: "Wagholi", address: "Nagar Road, Wagholi", phone: "020-26543210", distance_km: 6.4, is_demo: true },
+  { id: 1009, name: "Fortis Pharmacy", locality: "Pimpri", address: "Near YCM Hospital, Pimpri", phone: "020-27456789", distance_km: 7.1, is_demo: true },
+  { id: 1010, name: "Lily Pharmacy", locality: "Hinjawadi", address: "Phase 1, Hinjawadi", phone: "020-22987654", distance_km: 8.3, is_demo: true },
+];
+
+const DEMO_DIAGNOSTIC_LABS: DiagnosticLab[] = [
+  { id: 2001, name: "Metropolis Healthcare", locality: "Hadapsar", address: "Gadital Road, Hadapsar", phone: "020-26992345", distance_km: 1.2, is_demo: true },
+  { id: 2002, name: "Dr. Lal PathLabs", locality: "Kharadi", address: "EON IT Park Road, Kharadi", phone: "020-27005678", distance_km: 2.4, is_demo: true },
+  { id: 2003, name: "Suburban Diagnostics", locality: "Shivajinagar", address: "Shivaji Road, Shivajinagar", phone: "020-26023456", distance_km: 1.8, is_demo: true },
+  { id: 2004, name: "SRL Diagnostics", locality: "Kothrud", address: "Karve Road, Kothrud", phone: "020-25433210", distance_km: 4.5, is_demo: true },
+  { id: 2005, name: "Thyrocare", locality: "Baner", address: "Baner-Pashan Road, Baner", phone: "020-23457890", distance_km: 6.1, is_demo: true },
+  { id: 2006, name: "PathKind Labs", locality: "Aundh", address: "Aundh Road, Aundh", phone: "020-25689012", distance_km: 3.5, is_demo: true },
+  { id: 2007, name: "Vijaya Diagnostic Centre", locality: "Viman Nagar", address: "Near Airport Road, Viman Nagar", phone: "020-26689012", distance_km: 3.8, is_demo: true },
+  { id: 2008, name: "Anand Laboratory", locality: "Wagholi", address: "Nagar Road, Wagholi", phone: "020-26554321", distance_km: 6.8, is_demo: true },
+  { id: 2009, name: "Ruby Hall Clinic Lab", locality: "Pimpri", address: "Near YCM Hospital, Pimpri", phone: "020-27467890", distance_km: 7.4, is_demo: true },
+  { id: 2010, name: "Noble Diagnostic Centre", locality: "Hinjawadi", address: "Phase 1, Hinjawadi", phone: "020-22998765", distance_km: 8.6, is_demo: true },
 ];
 
 export default function NearbyHospitalsPage() {
@@ -75,55 +120,144 @@ export default function NearbyHospitalsPage() {
         hospital.locality.toLowerCase().includes(search.toLowerCase()))
   );
 
-  const markers: MapMarker[] = [
-    ...filtered.map((hospital) => ({
-      id: `h-${hospital.id}`,
-      lat: hospital.latitude,
-      lng: hospital.longitude,
-      title: hospital.name,
-      subtitle: `${titleCase(hospital.facility_type)} · ${hospital.available_beds}/${hospital.total_beds} beds free · ${hospital.distance_km?.toFixed(1)} km`,
-      kind: (hospital.facility_type === "phc" || hospital.facility_type === "sub_center" ? "phc" : "hospital") as MapMarker["kind"],
-    })),
-    ...(patient
-      ? [
-          {
-            id: "me",
-            lat: patient.latitude,
-            lng: patient.longitude,
-            title: "Your location",
-            subtitle: `${patient.locality}`,
-            kind: "patient" as const,
-          },
-        ]
-      : []),
-  ];
+  const filteredPharmacies = DEMO_PHARMACIES.filter(
+    (pharmacy) =>
+      !search ||
+      pharmacy.name.toLowerCase().includes(search.toLowerCase()) ||
+      pharmacy.locality.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const filteredLabs = DEMO_DIAGNOSTIC_LABS.filter(
+    (lab) =>
+      !search ||
+      lab.name.toLowerCase().includes(search.toLowerCase()) ||
+      lab.locality.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <>
       <PageHeader
-        title="Nearby government facilities"
-        description="Live bed availability across PHCs, sub-centres, urban health centres and district hospitals"
+        title="Nearby Services"
+        description="Live bed availability at nearby public healthcare facilities"
       />
 
-      <Card className="overflow-hidden">
-        <CardContent className="p-0">
-          <MapView markers={markers} className="h-[380px] w-full" />
-        </CardContent>
-      </Card>
-
       <div className="mt-4">
-        <Tabs defaultValue="facilities">
-          <TabsList>
+        <Tabs defaultValue="pharmacies">
+          <TabsList className="flex-wrap">
+            <TabsTrigger value="pharmacies">
+              <Pill className="h-4 w-4" /> Pharmacies ({filteredPharmacies.length})
+            </TabsTrigger>
+            <TabsTrigger value="labs">
+              <TestTube className="h-4 w-4" /> Diagnostic Labs ({filteredLabs.length})
+            </TabsTrigger>
+            <TabsTrigger value="blood">
+              <Droplets className="h-4 w-4" /> Blood Banks ({bloodBanks.length})
+            </TabsTrigger>
+            <TabsTrigger value="vaccination">
+              <Syringe className="h-4 w-4" /> Vaccination Centres ({vaccinationCenters.length})
+            </TabsTrigger>
             <TabsTrigger value="facilities">
               <Hospital className="h-4 w-4" /> Facilities ({filtered.length})
             </TabsTrigger>
-            <TabsTrigger value="blood">
-              <Droplets className="h-4 w-4" /> Blood banks ({bloodBanks.length})
-            </TabsTrigger>
-            <TabsTrigger value="vaccination">
-              <Syringe className="h-4 w-4" /> Vaccination centres ({vaccinationCenters.length})
-            </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="pharmacies">
+            <div className="mb-4">
+              <div className="relative min-w-56 flex-1">
+                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--muted-foreground)]" />
+                <Input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search by name or locality" className="pl-9" />
+              </div>
+            </div>
+
+            <div className="grid gap-3 md:grid-cols-2">
+              {filteredPharmacies.map((pharmacy) => (
+                <Card key={pharmacy.id}>
+                  <CardContent className="p-5">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <p className="font-semibold">{pharmacy.name}</p>
+                        <p className="text-xs text-[var(--muted-foreground)]">
+                          <MapPin className="mr-1 inline h-3 w-3" />
+                          {pharmacy.address}
+                        </p>
+                      </div>
+                      <Badge tone="primary">{pharmacy.distance_km.toFixed(1)} km</Badge>
+                    </div>
+
+                    <div className="mt-3 flex flex-wrap gap-2 text-xs">
+                      <Badge>Pharmacy</Badge>
+                    </div>
+
+                    <div className="mt-4 flex gap-2">
+                      <Button asChild size="sm" variant="outline">
+                        <a href={`tel:${pharmacy.phone}`}>
+                          <Phone className="h-3.5 w-3.5" /> {pharmacy.phone}
+                        </a>
+                      </Button>
+                      <Button asChild size="sm" variant="secondary">
+                        <a
+                          href={`https://www.openstreetmap.org/?mlat=${18.5204}&mlon=${73.8567}#map=16/18.5204/73.8567`}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          Directions
+                        </a>
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="labs">
+            <div className="mb-4">
+              <div className="relative min-w-56 flex-1">
+                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--muted-foreground)]" />
+                <Input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search by name or locality" className="pl-9" />
+              </div>
+            </div>
+
+            <div className="grid gap-3 md:grid-cols-2">
+              {filteredLabs.map((lab) => (
+                <Card key={lab.id}>
+                  <CardContent className="p-5">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <p className="font-semibold">{lab.name}</p>
+                        <p className="text-xs text-[var(--muted-foreground)]">
+                          <MapPin className="mr-1 inline h-3 w-3" />
+                          {lab.address}
+                        </p>
+                      </div>
+                      <Badge tone="primary">{lab.distance_km.toFixed(1)} km</Badge>
+                    </div>
+
+                    <div className="mt-3 flex flex-wrap gap-2 text-xs">
+                      <Badge>Diagnostic Lab</Badge>
+                    </div>
+
+                    <div className="mt-4 flex gap-2">
+                      <Button asChild size="sm" variant="outline">
+                        <a href={`tel:${lab.phone}`}>
+                          <Phone className="h-3.5 w-3.5" /> {lab.phone}
+                        </a>
+                      </Button>
+                      <Button asChild size="sm" variant="secondary">
+                        <a
+                          href={`https://www.openstreetmap.org/?mlat=${18.5204}&mlon=${73.8567}#map=16/18.5204/73.8567`}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          Directions
+                        </a>
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
 
           <TabsContent value="facilities">
             <div className="mb-4 flex flex-wrap gap-3">
@@ -210,6 +344,13 @@ export default function NearbyHospitalsPage() {
           </TabsContent>
 
           <TabsContent value="blood">
+            <div className="mb-4">
+              <div className="relative min-w-56 flex-1">
+                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--muted-foreground)]" />
+                <Input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search by name or locality" className="pl-9" />
+              </div>
+            </div>
+
             <div className="grid gap-3 md:grid-cols-2">
               {bloodBanks.map((bank) => (
                 <Card key={bank.id}>
@@ -238,6 +379,13 @@ export default function NearbyHospitalsPage() {
           </TabsContent>
 
           <TabsContent value="vaccination">
+            <div className="mb-4">
+              <div className="relative min-w-56 flex-1">
+                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--muted-foreground)]" />
+                <Input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search by name or locality" className="pl-9" />
+              </div>
+            </div>
+
             <div className="grid gap-3 md:grid-cols-2">
               {vaccinationCenters.map((center) => (
                 <Card key={center.id}>

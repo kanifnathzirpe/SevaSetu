@@ -1,6 +1,6 @@
 "use client";
 
-import { Globe, LogOut, Menu, Moon, Search, Siren, User } from "lucide-react";
+import { LogOut, Menu, Moon, Search, Siren, User } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
@@ -65,8 +65,8 @@ export function Topbar({ user, onMenu }: { user: AuthUser; onMenu: () => void })
   }, [langOpen]);
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center gap-2 sm:gap-3 border-b border-[var(--border)] bg-[var(--card)] px-3 sm:px-4">
-      <Button variant="ghost" size="icon" className="lg:hidden touch-target shrink-0" onClick={onMenu} aria-label="Open menu">
+    <header className="sticky top-0 z-30 flex h-16 items-center gap-2 sm:gap-3 border-b border-[var(--brand-primary-dark)] bg-[var(--brand-primary)] px-3 sm:px-4">
+      <Button variant="ghost" size="icon" className="lg:hidden touch-target shrink-0 text-white hover:bg-white/10" onClick={onMenu} aria-label="Open menu">
         <Menu className="h-5 w-5" />
       </Button>
 
@@ -103,11 +103,11 @@ export function Topbar({ user, onMenu }: { user: AuthUser; onMenu: () => void })
         >
           <Button
             variant="ghost"
-            size="icon"
             onClick={() => setLangOpen((p) => !p)}
             aria-label={t("language")}
+            className="text-white hover:bg-[var(--brand-primary-dark)] h-9 px-3"
           >
-            <Globe className="h-4 w-4 text-slate-600 dark:text-slate-400" />
+            <span className="text-sm font-semibold">{LOCALES.find(l => l.code === locale)?.label}</span>
           </Button>
 
           {langOpen && (
@@ -152,12 +152,12 @@ export function Topbar({ user, onMenu }: { user: AuthUser; onMenu: () => void })
           <button
             type="button"
             onClick={() => setProfileOpen((p) => !p)}
-            className="flex items-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--background)] py-1 pl-1 pr-2.5 transition-colors hover:bg-[var(--muted)] cursor-pointer"
+            className="flex items-center gap-2 rounded-xl border border-[color-mix(in_srgb,white_20%,var(--brand-primary))] bg-[color-mix(in_srgb,white_10%,var(--brand-primary))] py-1 pl-1 pr-2.5 transition-colors hover:bg-[color-mix(in_srgb,white_20%,var(--brand-primary))] cursor-pointer"
           >
             <Avatar name={user.full_name} size="sm" />
             <div className="hidden leading-tight sm:block text-left">
-              <p className="max-w-32 truncate text-xs font-semibold">{user.full_name}</p>
-              <p className="text-[10px] text-[var(--muted-foreground)]">
+              <p className="max-w-32 truncate text-xs font-semibold text-white">{user.full_name}</p>
+              <p className="text-[10px] text-[color-mix(in_srgb,white_70%,transparent)]">
                 {t(`role.${user.role}`)}
               </p>
             </div>
@@ -179,6 +179,15 @@ export function Topbar({ user, onMenu }: { user: AuthUser; onMenu: () => void })
               >
                 <User className="h-4 w-4 text-[var(--muted-foreground)]" />
                 {t("topbar.viewProfile")}
+              </Link>
+
+              <Link
+                href="/patient/family"
+                onClick={() => setProfileOpen(false)}
+                className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-[var(--foreground)] transition-colors hover:bg-[var(--muted)]"
+              >
+                <User className="h-4 w-4 text-[var(--muted-foreground)]" />
+                {t("topbar.myFamily")}
               </Link>
 
               <button

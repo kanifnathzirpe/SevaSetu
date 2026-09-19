@@ -31,6 +31,7 @@ from app.models import (
     VaccinationStatus,
 )
 from app.schemas import (
+    ChildCreate,
     ChildOut,
     MedicineReminderCreate,
     MedicineReminderOut,
@@ -381,6 +382,30 @@ def my_children(
         )
         result.append(child_out(child, due))
     return result
+
+
+@router.post("/children", response_model=ChildOut, status_code=201)
+def add_child(
+    child_data: ChildCreate,
+    db: Session = Depends(get_db),
+    patient: Patient = Depends(get_current_patient),
+) -> ChildOut:
+    """Add a new family member (child) for the current patient."""
+    child = Child(
+        mother_patient_id=patient.id,
+        name=child_data.name,
+        date_of_birth=child_data.date_of_birth,
+        gender=child_data.gender,
+        birth_weight_kg=child_data.birth_weight_kg,
+        current_weight_kg=child_data.current_weight_kg,
+        height_cm=child_data.height_cm,
+        nutrition_status=child_data.nutrition_status,
+        locality=child_data.locality or patient.locality,
+    )
+    db.add(child)
+    db.commit()
+    db.refresh(child)
+    return child_out(child)
 
 
 @router.get("/children/{child_id}/immunisation", response_model=list[VaccinationOut])

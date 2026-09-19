@@ -302,6 +302,17 @@ class VaccinationOut(ORMModel):
     beneficiary_name: str = ""
 
 
+class ChildCreate(BaseModel):
+    name: str = Field(min_length=2, max_length=140)
+    date_of_birth: date
+    gender: Gender
+    birth_weight_kg: float = Field(default=2.9, ge=1.0, le=6.0)
+    current_weight_kg: float = Field(default=8.0, ge=1.0, le=100.0)
+    height_cm: float = Field(default=70.0, ge=30.0, le=200.0)
+    nutrition_status: str = Field(default="Normal", max_length=60)
+    locality: str = Field(default="", max_length=120)
+
+
 class ChildOut(ORMModel):
     id: int
     name: str

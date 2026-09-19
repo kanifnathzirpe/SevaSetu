@@ -140,12 +140,12 @@ export default function LoginPage() {
           <div className="flex items-start justify-between gap-4 pt-1 sm:pt-2">
             {/* SevaSetu Branding (32-40px from top, 48-64px from left on desktop) */}
             <Link href="/" className="flex items-center gap-3 group">
-              <div className="relative h-11 w-11 rounded-xl bg-white p-1.5 shadow-md flex items-center justify-center shrink-0 border border-white/20">
+              <div className="relative h-12 w-12 rounded-xl bg-white shadow-md flex items-center justify-center shrink-0 border border-white/20">
                 <Image
-                  src="/logo.png"
+                  src="/images/logo.png"
                   alt="SevaSetu Logo"
-                  width={36}
-                  height={36}
+                  width={50}
+                  height={50}
                   className="object-contain"
                 />
               </div>

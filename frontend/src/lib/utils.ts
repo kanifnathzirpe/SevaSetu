@@ -53,6 +53,18 @@ export function titleCase(value?: string | null) {
     .replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
+export function ageFromDob(dateOfBirth?: string | Date | null): number {
+  if (!dateOfBirth) return 0;
+  const dob = typeof dateOfBirth === "string" ? new Date(dateOfBirth) : dateOfBirth;
+  const today = new Date();
+  let age = today.getFullYear() - dob.getFullYear();
+  const monthDiff = today.getMonth() - dob.getMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+    age--;
+  }
+  return age;
+}
+
 export const RISK_STYLES: Record<string, string> = {
   low: "bg-[#DCFCE7] text-[#16A34A] border border-[#BBF7D0] dark:bg-[#16A34A]/20 dark:text-[#4ADE80] dark:border-[#16A34A]/40",
   routine: "bg-[#DCFCE7] text-[#16A34A] border border-[#BBF7D0] dark:bg-[#16A34A]/20 dark:text-[#4ADE80] dark:border-[#16A34A]/40",

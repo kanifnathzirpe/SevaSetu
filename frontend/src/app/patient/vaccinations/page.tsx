@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Baby, CheckCircle2, Syringe } from "lucide-react";
 import * as React from "react";
 import { toast } from "sonner";
+import { useSearchParams } from "next/navigation";
 
 import { PageHeader } from "@/components/page-header";
 import { Badge } from "@/components/ui/badge";
@@ -87,6 +88,8 @@ function ChildImmunisation({ child }: { child: Child }) {
 
 export default function VaccinationsPage() {
   const queryClient = useQueryClient();
+  const searchParams = useSearchParams();
+  const childId = searchParams.get("child");
 
   const { data = [], isLoading } = useQuery({
     queryKey: ["patient", "vaccinations"],
@@ -109,11 +112,14 @@ export default function VaccinationsPage() {
   const completed = data.filter((item) => item.status === "completed").length;
   const coverage = data.length ? Math.round((completed / data.length) * 100) : 0;
 
+  // Default to "children" tab if childId is provided, otherwise "mine"
+  const defaultTab = childId ? "children" : "mine";
+
   return (
     <>
       <PageHeader title="Vaccination tracker" description="Universal Immunisation Programme records for you and your children" />
 
-      <Tabs defaultValue="mine">
+      <Tabs defaultValue={defaultTab}>
         <TabsList>
           <TabsTrigger value="mine">
             <Syringe className="h-4 w-4" /> My vaccinations ({data.length})

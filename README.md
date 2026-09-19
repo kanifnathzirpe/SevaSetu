@@ -105,6 +105,7 @@ flowchart TD
 - **OPD & Telehealth Booking**: Schedule appointments with PHCs, CHCs, and District Hospitals.
 - **Prescriptions & Reminders**: Real-time access to digital prescriptions with automated adherence schedules.
 - **Maternal & Child Tracking**: ANC milestone reminders, danger sign detection, and immunisation schedules.
+- **Family Health Management**: Add and manage family members with comprehensive health tracking.
 - **One-Tap SOS Emergency**: Instant 108 dispatch trigger with geolocation capture.
 - **Health Records Vault**: Secure storage for diagnostic reports, blood tests, and imaging.
 
@@ -215,9 +216,9 @@ SevaSetu/
 │   │   │   ├── chat/                 # Doctor-Patient messaging interface
 │   │   │   ├── doctor/               # Doctor OPD queue, prescriptions, EHR
 │   │   │   ├── emergency/            # 108 Dispatch console
-│   │   │   ├── patient/              # Patient portal & health dashboard
+│   │   │   ├── patient/              # Patient portal, health dashboard, family management
 │   │   │   └── video/                # WebRTC video consultation room
-│   │   ├── components/               # Reusable UI widgets, layout shells, charts, maps
+│   │   ├── components/               # Reusable UI widgets, layout shells, charts, maps, modals
 │   │   ├── lib/                      # API client, Auth Context, TypeScript types, utils
 │   │   └── styles/
 │   ├── Dockerfile

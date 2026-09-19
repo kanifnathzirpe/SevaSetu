@@ -16,7 +16,6 @@ import {
   Radar,
   Siren,
   Users,
-  UserRound,
   type LucideIcon,
 } from "lucide-react";
 
@@ -35,9 +34,8 @@ const PRIMARY_NAV_BY_ROLE: Record<Role, BottomNavItem[]> = {
   patient: [
     { label: "Dashboard", href: "/patient", icon: Home },
     { label: "Appointments", href: "/patient/appointments", icon: CalendarDays },
-    { label: "Emergency SOS", href: "/patient/emergency", icon: Siren, isSpecial: true },
-    { label: "Nearby Hospitals", href: "/patient/hospitals", icon: Hospital },
-    { label: "Profile", href: "/patient/profile", icon: UserRound },
+    { label: "Emergency", href: "/patient/emergency", icon: Siren, isSpecial: true },
+    { label: "Nearby", href: "/patient/hospitals", icon: Hospital },
   ],
   asha: [
     { label: "Dashboard", href: "/asha", icon: Home },
@@ -110,7 +108,7 @@ export function BottomNav({ user, onOpenMenu }: { user: AuthUser; onOpenMenu: ()
               href={item.href}
               className={cn(
                 "relative flex flex-col items-center justify-center min-h-[48px] min-w-[50px] px-1 py-1 text-center transition-colors touch-target",
-                active ? "text-[var(--primary)] font-semibold" : "text-[#52667A] dark:text-[#CBD5E1] hover:text-[#102A43] dark:hover:text-[#F8FAFC]"
+                active && item.label === "Nearby" ? "text-white font-semibold" : active ? "text-[var(--primary)] font-semibold" : "text-[#52667A] dark:text-[#CBD5E1] hover:text-[#102A43] dark:hover:text-[#F8FAFC]"
               )}
             >
               <div className="relative flex items-center justify-center">
@@ -118,7 +116,10 @@ export function BottomNav({ user, onOpenMenu }: { user: AuthUser; onOpenMenu: ()
                 {active && (
                   <motion.div
                     layoutId="bottom-nav-active"
-                    className="absolute -inset-1.5 -z-10 rounded-xl bg-[var(--primary-light)]"
+                    className={cn(
+                      "absolute -inset-1.5 -z-10 rounded-xl",
+                      item.label === "Nearby" ? "bg-[var(--primary)]" : "bg-[var(--primary-light)]"
+                    )}
                     transition={{ type: "spring", stiffness: 400, damping: 30 }}
                   />
                 )}
@@ -134,11 +135,11 @@ export function BottomNav({ user, onOpenMenu }: { user: AuthUser; onOpenMenu: ()
         <button
           type="button"
           onClick={onOpenMenu}
-          className="flex flex-col items-center justify-center min-h-[48px] min-w-[50px] px-1 py-1 text-slate-600 dark:text-slate-400 hover:text-[var(--foreground)] touch-target cursor-pointer"
-          aria-label={t("menu") || "All sections"}
+          className="flex flex-col items-center justify-center min-h-[48px] min-w-[50px] px-1 py-1 text-white hover:text-[var(--foreground)] touch-target cursor-pointer"
+          aria-label={t("all") || "All sections"}
         >
           <Menu className="h-5 w-5" />
-          <span className="mt-1 text-[10px] font-medium leading-tight">{t("all") || "More"}</span>
+          <span className="mt-1 text-[10px] font-medium leading-tight">{t("all") || "All"}</span>
         </button>
       </div>
     </nav>

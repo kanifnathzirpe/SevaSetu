@@ -69,7 +69,7 @@ export function AppShell({ children, allow }: { children: React.ReactNode; allow
 
       <div className="flex min-w-0 flex-1 flex-col">
         <Topbar user={user} onMenu={() => setMobileOpen(true)} />
-        <main className="flex-1 px-3 py-4 sm:px-6 sm:py-6 lg:px-8 pb-24 lg:pb-8">
+        <main className="flex-1 px-3 py-4 sm:px-6 sm:py-6 lg:px-8 pb-20 lg:pb-8">
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
