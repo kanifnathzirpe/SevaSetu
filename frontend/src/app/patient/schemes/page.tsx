@@ -276,7 +276,7 @@ export default function PatientSchemesPage() {
       />
 
       {/* Top Banner Stats */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 grid-cols-2 sm:grid-cols-2 lg:grid-cols-4">
         <Card className="relative overflow-hidden border-[color-mix(in_srgb,var(--primary)_30%,var(--border))] bg-[color-mix(in_srgb,var(--primary)_5%,transparent)]">
           <CardContent className="p-5">
             <div className="flex items-center justify-between">

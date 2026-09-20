@@ -78,7 +78,7 @@ export function BottomNav({ user, onOpenMenu }: { user: AuthUser; onOpenMenu: ()
       aria-label="Mobile navigation"
       className="fixed bottom-0 left-0 right-0 z-40 block border-t border-[var(--border)] bg-[var(--card)] px-2 pt-1.5 pb-[max(0.5rem,env(safe-area-inset-bottom))] shadow-lg lg:hidden"
     >
-      <div className="mx-auto flex max-w-md items-center justify-around">
+      <div className="mx-auto flex max-w-md items-center justify-between w-full">
         {items.map((item) => {
           const active =
             pathname === item.href || (item.href !== "/" && pathname.startsWith(`${item.href}/`));
@@ -89,7 +89,7 @@ export function BottomNav({ user, onOpenMenu }: { user: AuthUser; onOpenMenu: ()
               <Link
                 key={item.href}
                 href={item.href}
-                className="flex flex-col items-center justify-center min-h-[48px] min-w-[54px] px-1 group"
+                className="flex flex-col items-center justify-center min-h-[48px] min-w-[48px] px-1 group flex-1"
                 aria-label={translatedLabel}
               >
                 <div className="flex h-10 w-10 -translate-y-2 items-center justify-center rounded-full bg-[var(--danger)] text-white shadow-md transition-transform active:scale-95">
@@ -107,7 +107,7 @@ export function BottomNav({ user, onOpenMenu }: { user: AuthUser; onOpenMenu: ()
               key={item.href}
               href={item.href}
               className={cn(
-                "relative flex flex-col items-center justify-center min-h-[48px] min-w-[50px] px-1 py-1 text-center transition-colors touch-target",
+                "relative flex flex-col items-center justify-center min-h-[48px] min-w-[48px] px-1 py-1 text-center transition-colors touch-target flex-1",
                 active && item.label === "Nearby" ? "text-white font-semibold" : active ? "text-[var(--primary)] font-semibold" : "text-[#52667A] dark:text-[#CBD5E1] hover:text-[#102A43] dark:hover:text-[#F8FAFC]"
               )}
             >
@@ -135,7 +135,7 @@ export function BottomNav({ user, onOpenMenu }: { user: AuthUser; onOpenMenu: ()
         <button
           type="button"
           onClick={onOpenMenu}
-          className="flex flex-col items-center justify-center min-h-[48px] min-w-[50px] px-1 py-1 text-[#52667A] dark:text-[#CBD5E1] hover:text-[#102A43] dark:hover:text-[#F8FAFC] touch-target cursor-pointer"
+          className="flex flex-col items-center justify-center min-h-[48px] min-w-[48px] px-1 py-1 text-[#52667A] dark:text-[#CBD5E1] hover:text-[#102A43] dark:hover:text-[#F8FAFC] touch-target cursor-pointer flex-1"
           aria-label={t("all") || "All sections"}
         >
           <Menu className="h-5 w-5" />

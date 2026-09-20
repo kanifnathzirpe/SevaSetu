@@ -1,6 +1,6 @@
 "use client";
 
-import { LogOut, Menu, Moon, Search, Siren, User } from "lucide-react";
+import { HelpCircle, LogOut, Menu, Moon, Search, Siren, User } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
@@ -9,6 +9,7 @@ import * as React from "react";
 import { NotificationBell } from "@/components/layout/notification-bell";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import type { AuthUser } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
@@ -21,6 +22,7 @@ export function Topbar({ user, onMenu }: { user: AuthUser; onMenu: () => void })
   const { locale, setLocale, t } = useI18n();
   const [mounted, setMounted] = React.useState(false);
   const [query, setQuery] = React.useState("");
+  const [helpOpen, setHelpOpen] = React.useState(false);
 
   React.useEffect(() => setMounted(true), []);
 
@@ -91,6 +93,9 @@ export function Topbar({ user, onMenu }: { user: AuthUser; onMenu: () => void })
           <Link href={user.role === "emergency" ? "/emergency" : "/patient/emergency"}>
             <Siren className="h-4 w-4" /> {t("topbar.sos")}
           </Link>
+        </Button>
+        <Button variant="ghost" size="icon" className="text-white hover:bg-white/10" onClick={() => setHelpOpen(true)} aria-label="Help">
+          <HelpCircle className="h-5 w-5" />
         </Button>
         <NotificationBell />
 
@@ -227,6 +232,56 @@ export function Topbar({ user, onMenu }: { user: AuthUser; onMenu: () => void })
           )}
         </div>
       </div>
+
+      {/* Help Modal */}
+      <Dialog open={helpOpen} onOpenChange={setHelpOpen}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Help & Support</DialogTitle>
+            <DialogDescription>
+              Quick guide to help you navigate the SevaSetu platform
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <h3 className="font-semibold text-sm">Dashboard</h3>
+              <p className="text-sm text-[var(--muted-foreground)]">
+                View your daily medicines, upcoming appointments, recent reports, and vaccination schedules.
+              </p>
+            </div>
+            <div className="space-y-2">
+              <h3 className="font-semibold text-sm">Appointments</h3>
+              <p className="text-sm text-[var(--muted-foreground)]">
+                Book new appointments with doctors, view scheduled appointments, and manage video consultations.
+              </p>
+            </div>
+            <div className="space-y-2">
+              <h3 className="font-semibold text-sm">Emergency</h3>
+              <p className="text-sm text-[var(--muted-foreground)]">
+                Raise SOS alert for emergency situations. This will contact emergency services and your emergency contact.
+              </p>
+            </div>
+            <div className="space-y-2">
+              <h3 className="font-semibold text-sm">Nearby Services</h3>
+              <p className="text-sm text-[var(--muted-foreground)]">
+                Find nearby hospitals, clinics, and healthcare facilities with available beds and services.
+              </p>
+            </div>
+            <div className="space-y-2">
+              <h3 className="font-semibold text-sm">Government Schemes</h3>
+              <p className="text-sm text-[var(--muted-foreground)]">
+                Check your eligibility for government health schemes and download your eligibility certificate.
+              </p>
+            </div>
+            <div className="space-y-2">
+              <h3 className="font-semibold text-sm">Digital Health Card</h3>
+              <p className="text-sm text-[var(--muted-foreground)]">
+                Access your digital health card with QR code for instant verification at government health facilities.
+              </p>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </header>
   );
 }

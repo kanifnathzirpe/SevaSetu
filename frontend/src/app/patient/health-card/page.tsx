@@ -116,25 +116,34 @@ export default function HealthCardPage() {
             </div>
 
             <div className="mt-8 flex flex-wrap items-end justify-between gap-6">
-              <div>
-                <p className="text-3xl font-bold">{data.full_name}</p>
-                <p className="mt-1 font-mono text-lg tracking-widest text-white/90">{data.health_id}</p>
-                <div className="mt-4 grid grid-cols-2 gap-x-8 gap-y-2 text-sm">
-                  <div>
-                    <p className="text-white/60">Age / Gender</p>
-                    <p className="font-semibold">{data.age} · {titleCase(data.gender)}</p>
-                  </div>
-                  <div>
-                    <p className="text-white/60">Blood group</p>
-                    <p className="font-semibold">{data.blood_group}</p>
-                  </div>
-                  <div>
-                    <p className="text-white/60">Locality</p>
-                    <p className="font-semibold">{data.locality}</p>
-                  </div>
-                  <div>
-                    <p className="text-white/60">ABHA</p>
-                    <p className="font-semibold">{data.abha_number ?? "Not linked"}</p>
+              <div className="flex items-start gap-4">
+                <div className="h-20 w-20 shrink-0 overflow-hidden rounded-full border-2 border-white/30 bg-white/10">
+                  <img
+                    src="/images/profile-photo.jpg"
+                    alt={data.full_name}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+                <div>
+                  <p className="text-3xl font-bold">{data.full_name}</p>
+                  <p className="mt-1 font-mono text-lg tracking-widest text-white/90">{data.health_id}</p>
+                  <div className="mt-4 grid grid-cols-2 gap-x-8 gap-y-2 text-sm">
+                    <div>
+                      <p className="text-white/60">Age / Gender</p>
+                      <p className="font-semibold">{data.age} · {titleCase(data.gender)}</p>
+                    </div>
+                    <div>
+                      <p className="text-white/60">Blood group</p>
+                      <p className="font-semibold">{data.blood_group}</p>
+                    </div>
+                    <div>
+                      <p className="text-white/60">Locality</p>
+                      <p className="font-semibold">{data.locality}</p>
+                    </div>
+                    <div>
+                      <p className="text-white/60">ABHA</p>
+                      <p className="font-semibold">{data.abha_number ?? "Not linked"}</p>
+                    </div>
                   </div>
                 </div>
               </div>

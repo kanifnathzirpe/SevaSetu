@@ -49,7 +49,7 @@ export default function DoctorDashboardPage() {
         }
       />
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-4 grid-cols-2">
         <StatCard label={t("doctor.appointmentsToday")} value={stats.today_appointments} hint={`${stats.pending_today} ${t("doctor.pending")}`} icon={CalendarDays} tone="primary" index={0} />
         <StatCard label={t("doctor.completedToday")} value={stats.completed_today} hint={t("doctor.consultationsClosed")} icon={Stethoscope} tone="success" index={1} />
         <StatCard label={t("doctor.patientsTreated")} value={stats.total_patients} hint={`${stats.prescriptions_issued} ${t("doctor.prescriptionsIssued")}`} icon={Users} tone="info" index={2} />

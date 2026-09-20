@@ -372,33 +372,33 @@ export default function VideoRoomPage() {
   const clock = `${String(Math.floor(elapsed / 60)).padStart(2, "0")}:${String(elapsed % 60).padStart(2, "0")}`;
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#0F172A] text-white">
-      <header className="flex items-center justify-between gap-3 border-b border-white/10 px-3 sm:px-4 py-3">
+    <div className="flex min-h-screen flex-col bg-[#F8FAFC] text-gray-900">
+      <header className="flex items-center justify-between gap-3 border-b border-gray-200 bg-white px-3 sm:px-4 py-3 shadow-sm">
         <Logo />
         <div className="flex items-center gap-2 sm:gap-3 text-sm">
           <Badge tone={networkStatus === "connected" ? "success" : "danger"} className="text-xs">
             {networkStatus === "connected" ? <Wifi className="mr-1 h-3 w-3 inline" /> : <WifiOff className="mr-1 h-3 w-3 inline" />}
             <span className="hidden xs:inline">{networkStatus === "connected" ? "Connected" : "Reconnecting"}</span>
           </Badge>
-          {joined ? <span className="font-mono text-xs sm:text-sm text-white/70">{clock}</span> : null}
+          {joined ? <span className="font-mono text-xs sm:text-sm text-gray-600">{clock}</span> : null}
         </div>
       </header>
 
       <div className="relative flex-1 grid gap-4 p-2 sm:p-4 lg:grid-cols-[1fr_320px] overflow-hidden">
         {/* Main Video Stage */}
-        <div className="relative flex min-h-[360px] sm:min-h-[420px] flex-1 items-center justify-center overflow-hidden rounded-2xl sm:rounded-3xl bg-black">
+        <div className="relative flex min-h-[360px] sm:min-h-[420px] flex-1 items-center justify-center overflow-hidden rounded-2xl sm:rounded-3xl bg-white shadow-lg border border-gray-200">
           {joined ? (
             <div className="relative h-full w-full p-2 sm:p-4 md:grid md:grid-cols-2 md:gap-4">
               {/* Local Video Tile (Floating PiP on mobile, 50% split on desktop) */}
               <div className={cn(
                 "absolute top-3 right-3 z-20 w-28 h-36 sm:w-36 sm:h-44 md:static md:w-full md:h-full md:z-auto",
-                "flex items-center justify-center overflow-hidden rounded-xl md:rounded-2xl border border-white/20 bg-[#111] shadow-2xl transition-all"
+                "flex items-center justify-center overflow-hidden rounded-xl md:rounded-2xl border border-gray-300 bg-gray-100 shadow-xl transition-all"
               )}>
-                <div className="absolute top-2 left-2 md:top-4 md:left-4 z-10 rounded-lg md:rounded-xl bg-black/70 px-2 py-1 md:px-3 md:py-2 backdrop-blur-md">
-                  <p className="text-[9px] md:text-[10px] font-bold uppercase tracking-wider text-white/80">{user?.role === 'doctor' ? 'Doctor' : 'Patient'}</p>
-                  <p className="text-xs md:text-sm font-medium truncate max-w-[80px] md:max-w-none">{user?.full_name ?? "You"}</p>
+                <div className="absolute top-2 left-2 md:top-4 md:left-4 z-10 rounded-lg md:rounded-xl bg-white/90 px-2 py-1 md:px-3 md:py-2 backdrop-blur-md shadow-sm">
+                  <p className="text-[9px] md:text-[10px] font-bold uppercase tracking-wider text-gray-600">{user?.role === 'doctor' ? 'Doctor' : 'Patient'}</p>
+                  <p className="text-xs md:text-sm font-medium truncate max-w-[80px] md:max-w-none text-gray-900">{user?.full_name ?? "You"}</p>
                 </div>
-                
+
                 <video
                   ref={localVideoRef}
                   autoPlay
@@ -407,12 +407,12 @@ export default function VideoRoomPage() {
                   className={cn("h-full w-full object-cover transition-opacity duration-300", !camOn ? "opacity-0" : "opacity-100")}
                 />
                 {!camOn && (
-                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#111]">
-                    <div className="flex h-10 w-10 md:h-16 md:w-16 items-center justify-center rounded-full bg-white/10">
-                      <span className="text-sm md:text-xl font-bold">{initials(user?.full_name ?? "You")}</span>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-100">
+                    <div className="flex h-10 w-10 md:h-16 md:w-16 items-center justify-center rounded-full bg-gray-200">
+                      <span className="text-sm md:text-xl font-bold text-gray-600">{initials(user?.full_name ?? "You")}</span>
                     </div>
-                    <p className="mt-1 md:mt-3 text-xs md:text-sm font-medium">{user?.full_name ?? "You"}</p>
-                    <p className="mt-0.5 md:mt-1 flex items-center gap-1 text-[10px] md:text-xs text-white/50">
+                    <p className="mt-1 md:mt-3 text-xs md:text-sm font-medium text-gray-700">{user?.full_name ?? "You"}</p>
+                    <p className="mt-0.5 md:mt-1 flex items-center gap-1 text-[10px] md:text-xs text-gray-500">
                       <VideoOff className="h-3 w-3 md:h-3.5 md:w-3.5" /> Off
                     </p>
                   </div>
@@ -420,28 +420,28 @@ export default function VideoRoomPage() {
               </div>
 
               {/* Remote Video Tile (Full screen on mobile, 50% split on desktop) */}
-              <div className="relative h-full w-full flex items-center justify-center overflow-hidden rounded-xl md:rounded-2xl border border-white/10 bg-[#111]">
-                <div className="absolute top-3 left-3 md:top-4 md:left-4 z-10 rounded-lg md:rounded-xl bg-black/70 px-2.5 py-1.5 md:px-3 md:py-2 backdrop-blur-md">
-                  <p className="text-[9px] md:text-[10px] font-bold uppercase tracking-wider text-white/80">{user?.role === 'doctor' ? 'Patient' : 'Doctor'}</p>
-                  <p className="text-xs md:text-sm font-medium">{otherParty}</p>
+              <div className="relative h-full w-full flex items-center justify-center overflow-hidden rounded-xl md:rounded-2xl border border-gray-300 bg-gray-100">
+                <div className="absolute top-3 left-3 md:top-4 md:left-4 z-10 rounded-lg md:rounded-xl bg-white/90 px-2.5 py-1.5 md:px-3 md:py-2 backdrop-blur-md shadow-sm">
+                  <p className="text-[9px] md:text-[10px] font-bold uppercase tracking-wider text-gray-600">{user?.role === 'doctor' ? 'Patient' : 'Doctor'}</p>
+                  <p className="text-xs md:text-sm font-medium text-gray-900">{otherParty}</p>
                 </div>
-                
+
                 <video
                   ref={remoteVideoRef}
                   autoPlay
                   playsInline
                   className={cn("h-full w-full object-cover transition-opacity duration-300", remoteReady ? "opacity-100" : "opacity-0")}
                 />
-                
+
                 {!remoteReady && (
-                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#111] p-4 text-center">
-                    <div className="flex h-14 w-14 md:h-16 md:w-16 items-center justify-center rounded-full bg-white/5">
-                      <span className="text-lg md:text-xl font-bold">{initials(otherParty)}</span>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-100 p-4 text-center">
+                    <div className="flex h-14 w-14 md:h-16 md:w-16 items-center justify-center rounded-full bg-gray-200">
+                      <span className="text-lg md:text-xl font-bold text-gray-600">{initials(otherParty)}</span>
                     </div>
-                    <p className="mt-2 md:mt-3 text-sm md:text-base font-medium">{otherParty}</p>
+                    <p className="mt-2 md:mt-3 text-sm md:text-base font-medium text-gray-900">{otherParty}</p>
                     <div className="mt-2 flex items-center gap-2">
-                      <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white/20 border-t-white" />
-                      <p className="text-xs text-white/60">Waiting for participant to join...</p>
+                      <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-gray-300 border-t-gray-600" />
+                      <p className="text-xs text-gray-600">Waiting for participant to join...</p>
                     </div>
                   </div>
                 )}
@@ -449,8 +449,8 @@ export default function VideoRoomPage() {
             </div>
           ) : (
             <div className="max-w-md p-4 sm:p-8 text-center">
-              <h1 className="text-xl sm:text-2xl font-bold">Waiting room</h1>
-              <p className="mt-2 text-xs sm:text-sm text-white/70">
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Waiting room</h1>
+              <p className="mt-2 text-xs sm:text-sm text-gray-600">
                 You are about to join a consultation with {otherParty}. Please find a quiet, well-lit place and keep
                 your health card handy.
               </p>
@@ -458,11 +458,11 @@ export default function VideoRoomPage() {
                 <VideoIcon className="h-4 w-4" /> {cameraLoading ? "Enabling camera..." : "Join consultation"}
               </Button>
               {cameraLoading && (
-                <p className="mt-3 text-xs text-white/60">
+                <p className="mt-3 text-xs text-gray-500">
                   Please allow camera access when prompted by your browser...
                 </p>
               )}
-              <p className="mt-3 text-[10px] sm:text-xs text-white/50">
+              <p className="mt-3 text-[10px] sm:text-xs text-gray-500">
                 By joining you consent to a teleconsultation as per Telemedicine Practice Guidelines 2020.
               </p>
             </div>
@@ -471,20 +471,20 @@ export default function VideoRoomPage() {
 
         {/* In-call Chat Panel (Slide-up sheet on mobile, sidebar on desktop) */}
         <div className={cn(
-          "flex flex-col rounded-2xl sm:rounded-3xl border border-white/10 bg-[#1E293B] transition-all",
+          "flex flex-col rounded-2xl sm:rounded-3xl border border-gray-200 bg-white shadow-lg transition-all",
           "lg:static lg:flex lg:h-auto lg:min-h-[420px]",
           mobileChatOpen
             ? "fixed inset-x-2 bottom-20 top-20 z-30 shadow-2xl flex"
             : "hidden lg:flex"
         )}>
-          <div className="flex items-center justify-between border-b border-white/10 px-4 py-3 text-sm font-semibold">
+          <div className="flex items-center justify-between border-b border-gray-200 px-4 py-3 text-sm font-semibold">
             <div className="flex items-center gap-2">
               <MessageSquare className="h-4 w-4" /> In-call chat
             </div>
             <button
               type="button"
               onClick={() => setMobileChatOpen(false)}
-              className="lg:hidden p-1 text-white/60 hover:text-white"
+              className="lg:hidden p-1 text-gray-500 hover:text-gray-900"
               aria-label="Close chat"
             >
               ✕
@@ -492,13 +492,13 @@ export default function VideoRoomPage() {
           </div>
           <div className="flex-1 space-y-2 overflow-y-auto p-4 text-sm">
             {messages.length === 0 ? (
-              <p className="text-white/50 text-center mt-4">Messages shared during this consultation appear here.</p>
+              <p className="text-gray-500 text-center mt-4">Messages shared during this consultation appear here.</p>
             ) : (
               messages.map((message, index) => {
                 const isMe = message.from === user?.full_name;
                 return (
-                  <div key={index} className={cn("rounded-xl px-3 py-2 max-w-[90%]", isMe ? "bg-[var(--primary)] ml-auto" : "bg-white/10 mr-auto")}>
-                    {!isMe && <p className="text-[10px] font-semibold text-white/60 mb-1">{message.from}</p>}
+                  <div key={index} className={cn("rounded-xl px-3 py-2 max-w-[90%]", isMe ? "bg-blue-600 text-white ml-auto" : "bg-gray-100 text-gray-900 mr-auto")}>
+                    {!isMe && <p className="text-[10px] font-semibold text-gray-600 mb-1">{message.from}</p>}
                     <p className="break-words">{message.body}</p>
                   </div>
                 );
@@ -507,17 +507,17 @@ export default function VideoRoomPage() {
             <div ref={messagesEndRef} />
           </div>
           <form
-            className="flex gap-2 border-t border-white/10 p-3"
+            className="flex gap-2 border-t border-gray-200 p-3"
             onSubmit={(event) => {
               event.preventDefault();
               if (!draft.trim() || !socketRef.current) return;
-              
+
               const msg: RoomMessage = {
                 from: user?.full_name ?? "You",
                 body: draft.trim(),
                 at: new Date().toISOString(),
               };
-              
+
               socketRef.current.emit("chat_message", { room_id: roomId, ...msg });
               setMessages((prev) => [...prev, msg]);
               setDraft("");
@@ -527,7 +527,7 @@ export default function VideoRoomPage() {
               value={draft}
               onChange={(event) => setDraft(event.target.value)}
               placeholder="Message…"
-              className="border-white/20 bg-white/10 text-white placeholder:text-white/40"
+              className="border-gray-300 bg-gray-50 text-gray-900 placeholder:text-gray-400"
               disabled={!joined}
             />
             <Button type="submit" size="icon" aria-label="Send" disabled={!joined || !draft.trim()} className="shrink-0 touch-target">
@@ -538,7 +538,7 @@ export default function VideoRoomPage() {
       </div>
 
       {/* Fixed Call Controls Footer */}
-      <footer className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 border-t border-white/10 px-3 py-3 sm:py-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] bg-[#0F172A]/95 backdrop-blur-lg">
+      <footer className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 border-t border-gray-200 px-3 py-3 sm:py-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] bg-white/95 backdrop-blur-lg shadow-sm">
         <Button variant={micOn ? "outline" : "danger"} size="icon" onClick={toggleMic} aria-label="Toggle microphone" disabled={!joined} className="h-12 w-12 rounded-full sm:rounded-xl touch-target">
           {micOn ? <Mic className="h-5 w-5" /> : <MicOff className="h-5 w-5" />}
         </Button>
@@ -566,7 +566,7 @@ export default function VideoRoomPage() {
         >
           <MessageSquare className="h-5 w-5" />
           {messages.length > 0 && (
-            <span className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-[var(--primary)] px-1 text-[10px] font-bold text-white">
+            <span className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-blue-600 px-1 text-[10px] font-bold text-white">
               {messages.length}
             </span>
           )}

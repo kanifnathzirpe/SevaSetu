@@ -107,7 +107,7 @@ export default function PatientDashboardPage() {
             <div className="flex items-center gap-2">
               {totalCount > 0 ? (
                 <Badge tone={takenCount === totalCount && totalCount > 0 ? "success" : "primary"}>
-                  {takenCount}/{totalCount} Taken Today
+                  {takenCount}/{totalCount} {t("dashboard.takenToday")}
                 </Badge>
               ) : null}
               <Button asChild size="sm" variant="outline">
@@ -122,11 +122,11 @@ export default function PatientDashboardPage() {
               <EmptyState
                 icon={Pill}
                 title={t("dashboard.noReminders")}
-                description="Set up your daily dosage schedule to track adherence effortlessly."
+                description={t("dashboard.setupDosage")}
                 action={
                   <Button asChild size="sm">
                     <Link href="/patient/reminders">
-                      <Plus className="h-4 w-4" /> Add your first medicine
+                      <Plus className="h-4 w-4" /> {t("dashboard.addFirstMedicine")}
                     </Link>
                   </Button>
                 }
@@ -151,12 +151,12 @@ export default function PatientDashboardPage() {
                             <span className="font-semibold text-[var(--foreground)]">{reminder.medicine_name}</span>
                             {isTaken ? (
                               <Badge tone="success" className="text-[10px] py-0 px-1.5">
-                                Taken
+                                {t("dashboard.taken")}
                               </Badge>
                             ) : null}
                           </div>
                           <p className="text-xs text-[var(--muted-foreground)]">
-                            {reminder.dosage} · Daily Schedule
+                            {reminder.dosage} · {t("dashboard.dailySchedule")}
                           </p>
                         </div>
                         <Button
@@ -166,7 +166,7 @@ export default function PatientDashboardPage() {
                           onClick={() => handleToggleTaken(reminder.id, reminder.medicine_name)}
                         >
                           <CheckCircle2 className="h-3.5 w-3.5" />
-                          {isTaken ? "Taken" : "Take Dose"}
+                          {isTaken ? t("dashboard.taken") : t("dashboard.takeDose")}
                         </Button>
                       </div>
 
@@ -185,7 +185,7 @@ export default function PatientDashboardPage() {
                       <div className="mt-3 pt-2 border-t border-[var(--border)] flex items-center justify-between gap-3">
                         <div className="flex-1 space-y-1">
                           <div className="flex justify-between text-[11px] text-[var(--muted-foreground)]">
-                            <span>Adherence</span>
+                            <span>{t("dashboard.adherence")}</span>
                             <span className="font-semibold">{reminder.adherence_percent}%</span>
                           </div>
                           <Progress value={reminder.adherence_percent} className="h-1.5" />
@@ -201,10 +201,10 @@ export default function PatientDashboardPage() {
               <div className="mt-2 flex flex-wrap items-center justify-between gap-3 rounded-xl bg-[var(--muted)]/50 p-3 text-xs text-[var(--muted-foreground)]">
                 <span className="flex items-center gap-1.5">
                   <HeartPulse className="h-4 w-4 text-[var(--primary)]" />
-                  Average Monthly Adherence: <strong className="text-[var(--foreground)]">{adherenceAvg}%</strong>
+                  {t("dashboard.averageMonthlyAdherence")}: <strong className="text-[var(--foreground)]">{adherenceAvg}%</strong>
                 </span>
                 <Link href="/patient/prescriptions" className="font-medium text-[var(--primary)] hover:underline">
-                  View prescriptions →
+                  {t("dashboard.viewPrescriptions")} →
                 </Link>
               </div>
             ) : null}

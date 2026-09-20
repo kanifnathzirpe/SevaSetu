@@ -254,7 +254,7 @@ export default function PatientReferralsPage() {
       <PageHeader title="Referrals" description="Track referrals sent by your doctor and follow their current status." />
 
       {/* Summary Cards */}
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-6">
+      <div className="grid gap-3 grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 mb-6">
         <Card>
           <CardContent className="p-4 flex items-center gap-4">
             <div className="rounded-xl bg-[#EAF4FC] dark:bg-[#1D5FA7]/20 p-3 text-[#1D5FA7] dark:text-[#5FA9E6]">

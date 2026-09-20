@@ -549,6 +549,7 @@ export interface HealthCard {
   chronic_conditions: string[];
   issued_on: string;
   qr_payload: string;
+  profile_photo?: string | null;
 }
 
 export interface GovernmentScheme {
