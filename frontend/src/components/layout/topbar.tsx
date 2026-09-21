@@ -1,27 +1,24 @@
 "use client";
 
-import { HelpCircle, LogOut, Menu, Moon, Search, Siren, User } from "lucide-react";
+import { HelpCircle, LogOut, Menu, Moon, Siren, User } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import * as React from "react";
 
+import { Logo } from "@/components/logo";
 import { NotificationBell } from "@/components/layout/notification-bell";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import type { AuthUser } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import { useI18n, LOCALES } from "@/lib/i18n";
 
 export function Topbar({ user, onMenu }: { user: AuthUser; onMenu: () => void }) {
-  const router = useRouter();
   const { logout } = useAuth();
   const { theme, setTheme } = useTheme();
   const { locale, setLocale, t } = useI18n();
   const [mounted, setMounted] = React.useState(false);
-  const [query, setQuery] = React.useState("");
   const [helpOpen, setHelpOpen] = React.useState(false);
 
   React.useEffect(() => setMounted(true), []);
@@ -72,21 +69,8 @@ export function Topbar({ user, onMenu }: { user: AuthUser; onMenu: () => void })
         <Menu className="h-5 w-5" />
       </Button>
 
-      <form
-        className="relative hidden flex-1 max-w-md md:block"
-        onSubmit={(event) => {
-          event.preventDefault();
-          if (query.trim()) router.push(`/search?q=${encodeURIComponent(query.trim())}`);
-        }}
-      >
-        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--muted-foreground)]" />
-        <Input
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-          placeholder={t("topbar.search")}
-          className="pl-9 bg-[var(--background)]"
-        />
-      </form>
+      <Logo className="flex-1 lg:hidden" light={true} compact />
+      <div className="flex-1 hidden lg:block" />
 
       <div className="ml-auto flex items-center gap-1.5">
         <Button asChild variant="danger" size="sm" className="hidden sm:inline-flex">
