@@ -6,11 +6,13 @@ from pydantic import BaseModel, ConfigDict, EmailStr, Field
 from app.models.enums import (
     AppointmentStatus,
     AppointmentType,
+    DocumentType,
     FacilityType,
     Gender,
     ReferralStatus,
     ReportType,
     RiskLevel,
+    ScanStatus,
     SosStatus,
     UserRole,
     VaccinationStatus,
@@ -588,3 +590,43 @@ class NotificationOut(ORMModel):
 class MessageResponse(BaseModel):
     message: str
     success: bool = True
+
+
+# ---------------------------------------------------------------- Document Scan
+class DocumentScanCreate(BaseModel):
+    document_type: DocumentType = DocumentType.OTHER
+    child_id: int | None = None
+
+
+class DocumentScanUpdate(BaseModel):
+    document_type: DocumentType | None = None
+    extracted_data: dict[str, Any] | None = None
+    verification_status: str | None = None
+
+
+class DocumentScanOut(ORMModel):
+    id: int
+    patient_id: int
+    child_id: int | None = None
+    uploaded_by_user_id: int
+    document_type: DocumentType
+    original_file_url: str
+    processed_file_url: str | None = None
+    ocr_text: str
+    extracted_data: str
+    classification_confidence: float
+    processing_status: ScanStatus
+    verification_status: str
+    error_message: str | None = None
+    page_count: int
+    confirmed_record_id: int | None = None
+    confirmed_record_type: str | None = None
+    created_at: datetime
+    patient_name: str = ""
+    child_name: str = ""
+
+
+class ScanConfirmRequest(BaseModel):
+    extracted_data: dict[str, Any]
+    confirmed: bool = True
+    notes: str = ""

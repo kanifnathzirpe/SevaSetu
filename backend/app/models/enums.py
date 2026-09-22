@@ -83,3 +83,23 @@ class ReportType(str, Enum):
     RADIOLOGY = "radiology"
     DISCHARGE = "discharge"
     PRESCRIPTION = "prescription"
+
+
+class DocumentType(str, Enum):
+    LAB_REPORT = "lab_report"
+    PRESCRIPTION = "prescription"
+    REFERRAL = "referral"
+    VACCINATION_RECORD = "vaccination_record"
+    OTHER = "other"
+
+
+class ScanStatus(str, Enum):
+    UPLOADING = "uploading"
+    PROCESSING = "processing"
+    OCR_PENDING = "ocr_pending"
+    OCR_COMPLETE = "ocr_complete"
+    CLASSIFIED = "classified"
+    EXTRACTED = "extracted"
+    REVIEW_PENDING = "review_pending"
+    CONFIRMED = "confirmed"
+    FAILED = "failed"

@@ -19,11 +19,13 @@ from app.models.enums import (
     AmbulanceStatus,
     AppointmentStatus,
     AppointmentType,
+    DocumentType,
     FacilityType,
     Gender,
     ReferralStatus,
     ReportType,
     RiskLevel,
+    ScanStatus,
     SosStatus,
     UserRole,
     VaccinationStatus,
@@ -568,3 +570,27 @@ class VideoSession(Base):
     ended_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     duration: Mapped[int | None] = mapped_column(Integer, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class DocumentScan(Base, TimestampMixin):
+    __tablename__ = "document_scans"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    patient_id: Mapped[int] = mapped_column(ForeignKey("patients.id"), index=True)
+    child_id: Mapped[int | None] = mapped_column(ForeignKey("children.id"), nullable=True)
+    uploaded_by_user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    document_type: Mapped[DocumentType] = mapped_column(enum_col(DocumentType), default=DocumentType.OTHER)
+    original_file_url: Mapped[str] = mapped_column(String(300))
+    processed_file_url: Mapped[str | None] = mapped_column(String(300), nullable=True)
+    ocr_text: Mapped[str] = mapped_column(Text, default="")
+    extracted_data: Mapped[str] = mapped_column(Text, default="{}")
+    classification_confidence: Mapped[float] = mapped_column(Float, default=0.0)
+    processing_status: Mapped[ScanStatus] = mapped_column(enum_col(ScanStatus), default=ScanStatus.UPLOADING)
+    verification_status: Mapped[str] = mapped_column(String(30), default="pending")
+    error_message: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    page_count: Mapped[int] = mapped_column(Integer, default=1)
+    confirmed_record_id: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    confirmed_record_type: Mapped[str | None] = mapped_column(String(50), nullable=True)
+
+    patient: Mapped[Patient] = relationship()
+    child: Mapped[Child | None] = relationship()

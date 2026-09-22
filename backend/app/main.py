@@ -43,7 +43,58 @@ def on_startup() -> None:
         conn.exec_driver_sql("ALTER TABLE video_sessions ADD COLUMN IF NOT EXISTS duration INTEGER;")
         conn.exec_driver_sql("ALTER TABLE referrals ADD COLUMN IF NOT EXISTS to_doctor_id INTEGER REFERENCES doctors(id);")
         conn.exec_driver_sql("ALTER TABLE referrals ADD COLUMN IF NOT EXISTS specialty VARCHAR(120) DEFAULT '';")
-        
+
+        # Create document_scans table for scan feature if it doesn't exist
+        conn.exec_driver_sql("""
+            CREATE TABLE IF NOT EXISTS document_scans (
+                id SERIAL PRIMARY KEY,
+                patient_id INTEGER REFERENCES patients(id),
+                child_id INTEGER REFERENCES children(id),
+                uploaded_by_user_id INTEGER REFERENCES users(id),
+                document_type VARCHAR(50) DEFAULT 'other',
+                original_file_url VARCHAR(300) NOT NULL,
+                processed_file_url VARCHAR(300),
+                ocr_text TEXT DEFAULT '',
+                extracted_data TEXT DEFAULT '{}',
+                classification_confidence FLOAT DEFAULT 0.0,
+                processing_status VARCHAR(50) DEFAULT 'uploading',
+                verification_status VARCHAR(30) DEFAULT 'pending',
+                error_message VARCHAR(500),
+                page_count INTEGER DEFAULT 1,
+                confirmed_record_id INTEGER,
+                confirmed_record_type VARCHAR(50),
+                created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+                updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+            );
+        """)
+
+        # Add missing columns if they don't exist (non-destructive migration)
+        try:
+            conn.exec_driver_sql("ALTER TABLE document_scans ADD COLUMN IF NOT EXISTS child_id INTEGER REFERENCES children(id);")
+        except Exception:
+            pass  # Column may already exist
+
+        try:
+            conn.exec_driver_sql("ALTER TABLE document_scans ADD COLUMN IF NOT EXISTS processed_file_url VARCHAR(300);")
+        except Exception:
+            pass  # Column may already exist
+
+        # Create indexes for better performance (if they don't exist)
+        try:
+            conn.exec_driver_sql("CREATE INDEX IF NOT EXISTS idx_document_scans_patient_id ON document_scans(patient_id);")
+        except Exception:
+            pass  # Index may already exist
+
+        try:
+            conn.exec_driver_sql("CREATE INDEX IF NOT EXISTS idx_document_scans_child_id ON document_scans(child_id);")
+        except Exception:
+            pass  # Index may already exist
+
+        try:
+            conn.exec_driver_sql("CREATE INDEX IF NOT EXISTS idx_document_scans_processing_status ON document_scans(processing_status);")
+        except Exception:
+            pass  # Index may already exist
+
     Base.metadata.create_all(bind=engine)
     if settings.SEED_ON_STARTUP:
         db = SessionLocal()

@@ -12,6 +12,7 @@ from app.api.v1.routers import (
     notifications,
     patients,
     reports,
+    scan,
     symptoms,
     video,
 )
@@ -26,6 +27,7 @@ api_router.include_router(admin.router)
 api_router.include_router(appointments.router)
 api_router.include_router(hospitals.router)
 api_router.include_router(reports.router)
+api_router.include_router(scan.router)
 api_router.include_router(chat.router)
 api_router.include_router(symptoms.router)
 api_router.include_router(symptoms.ai_router)

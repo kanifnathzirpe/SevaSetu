@@ -71,7 +71,7 @@ export class ApiError extends Error {
 }
 
 interface RequestOptions extends Omit<RequestInit, "body"> {
-  body?: unknown;
+  body?: unknown | FormData;
   raw?: boolean;
   skipAuth?: boolean;
 }
@@ -97,25 +97,43 @@ export async function apiFetch<T>(path: string, options: RequestOptions = {}): P
   const { body, raw, skipAuth, headers, ...rest } = options;
   const url = path.startsWith("http") ? path : `${API_BASE_URL}${path}`;
 
-  const buildHeaders = (token?: string | null): HeadersInit => ({
-    ...(body !== undefined ? { "Content-Type": "application/json" } : {}),
-    ...(token && !skipAuth ? { Authorization: `Bearer ${token}` } : {}),
-    ...(headers as Record<string, string>),
-  });
+  const isFormData = body instanceof FormData;
+
+  const buildHeaders = (token?: string | null): HeadersInit => {
+    const baseHeaders: HeadersInit = {};
+
+    // Only set Content-Type for non-FormData bodies
+    if (!isFormData && body !== undefined) {
+      baseHeaders["Content-Type"] = "application/json";
+    }
+
+    if (token && !skipAuth) {
+      baseHeaders["Authorization"] = `Bearer ${token}`;
+    }
+
+    return {
+      ...baseHeaders,
+      ...(headers as Record<string, string>),
+    };
+  };
+
+  const requestHeaders = buildHeaders(tokenStore.access);
+  const requestBody = isFormData ? body : (body !== undefined ? JSON.stringify(body) : undefined);
 
   let response = await fetch(url, {
     ...rest,
-    headers: buildHeaders(tokenStore.access),
-    body: body !== undefined ? JSON.stringify(body) : undefined,
+    headers: requestHeaders,
+    body: requestBody,
   });
 
   if (response.status === 401 && !skipAuth) {
     const token = await refreshAccessToken();
     if (token) {
+      const retryHeaders = buildHeaders(token);
       response = await fetch(url, {
         ...rest,
-        headers: buildHeaders(token),
-        body: body !== undefined ? JSON.stringify(body) : undefined,
+        headers: retryHeaders,
+        body: requestBody,
       });
     }
   }
@@ -126,9 +144,11 @@ export async function apiFetch<T>(path: string, options: RequestOptions = {}): P
       const data = await response.json();
       if (typeof data?.detail === "string") message = data.detail;
       else if (Array.isArray(data?.detail)) message = data.detail[0]?.msg ?? message;
+      else if (typeof data?.message === "string") message = data.message;
     } catch {
       /* keep default message */
     }
+    console.error(`API Error (${response.status}):`, message);
     throw new ApiError(message, response.status);
   }
 
@@ -140,7 +160,7 @@ export async function apiFetch<T>(path: string, options: RequestOptions = {}): P
 export const api = {
   get: <T>(path: string) => apiFetch<T>(path),
   getText: (path: string) => apiFetch<string>(path, { raw: true }),
-  post: <T>(path: string, body?: unknown) => apiFetch<T>(path, { method: "POST", body }),
-  patch: <T>(path: string, body?: unknown) => apiFetch<T>(path, { method: "PATCH", body }),
+  post: <T>(path: string, body?: unknown | FormData) => apiFetch<T>(path, { method: "POST", body }),
+  patch: <T>(path: string, body?: unknown | FormData) => apiFetch<T>(path, { method: "PATCH", body }),
   delete: <T>(path: string) => apiFetch<T>(path, { method: "DELETE" }),
 };

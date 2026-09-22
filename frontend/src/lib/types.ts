@@ -599,3 +599,29 @@ export interface SchemeEvaluationResult {
   other_schemes: GovernmentScheme[];
 }
 
+export type DocumentType = "lab_report" | "prescription" | "referral" | "vaccination_record" | "other";
+
+export type ScanStatus = "uploading" | "processing" | "ocr_pending" | "ocr_complete" | "classified" | "extracted" | "review_pending" | "confirmed" | "failed";
+
+export interface DocumentScan {
+  id: number;
+  patient_id: number;
+  child_id?: number | null;
+  uploaded_by_user_id: number;
+  document_type: DocumentType;
+  original_file_url: string;
+  processed_file_url?: string | null;
+  ocr_text: string;
+  extracted_data: string;
+  classification_confidence: number;
+  processing_status: ScanStatus;
+  verification_status: string;
+  error_message?: string | null;
+  page_count: number;
+  confirmed_record_id?: number | null;
+  confirmed_record_type?: string | null;
+  created_at: string;
+  patient_name: string;
+  child_name: string;
+}
+

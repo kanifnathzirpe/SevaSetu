@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
-import { Input, Select } from "@/components/ui/input";
+import { Select } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { LoadingBlock } from "@/components/ui/skeleton";
 import { api } from "@/lib/api";
@@ -22,15 +22,23 @@ import { formatDate, titleCase } from "@/lib/utils";
 export default function DoctorAppointmentsPage() {
   const queryClient = useQueryClient();
   const router = useRouter();
-  const [date, setDate] = React.useState(() => new Date().toISOString().slice(0, 10));
+  const [date, setDate] = React.useState<string>("");
   const [status, setStatus] = React.useState("");
+
+  const formatDateForDisplay = (isoDate: string) => {
+    if (!isoDate) return isoDate;
+    const [year, month, day] = isoDate.split('-');
+    return `${day}/${month}/${year}`;
+  };
 
   const { data = [], isLoading } = useQuery({
     queryKey: ["doctor", "appointments", date, status],
-    queryFn: () =>
-      api.get<Appointment[]>(
-        `/api/v1/doctor/appointments?${new URLSearchParams({ on: date, ...(status ? { status } : {}) })}`
-      ),
+    queryFn: () => {
+      const params = new URLSearchParams();
+      if (date) params.set("date", date);
+      if (status) params.set("status", status);
+      return api.get<Appointment[]>(`/api/v1/doctor/appointments?${params}`);
+    },
   });
 
   const complete = useMutation({
@@ -55,7 +63,27 @@ export default function DoctorAppointmentsPage() {
       <div className="mb-4 flex flex-wrap items-end gap-3">
         <div className="space-y-1.5">
           <Label htmlFor="date">Date</Label>
-          <Input id="date" type="date" value={date} onChange={(event) => setDate(event.target.value)} className="w-48" />
+          <Select id="date" value={date} onChange={(event) => setDate(event.target.value)} className="w-48">
+            <option value="">All dates</option>
+            <option value={new Date().toISOString().slice(0, 10)}>
+              {formatDateForDisplay(new Date().toISOString().slice(0, 10))}
+            </option>
+            <option value={new Date(Date.now() - 86400000).toISOString().slice(0, 10)}>
+              {formatDateForDisplay(new Date(Date.now() - 86400000).toISOString().slice(0, 10))}
+            </option>
+            <option value={new Date(Date.now() - 172800000).toISOString().slice(0, 10)}>
+              {formatDateForDisplay(new Date(Date.now() - 172800000).toISOString().slice(0, 10))}
+            </option>
+            <option value={new Date(Date.now() - 259200000).toISOString().slice(0, 10)}>
+              {formatDateForDisplay(new Date(Date.now() - 259200000).toISOString().slice(0, 10))}
+            </option>
+            <option value={new Date(Date.now() - 345600000).toISOString().slice(0, 10)}>
+              {formatDateForDisplay(new Date(Date.now() - 345600000).toISOString().slice(0, 10))}
+            </option>
+            <option value={new Date(Date.now() - 432000000).toISOString().slice(0, 10)}>
+              {formatDateForDisplay(new Date(Date.now() - 432000000).toISOString().slice(0, 10))}
+            </option>
+          </Select>
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="status">Status</Label>

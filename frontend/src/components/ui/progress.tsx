@@ -13,7 +13,7 @@ export function Progress({
     <div className={cn("h-2 w-full overflow-hidden rounded-full bg-[var(--muted)]", className)}>
       <div
         className={cn(
-          "h-full rounded-full bg-[var(--secondary)] transition-all duration-500",
+          "h-full rounded-full bg-[var(--primary)] transition-all duration-500",
           barClassName
         )}
         style={{ width: `${Math.max(0, Math.min(100, value))}%` }}

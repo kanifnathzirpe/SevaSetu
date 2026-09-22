@@ -188,7 +188,7 @@ def doctor_dashboard(
 def doctor_appointments(
     db: Session = Depends(get_db),
     doctor: Doctor = Depends(get_current_doctor),
-    on: date | None = None,
+    on: date | None = Query(None, alias="date"),
     status_filter: str | None = Query(None, alias="status"),
 ) -> list[AppointmentOut]:
     query = (
@@ -200,11 +200,13 @@ def doctor_appointments(
         )
         .filter(Appointment.doctor_id == doctor.id)
     )
+    # Only filter by date if a specific date is provided
+    # When on is None, return appointments across all dates
     if on:
         query = query.filter(func.date(Appointment.scheduled_at) == on)
     if status_filter:
         query = query.filter(Appointment.status == status_filter)
-    return [appointment_out(a) for a in query.order_by(Appointment.scheduled_at).all()]
+    return [appointment_out(a) for a in query.order_by(Appointment.scheduled_at.desc()).all()]
 
 
 @router.get("/queue")

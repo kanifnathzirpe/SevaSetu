@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { Download, FileText, FlaskConical } from "lucide-react";
+import { Download, FileText, FlaskConical, ScanLine } from "lucide-react";
 import * as React from "react";
 import { toast } from "sonner";
 
@@ -12,8 +12,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Select } from "@/components/ui/input";
 import { LoadingBlock } from "@/components/ui/skeleton";
+import {
+  Dialog,
+  DialogScrollableContent,
+} from "@/components/ui/dialog";
+import { ScanEntryDialog } from "@/components/scan/scan-entry-dialog";
+import { ScanWorkflow } from "@/components/scan/scan-workflow";
 import { API_BASE_URL, api, tokenStore } from "@/lib/api";
-import type { Report } from "@/lib/types";
+import type { DocumentType, Report } from "@/lib/types";
 import { downloadTextFile, formatDate, titleCase } from "@/lib/utils";
 
 async function downloadReport(report: Report) {
@@ -31,6 +37,9 @@ async function downloadReport(report: Report) {
 
 export default function PatientReportsPage() {
   const [type, setType] = React.useState("");
+  const [scanDialogOpen, setScanDialogOpen] = React.useState(false);
+  const [scanWorkflowOpen, setScanWorkflowOpen] = React.useState(false);
+  const [selectedDocumentType, setSelectedDocumentType] = React.useState<DocumentType>("other");
 
   const { data = [], isLoading } = useQuery({
     queryKey: ["patient", "reports", type],
@@ -45,14 +54,19 @@ export default function PatientReportsPage() {
         title="Lab & diagnostic reports"
         description="All investigations conducted at government laboratories"
         actions={
-          <Select value={type} onChange={(event) => setType(event.target.value)} className="w-48">
-            <option value="">All report types</option>
-            {["blood", "urine", "radiology", "pathology", "cardiology"].concat(types).filter((value, index, self) => self.indexOf(value) === index).map((item) => (
-              <option key={item} value={item}>
-                {titleCase(item)}
-              </option>
-            ))}
-          </Select>
+          <div className="flex items-center gap-2">
+            <Button size="sm" onClick={() => setScanDialogOpen(true)}>
+              <ScanLine className="h-4 w-4 mr-2" /> Scan document
+            </Button>
+            <Select value={type} onChange={(event) => setType(event.target.value)} className="w-48">
+              <option value="">All report types</option>
+              {["blood", "urine", "radiology", "pathology", "cardiology"].concat(types).filter((value, index, self) => self.indexOf(value) === index).map((item) => (
+                <option key={item} value={item}>
+                  {titleCase(item)}
+                </option>
+              ))}
+            </Select>
+          </div>
         }
       />
 
@@ -114,6 +128,27 @@ export default function PatientReportsPage() {
           })}
         </div>
       )}
+
+      <ScanEntryDialog
+        open={scanDialogOpen}
+        onOpenChange={setScanDialogOpen}
+        onScanStart={(documentType) => {
+          setSelectedDocumentType(documentType);
+          setScanWorkflowOpen(true);
+        }}
+      />
+
+      <Dialog open={scanWorkflowOpen} onOpenChange={setScanWorkflowOpen}>
+        <DialogScrollableContent className="max-w-4xl">
+          <ScanWorkflow
+            initialDocumentType={selectedDocumentType}
+            onComplete={() => {
+              setScanWorkflowOpen(false);
+              setSelectedDocumentType("other");
+            }}
+          />
+        </DialogScrollableContent>
+      </Dialog>
     </>
   );
 }
