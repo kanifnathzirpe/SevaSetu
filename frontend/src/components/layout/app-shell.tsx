@@ -6,8 +6,8 @@ import * as React from "react";
 
 import { BottomNav } from "@/components/layout/bottom-nav";
 import { Sidebar } from "@/components/layout/sidebar";
-import { SymptomChatbot } from "@/components/layout/symptom-chatbot";
 import { Topbar } from "@/components/layout/topbar";
+import { VoiceAssistant } from "@/components/voice-assistant";
 import type { Role } from "@/lib/api";
 import { ROLE_HOME, useAuth } from "@/lib/auth";
 
@@ -84,8 +84,8 @@ export function AppShell({ children, allow }: { children: React.ReactNode; allow
       {/* Mobile bottom navigation bar */}
       <BottomNav user={user} onOpenMenu={() => setMobileOpen(true)} />
 
-      {/* Floating symptom-checker chatbot - only visible for patients */}
-      {user.role === "patient" && <SymptomChatbot />}
+      {/* Floating Voice Assistant - only visible for patients */}
+      {user.role === "patient" && <VoiceAssistant />}
     </div>
   );
 }

@@ -19,6 +19,9 @@ class Settings(BaseSettings):
 
     UPLOAD_DIR: str = "uploads"
     SEED_ON_STARTUP: bool = False
+
+    # OpenAI API key for Whisper STT (server-side only — never expose to frontend)
+    OPENAI_API_KEY: str = ""
     CORS_ORIGINS: str = "http://localhost:3000,http://127.0.0.1:3000"
 
     @property

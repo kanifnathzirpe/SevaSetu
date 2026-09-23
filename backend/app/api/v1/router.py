@@ -15,6 +15,7 @@ from app.api.v1.routers import (
     scan,
     symptoms,
     video,
+    voice_assistant,
 )
 
 api_router = APIRouter()
@@ -34,3 +35,4 @@ api_router.include_router(symptoms.ai_router)
 api_router.include_router(emergency.router)
 api_router.include_router(video.router)
 api_router.include_router(notifications.router)
+api_router.include_router(voice_assistant.router)

@@ -630,3 +630,30 @@ class ScanConfirmRequest(BaseModel):
     extracted_data: dict[str, Any]
     confirmed: bool = True
     notes: str = ""
+
+
+# ---------------------------------------------------------------- Voice Assistant
+class VoiceAssistantRequest(BaseModel):
+    text: str = Field(min_length=1, max_length=500)
+    language: str = "en-IN"
+    session_id: str | None = None
+
+
+class VoiceAssistantResponse(BaseModel):
+    intent: str
+    response_text: str
+    speak_text: str
+    navigation: str | None = None
+    action: str | None = None
+    requires_confirmation: bool = False
+    confirmation_prompt: str | None = None
+    data: dict[str, Any] | None = None
+
+
+class VoiceTranscriptionResponse(BaseModel):
+    """Response from the voice transcription endpoint."""
+    success: bool
+    transcript: str
+    language: str
+    error_code: str | None = None
+    error_message: str | None = None

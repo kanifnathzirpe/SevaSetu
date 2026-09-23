@@ -24,6 +24,7 @@ services:
       CORS_ORIGINS: http://localhost:3000,http://127.0.0.1:3000
       UPLOAD_DIR: uploads
       SEED_ON_STARTUP: "true"
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
     depends_on:
       db:
         condition: service_healthy
