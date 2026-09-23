@@ -204,6 +204,11 @@ function AppointmentCard({ appointment }: { appointment: Appointment }) {
           <div className="flex flex-wrap items-center gap-2">
             <p className="font-semibold">{appointment.doctor_name}</p>
             <Badge tone="primary">Token {appointment.token_number}</Badge>
+            {appointment.reason?.toUpperCase().includes("TRIAGE") && (
+              <Badge tone="warning" className="text-[10px]">
+                ⚡ Digital Triage Priority
+              </Badge>
+            )}
           </div>
           <p className="text-xs text-[var(--muted-foreground)]">
             {appointment.specialization} · {appointment.hospital_name}

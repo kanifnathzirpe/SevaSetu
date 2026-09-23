@@ -56,6 +56,7 @@ const en: TranslationDict = {
   /* ---------- Sidebar items ---------- */
   "nav.dashboard":           "Dashboard",
   "nav.appointments":        "Appointments",
+  "nav.digitalTriage":       "Digital Triage",
   "nav.symptomChecker":      "Symptom Checker",
   "nav.nearbyHospitals":     "Nearby Hospitals",
   "nav.nearbyServices":      "Nearby Services",
@@ -480,6 +481,7 @@ const hi: TranslationDict = {
 
   "nav.dashboard":           "डैशबोर्ड",
   "nav.appointments":        "अपॉइंटमेंट",
+  "nav.digitalTriage":       "डिजिटल ट्राइएज",
   "nav.symptomChecker":      "लक्षण जाँच",
   "nav.nearbyHospitals":     "नज़दीकी अस्पताल",
   "nav.emergencySOS":        "आपातकालीन SOS",
@@ -885,6 +887,7 @@ const mr: TranslationDict = {
 
   "nav.dashboard":           "डॅशबोर्ड",
   "nav.appointments":        "भेटी",
+  "nav.digitalTriage":       "डिजिटल ट्रायज",
   "nav.symptomChecker":      "लक्षण तपासणी",
   "nav.nearbyHospitals":     "जवळची रुग्णालये",
   "nav.nearbyServices":      "जवळच्या सेवा",
@@ -1299,6 +1302,7 @@ const bn: TranslationDict = {
 
   "nav.dashboard":           "ড্যাশবোর্ড",
   "nav.appointments":        "অ্যাপয়েন্টমেন্ট",
+  "nav.digitalTriage":       "ডিজিটাল ট্রায়াজ",
   "nav.symptomChecker":      "লক্ষণ পরীক্ষক",
   "nav.nearbyHospitals":     "নিকটবর্তী হাসপাতাল",
   "nav.emergencySOS":        "জরুরী SOS",
@@ -1702,6 +1706,7 @@ const gu: TranslationDict = {
 
   "nav.dashboard":           "ડેશબોર્ડ",
   "nav.appointments":        "એપોઇન્ટમેન્ટ",
+  "nav.digitalTriage":       "ડિજિટલ ટ્રાયજ",
   "nav.symptomChecker":      "લક્ષણ તપાસનાર",
   "nav.nearbyHospitals":     "નજીકની હોસ્પિટલો",
   "nav.emergencySOS":        "કટોકટી SOS",
@@ -2140,6 +2145,7 @@ export function useI18n() {
 export const NAV_LABEL_KEY: Record<string, string> = {
   "Dashboard":          "nav.dashboard",
   "Appointments":       "nav.appointments",
+  "Digital Triage":     "nav.digitalTriage",
   "Symptom Checker":    "nav.symptomChecker",
   "Nearby Hospitals":   "nav.nearbyHospitals",
   "Nearby":             "nav.nearbyServices",

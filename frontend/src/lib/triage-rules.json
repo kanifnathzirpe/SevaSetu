@@ -1,0 +1,152 @@
+{
+  "version": "1.0.0",
+  "protocol": "SevaSetu National Health Mission Digital Triage Protocol",
+  "vitals": {
+    "spo2": {
+      "emergency_max": 89,
+      "urgent_min": 90,
+      "urgent_max": 94,
+      "normal_min": 95,
+      "normal_max": 100,
+      "unit": "%",
+      "hint": "Normal: 95 – 100%"
+    },
+    "temperature": {
+      "emergency_min": 104.0,
+      "urgent_min": 102.0,
+      "urgent_comorbidity_min": 100.4,
+      "normal_min": 97.5,
+      "normal_max": 99.0,
+      "unit": "°F",
+      "hint": "Normal: 97.5 – 99.0 °F"
+    },
+    "systolic_bp": {
+      "emergency_high": 180,
+      "emergency_low": 80,
+      "urgent_high": 140,
+      "urgent_low": 89,
+      "normal_min": 90,
+      "normal_max": 120,
+      "unit": "mmHg",
+      "hint": "Normal: 90 – 120 mmHg"
+    },
+    "diastolic_bp": {
+      "emergency_high": 120,
+      "emergency_low": 50,
+      "urgent_high": 90,
+      "normal_min": 60,
+      "normal_max": 80,
+      "unit": "mmHg",
+      "hint": "Normal: 60 – 80 mmHg"
+    },
+    "pulse": {
+      "emergency_tachycardia": 140,
+      "emergency_bradycardia": 45,
+      "urgent_tachycardia": 101,
+      "urgent_bradycardia": 55,
+      "normal_min": 60,
+      "normal_max": 100,
+      "unit": "bpm",
+      "hint": "Normal: 60 – 100 bpm"
+    },
+    "weight": {
+      "unit": "kg",
+      "hint": "Normal baseline weight"
+    }
+  },
+  "emergency_symptoms": [
+    "Severe crushing chest pain",
+    "Active uncontrolled bleeding",
+    "Vaginal bleeding during pregnancy",
+    "Decreased or absent fetal movement",
+    "Convulsions, fits or seizures",
+    "Severe gasping, stridor or inability to speak",
+    "High fever in infant under 3 months",
+    "Coughing up blood (hemoptysis)",
+    "Sudden loss of consciousness or severe confusion",
+    "Anaphylaxis or sudden throat/tongue swelling"
+  ],
+  "urgent_symptoms": [
+    "Moderate shortness of breath on mild exertion",
+    "Persistent vomiting with signs of dehydration",
+    "Severe continuous abdominal pain",
+    "High fever (>= 101°F) for more than 3 days",
+    "Severe persistent headache in pregnancy with blurred vision",
+    "Suspected diabetic ketoacidosis (extreme thirst, confusion)",
+    "Hypertensive signs (severe occipital headache, dizziness)",
+    "Acute severe joint swelling with inability to walk",
+    "Severe diarrhea with inability to keep liquids down"
+  ],
+  "symptom_catalog": [
+    {
+      "category": "general",
+      "label": "General & Systemic",
+      "symptoms": [
+        { "id": "gen_fever", "name": "Fever / Chills", "severity": "routine" },
+        { "id": "gen_fatigue", "name": "Extreme Fatigue / Lethargy", "severity": "routine" },
+        { "id": "gen_bodyache", "name": "Severe generalized body ache", "severity": "routine" },
+        { "id": "gen_wtloss", "name": "Unexplained weight loss / night sweats", "severity": "urgent" },
+        { "id": "gen_syncope", "name": "Sudden loss of consciousness or severe confusion", "severity": "emergency" }
+      ]
+    },
+    {
+      "category": "respiratory",
+      "label": "Respiratory & Cardiac",
+      "symptoms": [
+        { "id": "resp_chestpain", "name": "Severe crushing chest pain", "severity": "emergency" },
+        { "id": "resp_sob_severe", "name": "Severe gasping, stridor or inability to speak", "severity": "emergency" },
+        { "id": "resp_hemoptysis", "name": "Coughing up blood (hemoptysis)", "severity": "emergency" },
+        { "id": "resp_sob_mod", "name": "Moderate shortness of breath on mild exertion", "severity": "urgent" },
+        { "id": "resp_cough", "name": "Persistent cough > 2 weeks", "severity": "routine" },
+        { "id": "resp_sorethroat", "name": "Sore throat / Runny nose", "severity": "routine" }
+      ]
+    },
+    {
+      "category": "gi",
+      "label": "Gastrointestinal",
+      "symptoms": [
+        { "id": "gi_abdopain_sev", "name": "Severe continuous abdominal pain", "severity": "urgent" },
+        { "id": "gi_vomit_dehyd", "name": "Persistent vomiting with signs of dehydration", "severity": "urgent" },
+        { "id": "gi_diarrhea_sev", "name": "Severe diarrhea with inability to keep liquids down", "severity": "urgent" },
+        { "id": "gi_bleeding", "name": "Active uncontrolled bleeding / blood in stool or vomit", "severity": "emergency" },
+        { "id": "gi_mild_nausea", "name": "Mild nausea / Loss of appetite", "severity": "routine" }
+      ]
+    },
+    {
+      "category": "maternal_child",
+      "label": "Maternal & Child Health",
+      "symptoms": [
+        { "id": "mat_bleeding", "name": "Vaginal bleeding during pregnancy", "severity": "emergency" },
+        { "id": "mat_fetal_mov", "name": "Decreased or absent fetal movement", "severity": "emergency" },
+        { "id": "ped_convulsion", "name": "Convulsions, fits or seizures", "severity": "emergency" },
+        { "id": "ped_infant_fever", "name": "High fever in infant under 3 months", "severity": "emergency" },
+        { "id": "mat_preeclampsia", "name": "Severe persistent headache in pregnancy with blurred vision", "severity": "urgent" },
+        { "id": "ped_poor_feed", "name": "Infant unable to feed / extreme drowsiness", "severity": "urgent" }
+      ]
+    },
+    {
+      "category": "chronic_flags",
+      "label": "Chronic Condition Flare-ups",
+      "symptoms": [
+        { "id": "chr_htn_crisis", "name": "Hypertensive signs (severe occipital headache, dizziness)", "severity": "urgent" },
+        { "id": "chr_dka", "name": "Suspected diabetic ketoacidosis (extreme thirst, confusion)", "severity": "urgent" },
+        { "id": "chr_cardiac", "name": "Known heart disease with sudden worsening ankle swelling / breathlessness", "severity": "urgent" },
+        { "id": "chr_asthma", "name": "Asthma / COPD exacerbation unresponsive to regular inhaler", "severity": "urgent" }
+      ]
+    }
+  ],
+  "comorbidities": [
+    "Hypertension",
+    "Diabetes",
+    "Asthma / COPD",
+    "Heart Disease / CAD",
+    "Chronic Kidney Disease",
+    "Cancer / Immunocompromised",
+    "Tuberculosis"
+  ],
+  "high_risk_age": {
+    "infant_max_months": 12,
+    "child_max_years": 5,
+    "elderly_min_years": 65
+  }
+}

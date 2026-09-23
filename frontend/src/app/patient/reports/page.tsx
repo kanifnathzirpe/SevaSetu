@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { Download, FileText, FlaskConical, ScanLine } from "lucide-react";
+import { Activity, Download, FileText, FlaskConical, ScanLine } from "lucide-react";
 import * as React from "react";
 import { toast } from "sonner";
 
@@ -19,6 +19,7 @@ import {
 import { ScanEntryDialog } from "@/components/scan/scan-entry-dialog";
 import { ScanWorkflow } from "@/components/scan/scan-workflow";
 import { API_BASE_URL, api, tokenStore } from "@/lib/api";
+import { getLocalTriageHistory } from "@/lib/triage";
 import type { DocumentType, Report } from "@/lib/types";
 import { downloadTextFile, formatDate, titleCase } from "@/lib/utils";
 
@@ -46,13 +47,47 @@ export default function PatientReportsPage() {
     queryFn: () => api.get<Report[]>(`/api/v1/patient/reports${type ? `?report_type=${type}` : ""}`),
   });
 
-  const types = Array.from(new Set(data.map((report) => report.report_type)));
+  const mergedReports = React.useMemo(() => {
+    const local = getLocalTriageHistory();
+    const localReports: Report[] = local.map((session, index) => ({
+      id: -(index + 100),
+      patient_id: session.patientId || 1,
+      patient_name: session.patientName || "Patient",
+      doctor_name: null,
+      hospital_name: null,
+      report_type: "triage",
+      title: `Digital Triage Assessment — ${session.result.level}`,
+      summary: session.result.explanation,
+      result_json: JSON.stringify({
+        "Triage Level": session.result.level,
+        "Department": session.result.suggestedDepartment,
+        "SpO2": `${session.input.vitals.spo2 ?? "N/A"}%`,
+        "Temperature": `${session.input.vitals.temperature ?? "N/A"}°F`,
+        "Blood Pressure": `${session.input.vitals.systolicBp ?? "N/A"}/${session.input.vitals.diastolicBp ?? "N/A"} mmHg`,
+        "Pulse": `${session.input.vitals.pulse ?? "N/A"} bpm`,
+      }),
+      file_url: null,
+      report_date: session.createdAt.slice(0, 10),
+      is_abnormal: session.result.level !== "ROUTINE",
+    }));
+
+    const existingTitles = new Set(data.map((r) => r.title));
+    const uniqueLocal = localReports.filter((r) => !existingTitles.has(r.title));
+    const all = [...data, ...uniqueLocal];
+
+    if (type) {
+      return all.filter((r) => r.report_type.toLowerCase() === type.toLowerCase() || (type === "triage" && r.title.includes("Triage")));
+    }
+    return all;
+  }, [data, type]);
+
+  const types = Array.from(new Set(mergedReports.map((report) => report.report_type)));
 
   return (
     <>
       <PageHeader
         title="Lab & diagnostic reports"
-        description="All investigations conducted at government laboratories"
+        description="All investigations and digital clinical triage assessments"
         actions={
           <div className="flex items-center gap-2">
             <Button size="sm" onClick={() => setScanDialogOpen(true)}>
@@ -60,7 +95,8 @@ export default function PatientReportsPage() {
             </Button>
             <Select value={type} onChange={(event) => setType(event.target.value)} className="w-48">
               <option value="">All report types</option>
-              {["blood", "urine", "radiology", "pathology", "cardiology"].concat(types).filter((value, index, self) => self.indexOf(value) === index).map((item) => (
+              <option value="triage">Digital Triage</option>
+              {["blood", "urine", "radiology", "pathology", "cardiology"].concat(types).filter((value, index, self) => self.indexOf(value) === index && value !== "triage").map((item) => (
                 <option key={item} value={item}>
                   {titleCase(item)}
                 </option>
@@ -72,32 +108,45 @@ export default function PatientReportsPage() {
 
       {isLoading ? (
         <LoadingBlock />
-      ) : data.length === 0 ? (
-        <EmptyState icon={FlaskConical} title="No reports found" description="Reports appear here once your lab tests are processed." />
+      ) : mergedReports.length === 0 ? (
+        <EmptyState icon={FlaskConical} title="No reports found" description="Reports appear here once your investigations or triage sessions are recorded." />
       ) : (
         <div className="grid gap-3 md:grid-cols-2">
-          {data.map((report) => {
+          {mergedReports.map((report) => {
             let results: Record<string, string> = {};
             try {
               results = JSON.parse(report.result_json || "{}");
             } catch {
               results = {};
             }
+            const isTriage = report.title.includes("Triage") || report.report_type === "triage";
             return (
               <Card key={report.id}>
                 <CardContent className="p-5">
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <p className="flex items-center gap-2 font-semibold">
-                        <FileText className="h-4 w-4 text-[var(--primary)]" /> {report.title}
+                        {isTriage ? (
+                          <Activity className="h-4 w-4 text-[var(--primary)]" />
+                        ) : (
+                          <FileText className="h-4 w-4 text-[var(--primary)]" />
+                        )}
+                        {report.title}
                       </p>
                       <p className="text-xs text-[var(--muted-foreground)]">
-                        {titleCase(report.report_type)} · {formatDate(report.report_date)}
+                        {isTriage ? "Digital Triage Protocol" : titleCase(report.report_type)} · {formatDate(report.report_date)}
                       </p>
                     </div>
-                    <Badge tone={report.is_abnormal ? "danger" : "success"}>
-                      {report.is_abnormal ? "Abnormal" : "Normal"}
-                    </Badge>
+                    <div className="flex items-center gap-1.5">
+                      {isTriage && (
+                        <Badge tone="primary" className="text-[10px]">
+                          Triage
+                        </Badge>
+                      )}
+                      <Badge tone={report.is_abnormal ? "danger" : "success"}>
+                        {report.is_abnormal ? "Abnormal" : "Normal"}
+                      </Badge>
+                    </div>
                   </div>
 
                   <p className="mt-3 text-sm">{report.summary}</p>

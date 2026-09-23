@@ -19,6 +19,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { LoadingBlock } from "@/components/ui/skeleton";
 import { api } from "@/lib/api";
+import { getLocalTriageHistory } from "@/lib/triage";
 import type { Referral } from "@/lib/types";
 import { cn, formatDate, RISK_STYLES, titleCase } from "@/lib/utils";
 
@@ -192,14 +193,41 @@ export default function PatientReferralsPage() {
     queryFn: () => api.get<Referral[]>("/api/v1/patient/referrals"),
   });
 
+  const mergedReferrals = React.useMemo(() => {
+    const local = getLocalTriageHistory();
+    const localReferrals: Referral[] = local
+      .filter((s) => s.result.level === "EMERGENCY" && s.referralNote)
+      .map((s, index) => ({
+        id: -(index + 200),
+        patient_id: s.patientId || 1,
+        patient_name: s.patientName,
+        referred_by_id: 1,
+        referred_by_name: "SevaSetu Digital Triage Protocol",
+        to_doctor_id: null,
+        to_doctor_name: "Emergency Casualty MO",
+        to_doctor_specialization: s.result.suggestedDepartment,
+        to_hospital_name: "Nearest Casualty / Trauma Centre",
+        from_facility: "Digital Triage Point",
+        reason: `[DIGITAL TRIAGE EMERGENCY] ${s.result.explanation}`,
+        urgency: "critical" as const,
+        status: "open" as const,
+        notes: s.referralNote || "",
+        created_at: s.createdAt,
+      }));
+
+    const existingReasons = new Set(referrals.map((r) => r.reason));
+    const uniqueLocal = localReferrals.filter((r) => !existingReasons.has(r.reason));
+    return [...uniqueLocal, ...referrals];
+  }, [referrals]);
+
   // Calculate summary metrics
   const metrics = React.useMemo(() => {
-    const total = referrals.length;
-    const pending = referrals.filter((r) => r.status === "open").length;
-    const inProgress = referrals.filter((r) => r.status === "accepted").length;
-    const completed = referrals.filter((r) => r.status === "closed").length;
+    const total = mergedReferrals.length;
+    const pending = mergedReferrals.filter((r) => r.status === "open").length;
+    const inProgress = mergedReferrals.filter((r) => r.status === "accepted").length;
+    const completed = mergedReferrals.filter((r) => r.status === "closed").length;
     return { total, pending, inProgress, completed };
-  }, [referrals]);
+  }, [mergedReferrals]);
 
   if (isLoading) {
     return (
@@ -305,16 +333,17 @@ export default function PatientReferralsPage() {
       </div>
 
       {/* Referrals List */}
-      {referrals.length === 0 ? (
+      {mergedReferrals.length === 0 ? (
         <EmptyState
           icon={ArrowRightLeft}
           title="No referrals yet"
-          description="Referrals from your doctors will appear here."
+          description="Referrals from your doctors or digital triage will appear here."
         />
       ) : (
         <div className="space-y-3">
-          {referrals.map((referral) => {
+          {mergedReferrals.map((referral) => {
             const config = STATUS_CONFIG[referral.status] || STATUS_CONFIG.open;
+            const isTriage = referral.reason.includes("TRIAGE") || referral.notes?.includes("TRIAGE");
 
             return (
               <Card
@@ -338,6 +367,12 @@ export default function PatientReferralsPage() {
                         </span>
 
                         <Badge tone={config.tone}>{config.label}</Badge>
+
+                        {isTriage && (
+                          <Badge tone="danger" className="text-[10px]">
+                            ⚡ Digital Triage Emergency
+                          </Badge>
+                        )}
                       </div>
 
                       {/* Doctor and Facility details */}

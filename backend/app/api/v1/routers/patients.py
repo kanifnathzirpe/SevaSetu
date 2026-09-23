@@ -29,6 +29,7 @@ from app.models import (
     Prescription,
     Referral,
     Report,
+    SymptomCheck,
     User,
     Vaccination,
     VaccinationStatus,
@@ -220,6 +221,33 @@ def medical_history(
         .order_by(Prescription.issued_on.desc())
         .all()
     )
+    triage_checks = (
+        db.query(SymptomCheck)
+        .filter(SymptomCheck.patient_id == patient.id)
+        .order_by(SymptomCheck.created_at.desc())
+        .all()
+    )
+    triage_items = []
+    for tc in triage_checks:
+        lvl = tc.triage_level.value.upper() if hasattr(tc.triage_level, "value") else str(tc.triage_level).upper()
+        detail_text = tc.advice or tc.symptoms
+        try:
+            cond_data = json.loads(tc.predicted_conditions)
+            if isinstance(cond_data, dict) and "explanation" in cond_data:
+                detail_text = cond_data["explanation"]
+                if "level" in cond_data:
+                    lvl = cond_data["level"]
+        except Exception:
+            pass
+
+        triage_items.append({
+            "type": "triage",
+            "date": tc.created_at.date().isoformat(),
+            "title": f"Digital Triage — {lvl}",
+            "detail": detail_text,
+            "status": lvl.lower(),
+        })
+
     timeline = [
         {
             "type": "appointment",
@@ -238,7 +266,7 @@ def medical_history(
             "status": "issued",
         }
         for p in prescriptions
-    ]
+    ] + triage_items
     timeline.sort(key=lambda item: item["date"], reverse=True)
     return {
         "patient": patient_out(patient).model_dump(),

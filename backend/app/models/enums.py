@@ -83,6 +83,8 @@ class ReportType(str, Enum):
     RADIOLOGY = "radiology"
     DISCHARGE = "discharge"
     PRESCRIPTION = "prescription"
+    TRIAGE = "triage"
+    OTHER = "other"
 
 
 class DocumentType(str, Enum):

@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import {
+  Activity,
   ArrowRightLeft,
   CalendarDays,
   CheckCircle2,
@@ -13,7 +14,6 @@ import {
   ShieldCheck,
   Syringe,
   FileText as HistoryIcon,
-  MapPin,
   Users,
 } from "lucide-react";
 import Link from "next/link";
@@ -33,12 +33,12 @@ import type { PatientDashboard } from "@/lib/types";
 import { cn, formatDate } from "@/lib/utils";
 
 const QUICK_ACTIONS = [
+  { labelKey: "nav.digitalTriage", href: "/triage", icon: Activity },
   { labelKey: "nav.medicalHistory", href: "/patient/history", icon: HistoryIcon },
-  { labelKey: "nav.govtSchemes", href: "/patient/schemes", icon: ShieldCheck },
-  { labelKey: "nav.nearbyServices", href: "/patient/hospitals", icon: MapPin },
   { labelKey: "nav.prescriptions", href: "/patient/prescriptions", icon: Pill },
-  { labelKey: "nav.referrals", href: "/patient/referrals", icon: ArrowRightLeft },
+  { labelKey: "nav.govtSchemes", href: "/patient/schemes", icon: ShieldCheck },
   { labelKey: "nav.myFamily", href: "/patient/family", icon: Users },
+  { labelKey: "nav.referrals", href: "/patient/referrals", icon: ArrowRightLeft },
 ];
 
 export default function PatientDashboardPage() {

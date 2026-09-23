@@ -14,6 +14,7 @@ from app.api.v1.routers import (
     reports,
     scan,
     symptoms,
+    triage,
     video,
     voice_assistant,
 )
@@ -33,6 +34,7 @@ api_router.include_router(chat.router)
 api_router.include_router(symptoms.router)
 api_router.include_router(symptoms.ai_router)
 api_router.include_router(emergency.router)
+api_router.include_router(triage.router)
 api_router.include_router(video.router)
 api_router.include_router(notifications.router)
 api_router.include_router(voice_assistant.router)

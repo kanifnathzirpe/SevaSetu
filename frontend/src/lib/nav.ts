@@ -1,4 +1,5 @@
 import {
+  Activity,
   Ambulance,
   ArrowRightLeft,
   Baby,
@@ -48,6 +49,7 @@ export const NAV_BY_ROLE: Record<Role, NavSection[]> = {
       items: [
         { label: "Dashboard", href: "/patient", icon: Home },
         { label: "Appointments", href: "/patient/appointments", icon: CalendarDays },
+        { label: "Digital Triage", href: "/triage", icon: Activity },
         { label: "Nearby Hospitals", href: "/patient/hospitals", icon: Hospital },
         { label: "Emergency SOS", href: "/patient/emergency", icon: Siren },
       ],
