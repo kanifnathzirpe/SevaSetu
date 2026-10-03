@@ -32,20 +32,46 @@ fastapi_app.add_middleware(
 )
 
 os.makedirs(settings.UPLOAD_DIR, exist_ok=True)
-fastapi_app.mount("/uploads", StaticFiles(directory=settings.UPLOAD_DIR), name="uploads")
+fastapi_app.mount(
+    "/uploads",
+    StaticFiles(directory=settings.UPLOAD_DIR),
+    name="uploads",
+)
 
 fastapi_app.include_router(api_router, prefix=settings.API_V1_PREFIX)
 
 
 @fastapi_app.on_event("startup")
 def on_startup() -> None:
+    # IMPORTANT:
+    # Create all SQLAlchemy model tables before running
+    # ALTER TABLE migrations below.
+    #
+    # This is required because the Render PostgreSQL database
+    # "sevasetu2" is a newly created empty database.
+    Base.metadata.create_all(bind=engine)
+
+    # Run additional schema migrations after the base tables exist.
     with engine.begin() as conn:
-        conn.exec_driver_sql("ALTER TABLE video_sessions ADD COLUMN IF NOT EXISTS duration INTEGER;")
-        conn.exec_driver_sql("ALTER TABLE referrals ADD COLUMN IF NOT EXISTS to_doctor_id INTEGER REFERENCES doctors(id);")
-        conn.exec_driver_sql("ALTER TABLE referrals ADD COLUMN IF NOT EXISTS specialty VARCHAR(120) DEFAULT '';")
+        conn.exec_driver_sql(
+            "ALTER TABLE video_sessions "
+            "ADD COLUMN IF NOT EXISTS duration INTEGER;"
+        )
+
+        conn.exec_driver_sql(
+            "ALTER TABLE referrals "
+            "ADD COLUMN IF NOT EXISTS to_doctor_id INTEGER "
+            "REFERENCES doctors(id);"
+        )
+
+        conn.exec_driver_sql(
+            "ALTER TABLE referrals "
+            "ADD COLUMN IF NOT EXISTS specialty VARCHAR(120) DEFAULT '';"
+        )
 
         # Create document_scans table for scan feature if it doesn't exist
-        conn.exec_driver_sql("""
+        conn.exec_driver_sql(
+            """
             CREATE TABLE IF NOT EXISTS document_scans (
                 id SERIAL PRIMARY KEY,
                 patient_id INTEGER REFERENCES patients(id),
@@ -66,42 +92,62 @@ def on_startup() -> None:
                 created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
                 updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
             );
-        """)
+            """
+        )
 
         # Add missing columns if they don't exist (non-destructive migration)
         try:
-            conn.exec_driver_sql("ALTER TABLE document_scans ADD COLUMN IF NOT EXISTS child_id INTEGER REFERENCES children(id);")
+            conn.exec_driver_sql(
+                "ALTER TABLE document_scans "
+                "ADD COLUMN IF NOT EXISTS child_id INTEGER "
+                "REFERENCES children(id);"
+            )
         except Exception:
             pass  # Column may already exist
 
         try:
-            conn.exec_driver_sql("ALTER TABLE document_scans ADD COLUMN IF NOT EXISTS processed_file_url VARCHAR(300);")
+            conn.exec_driver_sql(
+                "ALTER TABLE document_scans "
+                "ADD COLUMN IF NOT EXISTS processed_file_url VARCHAR(300);"
+            )
         except Exception:
             pass  # Column may already exist
 
         # Create indexes for better performance (if they don't exist)
         try:
-            conn.exec_driver_sql("CREATE INDEX IF NOT EXISTS idx_document_scans_patient_id ON document_scans(patient_id);")
+            conn.exec_driver_sql(
+                "CREATE INDEX IF NOT EXISTS "
+                "idx_document_scans_patient_id "
+                "ON document_scans(patient_id);"
+            )
         except Exception:
             pass  # Index may already exist
 
         try:
-            conn.exec_driver_sql("CREATE INDEX IF NOT EXISTS idx_document_scans_child_id ON document_scans(child_id);")
+            conn.exec_driver_sql(
+                "CREATE INDEX IF NOT EXISTS "
+                "idx_document_scans_child_id "
+                "ON document_scans(child_id);"
+            )
         except Exception:
             pass  # Index may already exist
 
         try:
-            conn.exec_driver_sql("CREATE INDEX IF NOT EXISTS idx_document_scans_processing_status ON document_scans(processing_status);")
+            conn.exec_driver_sql(
+                "CREATE INDEX IF NOT EXISTS "
+                "idx_document_scans_processing_status "
+                "ON document_scans(processing_status);"
+            )
         except Exception:
             pass  # Index may already exist
 
-    Base.metadata.create_all(bind=engine)
     if settings.SEED_ON_STARTUP:
         db = SessionLocal()
         try:
             already_seeded = db.query(User).count() > 0
         finally:
             db.close()
+
         if not already_seeded:
             run_seed()
 
@@ -119,7 +165,11 @@ def root() -> dict:
 
 @fastapi_app.get("/health", tags=["meta"])
 def health() -> dict:
-    return {"status": "ok", "environment": settings.ENVIRONMENT}
+    return {
+        "status": "ok",
+        "environment": settings.ENVIRONMENT,
+    }
+
 
 class WebsocketLoggingMiddleware:
     def __init__(self, app):
@@ -127,18 +177,28 @@ class WebsocketLoggingMiddleware:
 
     async def __call__(self, scope, receive, send):
         if scope["type"] == "websocket":
-            print(f"\n========== [ASGI Middleware] ==========")
-            print(f"-> WebSocket Connection Attempt")
+            print("\n========== [ASGI Middleware] ==========")
+            print("-> WebSocket Connection Attempt")
             print(f"-> Path: {scope.get('path')}")
             print(f"-> Client: {scope.get('client')}")
-            print(f"-> Headers: {[(k.decode('utf-8'), v.decode('utf-8')) for k, v in scope.get('headers', [])]}")
-            print(f"=======================================\n")
+            print(
+                "-> Headers: "
+                f"{[(k.decode('utf-8'), v.decode('utf-8')) for k, v in scope.get('headers', [])]}"
+            )
+            print("=======================================\n")
+
         await self.app(scope, receive, send)
 
-base_app = socketio.ASGIApp(sio, other_asgi_app=fastapi_app, socketio_path='socket.io')
+
+base_app = socketio.ASGIApp(
+    sio,
+    other_asgi_app=fastapi_app,
+    socketio_path="socket.io",
+)
+
 app = WebsocketLoggingMiddleware(base_app)
 
-print(f"\n[STARTUP] Socket.IO mounted successfully.")
+print("\n[STARTUP] Socket.IO mounted successfully.")
 print(f"[STARTUP] CORS Allowed Origins: {settings.cors_origins_list}")
 print(f"[STARTUP] Async Mode: {sio.async_mode}")
-print(f"[STARTUP] Socket Path: /socket.io/\n")
+print("[STARTUP] Socket Path: /socket.io/\n")
